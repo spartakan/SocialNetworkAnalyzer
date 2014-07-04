@@ -1,6 +1,7 @@
 import tweepy
 import twitter
 import json
+import os
 from twitter.oauth import read_token_file, write_token_file
 
 def oauth_login():
@@ -12,7 +13,7 @@ def oauth_login():
     """
     CONSUMER_KEY = 'hiXJndRNsYmzrpI9CWmeCJ3r5'
     CONSUMER_SECRET = 'pEs9mzbqeYwl2Ax9OtYPtFowgK6DdTgraZqTPG8Sc2nbID0PIk'
-    OAUTH_FILE = "H:/twitterAnalyzer/Resources/twitter_oauth"
+    OAUTH_FILE = os.path.abspath(os.path.expanduser("~/twitterAnalyzer/Resources/twitter_oauth"))
 
     #read the access token from a file
     oauth_token, oauth_token_secret = read_token_file(OAUTH_FILE)

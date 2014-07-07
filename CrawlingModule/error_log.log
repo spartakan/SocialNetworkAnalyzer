@@ -1,7 +1,0 @@
-2014-07-07 11:37:43,144 - __main__ - ERROR - Failed to open file
-Traceback (most recent call last):
-  File "H:/twitterAnalyzer/CrawlingModule/searchTweets.py", line 57, in oauth_login
-    oauth_token, oauth_token_secret = read_token_file(OAUTH_FILE)
-  File "C:\Python27\lib\site-packages\twitter\oauth.py", line 74, in read_token_file
-    f = open(filename)
-IOError: [Errno 2] No such file or directory: 'H:/twitterAnalyzer/CrawlingModule/Resourcessdfsdf/twitter_oauth.txt'

@@ -20,6 +20,7 @@ var/
 .installed.cfg
 *.egg
 
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -37,3 +38,5 @@ coverage.xml
 #pycharm idea
 **/.idea/workspace.xml
 **/.idea/tasks.xml
+
+**/CrawlingModule/Resources/twitter_oauth.txt

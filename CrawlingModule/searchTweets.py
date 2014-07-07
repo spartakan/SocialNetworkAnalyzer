@@ -17,9 +17,9 @@ def oauth_login():
     if platform.system() == 'Windows':
         print 'Operating system : ', platform.system()
         OAUTH_FILE = os.path.expanduser("H:/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt").replace("\\", "/")
-    else:
+    elif platform.system() == 'Linux':
         print 'Operating system : ', platform.system()
-        OAUTH_FILE = os.path.abspath(os.path.expanduser("~/twitterAnalyzer//CrawlingModule/Resources/twitter_oauth"))
+        OAUTH_FILE = os.path.abspath(os.path.expanduser("~/twitterAnalyzer//CrawlingModule/Resources/twitter_oauth.txt"))
 
     #read the access token from a file
     oauth_token, oauth_token_secret = read_token_file(OAUTH_FILE)

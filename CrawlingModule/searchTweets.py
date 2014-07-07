@@ -2,16 +2,19 @@ import tweepy
 import twitter
 import json
 import os
-from twitter.oauth import read_token_file, write_token_file
-
 import platform
 import logging
+from twitter.oauth import read_token_file, write_token_file
+
 
 logger = logging.getLogger(__name__)
 #to print info messages debug must be true!
 debug = True
 
 def setup_logging():
+    """
+    Initializing the logging system used to write errors to a log file
+    """
     #ceating a file handler
     #logging.basicConfig()
     if platform.system() == 'Windows':

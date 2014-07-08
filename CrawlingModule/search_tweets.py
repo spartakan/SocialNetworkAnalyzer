@@ -55,14 +55,15 @@ def twitter_search(twitter_api, q, max_results=200, **kw):
      :param kw
      """
     if debug:
-        print 'INFO: Executing twitter_search() method ...  '
+        print>> sys.stderr, 'INFO: Executing twitter_search() method ...  '
+        print >> sys.stderr.flush()
 
     #Get a collection of relevant Tweets matching a specified query
     try:
         search_results = twitter_api.search.tweets(q=q, count=100, **kw)
         statuses = search_results['statuses']
         if debug:
-            print "INFO : number of statuses: ", len(statuses)
+            print >> sys.stderr, "INFO : number of statuses: ", len(statuses), "max_limit: 100"
     except Exception, e:
         logger.error('Failed request', exc_info=True)
         return False
@@ -88,8 +89,9 @@ def twitter_search(twitter_api, q, max_results=200, **kw):
 
 
 def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
-    if debug:
-        print "INFO : Saving to database ..."
+    #if debug:
+        #print>> sys.stderr, "INFO : Executing save_to_mongo() method ..."
+        #print >> sys.stderr.flush()
 
     # Connects to the MongoDB server running on
     # localhost:27017 by default
@@ -156,8 +158,8 @@ def save_time_series_data(api_func, mongo_db_name, mongo_db_coll,
         # A timestamp of the form "2013-06-14 12:52:07"
         now = str(datetime.datetime.now()).split(".")[0]
         ids = save_to_mongo(api_func(), mongo_db_name, mongo_db_coll + "-" + now)
-        print >> sys.stderr, "Write {0} trends".format(len(ids))
-        print >> sys.stderr, "Zzz..."
+        print >> sys.stderr, "Writing {0} trends to database ".format(len(ids))
+        print >> sys.stderr, "wait for 15 seconds ..."
         print >> sys.stderr.flush()
         time.sleep(secs_per_interval) # seconds
         interval += 1

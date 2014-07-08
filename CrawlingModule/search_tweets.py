@@ -108,6 +108,15 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
 
 
 def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None, projection=None, **mongo_conn_kw):
+    """
+    Loads data from the specific database and the specific collection by the chosen criteria
+    :param mongo_db
+    :param mongo_db_coll
+    :param return_cursor
+    :param criteria
+    :param projection
+    :param mongo_conn_kw
+    """
     # Optionally, use criteria and projection to limit the data that is
     # returned as documented in
     # http://docs.mongodb.org/manual/reference/method/db.collection.find/

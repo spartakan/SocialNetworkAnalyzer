@@ -1,8 +1,11 @@
 import logging
 import os
 import platform
-import json
 import pymongo
+import datetime
+import time
+import sys
+import twitter
 
 #to print info messages debug must be true!
 debug = True
@@ -31,6 +34,15 @@ def setup_logging():
 #setup the logger with proper handler
 setup_logging()
 
+def twitter_trends(twitter_api, woe_id):
+    """
+    Returns the top 10 trending topics for a specific WOEID, if trending information is available for it
+    """
+    # Prefix ID with the underscore for query string parameterization.
+    # Without the underscore, the twitter package appends the ID value
+    # to the URL itself as a special-case keyword argument.
+    return twitter_api.trends.place(_id=woe_id)
+
 
 def twitter_search(twitter_api, q, max_results=200, **kw):
     """
@@ -49,7 +61,6 @@ def twitter_search(twitter_api, q, max_results=200, **kw):
     try:
         search_results = twitter_api.search.tweets(q=q, count=100, **kw)
         statuses = search_results['statuses']
-        logger.info("info message 1")
         if debug:
             print "INFO : number of statuses: ", len(statuses)
     except Exception, e:
@@ -96,7 +107,7 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
 
 
 
-def load_from_mongo(mongo_db, mongo_db_coll, return_cursor = False,criteria = None, projection = None, **mongo_conn_kw):
+def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None, projection=None, **mongo_conn_kw):
     # Optionally, use criteria and projection to limit the data that is
     # returned as documented in
     # http://docs.mongodb.org/manual/reference/method/db.collection.find/
@@ -114,4 +125,43 @@ def load_from_mongo(mongo_db, mongo_db_coll, return_cursor = False,criteria = No
     if return_cursor:
         return cursor
     else:
-        return [ item for item in cursor ]
+        return [item for item in cursor]
+
+
+def save_time_series_data(api_func, mongo_db_name, mongo_db_coll,
+                         secs_per_interval=60, max_intervals=15, **mongo_conn_kw):
+    """
+    Calls the Twitter api on every 15 seconds, usually used to see what topics are trending at the moment
+    and saves them into database
+    :param api_func
+    :param mongo_db_name
+    :param mongo_db_coll
+    :param secs_per_interval
+    :param max_intervals
+    :param mongo_conn_kw
+    """
+    # Default settings of 15 intervals and 1 API call per interval ensure that
+    # you will not exceed the Twitter rate limit.
+    interval = 0
+    while True:
+        # A timestamp of the form "2013-06-14 12:52:07"
+        now = str(datetime.datetime.now()).split(".")[0]
+        ids = save_to_mongo(api_func(), mongo_db_name, mongo_db_coll + "-" + now)
+        print >> sys.stderr, "Write {0} trends".format(len(ids))
+        print >> sys.stderr, "Zzz..."
+        print >> sys.stderr.flush()
+        time.sleep(secs_per_interval) # seconds
+        interval += 1
+        if interval >= 15:
+            break
+
+def save_tweets_form_stream_api(twitter_api, q):
+
+    twitter_stream = twitter.TwitterStream(auth=twitter_api.auth)
+    # See https://dev.twitter.com/docs/streaming-apis
+    stream = twitter_stream.statuses.filter(track=q)
+
+    for tweet in stream:
+        print tweet['text']
+        save_to_mongo(tweet, "twitter", q)
+    # Save to a database in a particular collection

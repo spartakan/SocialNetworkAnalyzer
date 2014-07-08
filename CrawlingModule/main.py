@@ -8,7 +8,7 @@ if platform.system() == 'Windows':
 elif platform.system() == 'Linux':
     sys.path.append(os.path.abspath("~/twitterAnalyzer/CrawlingModule"))
 from authorization import oauth_login
-from search_tweets import twitter_search, save_to_mongo, load_from_mongo, save_time_series_data, save_tweets_form_stream_api,twitter_trends
+from search_tweets import twitter_search, save_to_mongo, harvest_user_timeline, load_from_mongo, save_time_series_data, save_tweets_form_stream_api,twitter_trends
 from functools import partial
 
 logger = logging.getLogger(__name__)
@@ -35,8 +35,6 @@ def setup_logging():
     logger.addHandler(handler)
 
 
-
-
 def main():
     setup_logging()
     api = oauth_login()
@@ -53,6 +51,7 @@ def main():
             print "4. Search & save tweets for a specific query"
             print "5. Search & save tweets from the streaming api"
             print "6. Load & Print tweets from the database for a specific query"
+            print "7. Get tweets for specific user account"
             action = raw_input('Enter the number of the action: ').strip()
         WORLD_WOE_ID = 1
         if action == '1':
@@ -114,6 +113,15 @@ def main():
                         print item
                 else:
                     print "No data for query: ", q
+                print "Number of results from this query: ", q, " is: ", len(from_mongo)
+        elif action == '7':
+                screen_name = raw_input('Enter the screen name: ').strip()
+                while not screen_name:
+                    screen_name = raw_input('Enter a query:').strip()
+                if debug:
+                    print "INFO: Getting tweets from user: ", screen_name, " ... "
+                tweets = harvest_user_timeline(api, screen_name="SocialWebMining", max_results=500)
+                save_to_mongo(tweets, "twitter", screen_name)
         else:
             print "WRONG ACTION!!!"
 if __name__ == '__main__':

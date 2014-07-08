@@ -3,7 +3,10 @@ import platform
 import logging
 import os
 import sys
-sys.path.append(os.path.abspath("H:/twitterAnalyzer/CrawlingModule"))
+if platform.system() == 'Windows':
+    sys.path.append(os.path.abspath("H:/twitterAnalyzer/CrawlingModule"))
+elif platform.system() == 'Linux':
+    sys.path.append(os.path.abspath("~/twitterAnalyzer/CrawlingModule"))
 from authorization import oauth_login
 from search_tweets import twitter_search, save_to_mongo, load_from_mongo, save_time_series_data, save_tweets_form_stream_api,twitter_trends
 from functools import partial
@@ -42,7 +45,6 @@ def main():
         if debug:
             print "INFO: Successfully authenticated and authorized"
             print "Read How to build a query first ! ( https://dev.twitter.com/docs/using-search )  "
-
         q = None
         q = raw_input('Enter a query: ').strip()
         while not q:

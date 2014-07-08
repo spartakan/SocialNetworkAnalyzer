@@ -3,7 +3,7 @@ import twitter
 import os
 import platform
 import logging
-from twitter.oauth import read_token_file, write_token_filepython
+from twitter.oauth import read_token_file, write_token_file
 
 
 logger = logging.getLogger(__name__)

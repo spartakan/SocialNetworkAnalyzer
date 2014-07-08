@@ -72,7 +72,7 @@ def main():
             #get and save the trending topics
             save_time_series_data(trending_topics, 'twitter', '#trends')
 
-        else:
+        elif action == '3' or action == '4' or action == '5' or action == '6':
             q = None
             print "Read How to build a query first ! ( https://dev.twitter.com/docs/using-search )  "
             q = raw_input('Enter a query: ').strip()
@@ -114,7 +114,8 @@ def main():
                         print item
                 else:
                     print "No data for query: ", q
-
+        else:
+            print "WRONG ACTION!!!"
 if __name__ == '__main__':
     main()
 

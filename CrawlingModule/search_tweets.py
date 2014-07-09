@@ -246,7 +246,7 @@ def save_tweets_form_stream_api(twitter_api, q):
     stream = twitter_stream.statuses.filter(track=q)
 
     for tweet in stream:
-        print tweet['text']
+        #print tweet['text']
         save_to_mongo(tweet, "twitter", q)
 
 def harvest_user_timeline(twitter_api, screen_name=None, user_id=None, max_results=1000):

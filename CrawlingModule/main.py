@@ -3,10 +3,6 @@ import platform
 import logging
 import os
 import sys
-if platform.system() == 'Windows':
-    sys.path.append(os.path.abspath("H:/twitterAnalyzer/CrawlingModule"))
-elif platform.system() == 'Linux':
-    sys.path.append(os.path.abspath("~/twitterAnalyzer/CrawlingModule"))
 from authorization import oauth_login
 from search_tweets import twitter_search, save_to_mongo, harvest_user_timeline, load_from_mongo, save_time_series_data, save_tweets_form_stream_api,twitter_trends
 from functools import partial

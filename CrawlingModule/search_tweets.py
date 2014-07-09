@@ -7,11 +7,6 @@ import time
 import sys
 import json
 import twitter
-
-if platform.system() == 'Windows':
-    sys.path.append(os.path.abspath("H:/twitterAnalyzer/CrawlingModule"))
-elif platform.system() == 'Linux':
-    sys.path.append(os.path.abspath("~/twitterAnalyzer/CrawlingModule"))
 from urllib2 import URLError
 from httplib import BadStatusLine
 
@@ -174,10 +169,6 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
     coll = db[mongo_db_coll]
     # Perform a bulk insert and return the IDs
     return coll.insert(data)
-
-
-
-
 
 
 def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None, projection=None, **mongo_conn_kw):

@@ -86,9 +86,11 @@ def main():
             if action == '4':
                 if debug:
                     print "INFO: Searching tweets for the query:", q
-                results = twitter_search(api, q, max_results=10)
+                search_tweets = partial(twitter_search,api,q,1000)
+                save_time_series_data(search_tweets, 'twitter', '#trends')
+                #results = twitter_search(api, q, 1000)
                 if results:
-                    save_to_mongo(results, "twitter", q)
+                    #save_to_mongo(results, "twitter", q)
                     if debug:
                         print "INFO: Tweets saved into database"
                 else:

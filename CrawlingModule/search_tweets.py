@@ -110,7 +110,7 @@ def twitter_trends(twitter_api, woe_id):
     return twitter_api.trends.place(_id=woe_id)
 
 
-def twitter_search(twitter_api, q, max_results=200, **kw):
+def twitter_search(twitter_api, q, max_results=1000, **kw):
     """
     Search tweets for a given query
     description of parametars: https://dev.twitter.com/docs/api/1.1/get/search/tweets
@@ -126,10 +126,10 @@ def twitter_search(twitter_api, q, max_results=200, **kw):
 
     #Get a collection of relevant Tweets matching a specified query
     try:
-        search_results = twitter_api.search.tweets(q=q, count=100, **kw)
+        search_results = twitter_api.search.tweets(q=q, count=1000, **kw)
         statuses = search_results['statuses']
         if debug:
-            print >> sys.stderr, "INFO : number of statuses: ", len(statuses), "max_limit: 100"
+            print >> sys.stderr, "INFO : number of statuses: ", len(statuses), "max_limit: ", max_results
     except Exception, e:
         logger.error('Failed request', exc_info=True)
         return False

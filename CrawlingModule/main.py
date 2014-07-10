@@ -46,7 +46,7 @@ def main():
             print "3. Search a limited number of tweets for a specific query "
             print "4. Search & save tweets for a specific query"
             print "5. Search & save tweets from the streaming api"
-            print "6. Load & Print tweets from the database for a specific query"
+            print "6. Load tweets from the database for a specific query"
             print "7. Get tweets for specific user account"
             action = raw_input('Enter the number of the action: ').strip()
         WORLD_WOE_ID = 1
@@ -86,8 +86,8 @@ def main():
             if action == '4':
                 if debug:
                     print "INFO: Searching tweets for the query:", q
-                search_tweets = partial(twitter_search,api,q,1000)
-                save_time_series_data(search_tweets, 'twitter', '#trends')
+                search_tweets = partial(twitter_search, api, q, 10000)
+                save_time_series_data(search_tweets, 'twitter', q)
                 #results = twitter_search(api, q, 1000)
                 if results:
                     #save_to_mongo(results, "twitter", q)
@@ -106,19 +106,17 @@ def main():
                     print "INFO: Getting data from database for query: ", q, " ... "
 
                 from_mongo = load_from_mongo("twitter", q)
-                if from_mongo:
-                    for item in from_mongo:
-                        print item
-                else:
+                if not from_mongo:
                     print "No data for query: ", q
                 print "Number of results from this query: ", q, " is: ", len(from_mongo)
+
         elif action == '7':
                 screen_name = raw_input('Enter the screen name: ').strip()
                 while not screen_name:
                     screen_name = raw_input('Enter a query:').strip()
                 if debug:
                     print "INFO: Getting tweets from user: ", screen_name, " ... "
-                tweets = harvest_user_timeline(api, screen_name="SocialWebMining", max_results=500)
+                tweets = harvest_user_timeline(api, screen_name="SocialWebMining", max_results=200)
                 save_to_mongo(tweets, "twitter", screen_name)
         else:
             print "WRONG ACTION!!!"

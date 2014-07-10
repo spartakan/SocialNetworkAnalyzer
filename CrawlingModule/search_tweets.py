@@ -9,8 +9,7 @@ import json
 import twitter
 from urllib2 import URLError
 from httplib import BadStatusLine
-
-
+from functools import partial
 
 #to print info messages debug must be true!
 debug = True
@@ -41,10 +40,12 @@ setup_logging()
 
 
 def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
-# A nested helper function that handles common HTTPErrors. Return an updated
-# value for wait_period if the problem is a 500 level error. Block until the
-# rate limit is reset if it's a rate limiting issue (429 error). Returns None
-# for 401 and 404 errors, which requires special handling by the caller.
+    """ A nested helper function that handles common HTTPErrors. Return an updated
+    value for wait_period if the problem is a 500 level error. Block until the
+    rate limit is reset if it's a rate limiting issue (429 error). Returns None
+    for 401 and 404 errors, which requires special handling by the caller.
+    USED in: all functions that make a call to the twitter api
+    """
 
     def handle_twitter_http_error(e, wait_period=2, sleep_when_rate_limited=True):
         if wait_period > 3600: # Seconds
@@ -67,7 +68,7 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
                 return 2
             else:
                 raise e # Caller must handle the rate limiting issue
-        elif e.e.code in (500, 502, 503, 504):
+        elif e.e.code in (500, 502, 503, 504, 104):  #104 is for socket error : connection reset by peer
             print >> sys.stderr, 'Encountered %i Error. Retrying in %i seconds' % (e.e.code, wait_period)
             time.sleep(wait_period)
             wait_period *= 1.5
@@ -100,6 +101,7 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
 
 
 
+
 def twitter_trends(twitter_api, woe_id):
     """
     Returns the top 10 trending topics for a specific WOEID, if trending information is available for it
@@ -107,7 +109,10 @@ def twitter_trends(twitter_api, woe_id):
     # Prefix ID with the underscore for query string parameterization.
     # Without the underscore, the twitter package appends the ID value
     # to the URL itself as a special-case keyword argument.
-    return twitter_api.trends.place(_id=woe_id)
+    twitter_api_trends = partial(twitter_api.trends.place, _id=woe_id)
+    make_twitter_request(twitter_api_trends)
+    return make_twitter_request(twitter_api_trends)
+
 
 
 def twitter_search(twitter_api, q, max_results=1000, **kw):
@@ -126,7 +131,8 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
 
     #Get a collection of relevant Tweets matching a specified query
     try:
-        search_results = twitter_api.search.tweets(q=q, count=1000, **kw)
+        twitter_search_api_tweets = partial(twitter_api.search.tweets, q=q, count=10000, **kw)
+        search_results = make_twitter_request(twitter_search_api_tweets)
         statuses = search_results['statuses']
         if debug:
             print >> sys.stderr, "INFO : number of statuses: ", len(statuses), "max_limit: ", max_results
@@ -147,11 +153,14 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
                              , exc_info=True)
                 break
             kwargs = dict([kv.split('=') for kv in next_results[1:].split("&")])
-            search_results = twitter_api.search.tweets(**kwargs)
+            twitter_search_api_tweets = partial(twitter_api.search.tweets, **kwargs)
+            search_results = make_twitter_request(twitter_search_api_tweets)
             statuses += search_results['statuses']
             if len(statuses) > max_results:
                 break
         return statuses
+
+
 
 
 def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
@@ -169,6 +178,8 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
     coll = db[mongo_db_coll]
     # Perform a bulk insert and return the IDs
     return coll.insert(data)
+
+
 
 
 def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None, projection=None, **mongo_conn_kw):
@@ -201,8 +212,8 @@ def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None,
         return [item for item in cursor]
 
 
-def save_time_series_data(api_func, mongo_db_name, mongo_db_coll,
-                         secs_per_interval=60, max_intervals=15, **mongo_conn_kw):
+
+def save_time_series_data(api_func, mongo_db_name, mongo_db_coll, secs_per_interval=60, max_intervals=15, **mongo_conn_kw):
     """
     Calls the Twitter api on every 15 seconds, usually used to see what topics are trending at the moment
     and saves them into database
@@ -228,11 +239,12 @@ def save_time_series_data(api_func, mongo_db_name, mongo_db_coll,
         interval += 1
         print "interval", interval
         if interval >= 15:
-             break
+            break
 
 def save_tweets_form_stream_api(twitter_api, q):
 
-    twitter_stream = twitter.TwitterStream(auth=twitter_api.auth)
+    twitter_stream = partial(twitter.TwitterStream, auth=twitter_api.auth)
+    twitter_stream = make_twitter_request(twitter_stream)
     # See https://dev.twitter.com/docs/streaming-apis
     stream = twitter_stream.statuses.filter(track=q)
 
@@ -240,14 +252,16 @@ def save_tweets_form_stream_api(twitter_api, q):
         #print tweet['text']
         save_to_mongo(tweet, "twitter", q)
 
+
+
 def harvest_user_timeline(twitter_api, screen_name=None, user_id=None, max_results=1000):
     assert (screen_name != None) != (user_id != None), \
         "Must have screen_name or user_id, but not both"
-    kw = {# Keyword args for the Twitter API call
+    kw = { # Keyword args for the Twitter API call
         'count': 200,
         'trim_user': 'true',
         'include_rts' : 'true',
-        'since_id' : 1
+        'since_id': 1
         }
     if screen_name:
         kw['screen_name'] = screen_name
@@ -257,7 +271,7 @@ def harvest_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
     results = []
     tweets = make_twitter_request(twitter_api.statuses.user_timeline, **kw)
 
-    if tweets is None: # 401 (Not Authorized) - Need to bail out on loop entry
+    if tweets is None:# 401 (Not Authorized) - Need to bail out on loop entry
         tweets = []
 
     results += tweets

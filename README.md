@@ -36,7 +36,7 @@ Technologies and guides
 
 
 > The project is being developed in PyCharm 3.4 the free community
-> edition  Because of the intelligent editor, the code completion,
+> edition because of the intelligent editor, the code completion,
 > on-the-fly error highlighting, auto-fixes, etc.
 
 Module Structure

@@ -14,6 +14,8 @@ def oauth_login():
     """
     Authorize the application to access the user's profile
     using twitter's API v1.1's Authentication Model (oAuth dance)
+    If the application is being authorized for the first time, the access key & secret are saved into a file
+    and with every other execution of the script, the access token & secret are read from the oauth file.
     :returns twitter_api
     :libraries tweepy, twitter
     """

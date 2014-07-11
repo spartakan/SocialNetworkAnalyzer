@@ -3,9 +3,9 @@ import os
 import platform
 import pymongo
 import datetime
+import json
 import time
 import sys
-import json
 import twitter
 from urllib2 import URLError
 from httplib import BadStatusLine
@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 
 def setup_logging():
     """
-    Initializing the logging system used to write errors to a log file
+    Setting the logging level(logging.ERROR), file, and format in which the errors will be written to a log file,
+     to the handler used to write everything in the file
+
     """
     #ceating a file handler
     #logger.level(logging.INFO)
@@ -104,7 +106,8 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
 
 def twitter_trends(twitter_api, woe_id):
     """
-    Returns the top 10 trending topics for a specific WOEID, if trending information is available for it
+    Returns the top 10 trending topics for a specific WOEID, if trending information is available for it.
+    For preventing HTTP errors a robust API wrapper is added
     """
     # Prefix ID with the underscore for query string parameterization.
     # Without the underscore, the twitter package appends the ID value
@@ -117,9 +120,10 @@ def twitter_trends(twitter_api, woe_id):
 
 def twitter_search(twitter_api, q, max_results=1000, **kw):
     """
-    Search tweets for a given query
+    Retrieves tweets from the api for a given query
     description of parametars: https://dev.twitter.com/docs/api/1.1/get/search/tweets
     Warning: OAuth users can "only" make 180 search queries per 15-minute interval.
+    For preventing HTTP errors a robust API wrapper is added
      :param twitter_api
      :param q
      :param max_results
@@ -134,6 +138,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
         twitter_search_api_tweets = partial(twitter_api.search.tweets, q=q, count=10000, **kw)
         search_results = make_twitter_request(twitter_search_api_tweets)
         statuses = search_results['statuses']
+
         if debug:
             print >> sys.stderr, "INFO : number of statuses: ", len(statuses), "max_limit: ", max_results
     except Exception, e:
@@ -141,6 +146,13 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
         return False
 
     else:
+        # Iterate through batches of results by following the cursor until we
+        # reach the desired number of results, keeping in mind that OAuth users
+        # can "only" make 180 search queries per 15-minute interval. See
+        # https://dev.twitter.com/docs/rate-limiting/1.1/limits
+        # for details. A reasonable number of results is ~1000, although
+        # that number of results may not exist for all queries.
+        # Enforce a reasonable limit
         max_results = min(1000, max_results)
         # Iterate through 5 more batches of results by following the cursor
         for _ in range(10):  # 10*100 = 1000
@@ -164,6 +176,9 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
 
 
 def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
+    """
+    Storing nontrivial amounts of JSON data from Twitter API with indexing included.
+    """
     if debug:
         print>> sys.stderr, "INFO : Executing save_to_mongo() method ..."
         print >> sys.stderr.flush()
@@ -176,6 +191,8 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
     db = client[mongo_db]
     # Reference a particular collection in the database
     coll = db[mongo_db_coll]
+    #oll.create_index("recent_retweets")
+    coll.create_index("created_at")
     # Perform a bulk insert and return the IDs
     return coll.insert(data)
 
@@ -215,8 +232,8 @@ def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None,
 
 def save_time_series_data(api_func, mongo_db_name, mongo_db_coll, secs_per_interval=60, max_intervals=15, **mongo_conn_kw):
     """
-    Calls the Twitter api on every 15 seconds, usually used to see what topics are trending at the moment
-    and saves them into database
+    On every 15 seconds executes an api function that makes a call to the Twitter api.
+    This way it prevents reaching the api's rate limit.
     :param api_func
     :param mongo_db_name
     :param mongo_db_coll
@@ -230,9 +247,9 @@ def save_time_series_data(api_func, mongo_db_name, mongo_db_coll, secs_per_inter
     while True:
         # A timestamp of the form "2013-06-14 12:52:07"
         now = str(datetime.datetime.now()).split(".")[0]
-        ids = save_to_mongo(api_func(), mongo_db_name, mongo_db_coll + "-" + now)
+        ids = save_to_mongo(api_func(), mongo_db_name, mongo_db_coll)
         print >> sys.stderr, "Writing {0} trends to database ".format(len(ids))
-        print >> sys.stderr, "wait for 15 seconds ..."
+        print >> sys.stderr, "wait for 15 seconds ... "
         print >> sys.stderr.flush()
 
         time.sleep(secs_per_interval)  # seconds
@@ -241,22 +258,33 @@ def save_time_series_data(api_func, mongo_db_name, mongo_db_coll, secs_per_inter
         if interval >= 15:
             break
 
-def save_tweets_form_stream_api(twitter_api, q):
+def get_and_save_tweets_form_stream_api(twitter_api, q):
 
+    """
+    Uses twitter's Streaming API to get samples of the public data flowing through tweeter.
+    Establishes a connection to a streaming endpoint they are delivered a feed of Tweets,
+    without needing to worry about polling or REST API rate limits.
+    For preventing HTTP errors a robust API wrapper is added
+    """
     twitter_stream = partial(twitter.TwitterStream, auth=twitter_api.auth)
     twitter_stream = make_twitter_request(twitter_stream)
     # See https://dev.twitter.com/docs/streaming-apis
     stream = twitter_stream.statuses.filter(track=q)
 
     for tweet in stream:
-        #print tweet['text']
+        print json.dumps(tweet, indent=1)
         save_to_mongo(tweet, "twitter", q)
 
 
 
 def harvest_user_timeline(twitter_api, screen_name=None, user_id=None, max_results=1000):
+    """
+    Harvest all of user's most recent tweets. Number of retrieved tweets can grow to 3,200
+    so a robust API wrapper is added
+    """
     assert (screen_name != None) != (user_id != None), \
         "Must have screen_name or user_id, but not both"
+
     kw = { # Keyword args for the Twitter API call
         'count': 200,
         'trim_user': 'true',

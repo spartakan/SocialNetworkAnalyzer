@@ -4,7 +4,7 @@ import logging
 import os
 import sys
 from authorization import oauth_login
-from search_tweets import twitter_search, save_to_mongo, harvest_user_timeline, load_from_mongo, save_time_series_data, save_tweets_form_stream_api,twitter_trends
+from search_tweets import twitter_search, save_to_mongo, harvest_user_timeline, load_from_mongo, save_time_series_data, get_and_save_tweets_form_stream_api,twitter_trends
 from functools import partial
 
 logger = logging.getLogger(__name__)
@@ -99,7 +99,7 @@ def main():
             if action == '5':
                 if debug:
                     print "INFO: Searching and saving tweets from the streaming api for query: ", q, "..."
-                save_tweets_form_stream_api(api, q)
+                get_and_save_tweets_form_stream_api(api, q)
 
             if action == '6':
                 if debug:
@@ -120,6 +120,8 @@ def main():
                 save_to_mongo(tweets, "twitter", screen_name)
         else:
             print "WRONG ACTION!!!"
+    else:
+        print "You are not authorized!!!"
 if __name__ == '__main__':
     main()
 

@@ -10,6 +10,7 @@ import twitter
 from urllib2 import URLError
 from httplib import BadStatusLine
 from functools import partial
+from datetime import date
 
 #to print info messages debug must be true!
 debug = True
@@ -192,8 +193,18 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
     # Reference a particular collection in the database
     coll = db[mongo_db_coll]
     #oll.create_index("recent_retweets")
-    coll.create_index("created_at")
-    # Perform a bulk insert and return the IDs
+    coll.create_index("id")
+    coll.create_index("DATE")
+    coll.create_index("hashtags.text")
+    coll.create_index("retweeted")
+    # for d in data:
+    #     print json.dumps(d,d,indent=1)
+    #     date = d[u'created_at']
+    #     date = datetime.datetime.strptime(date,'%a %b %d %H:%M:%S +0000 %Y')
+    #     print "DATE : ", date
+    #    # d["date_of_creation"] = unicode(date)
+    #     print json.dumps(d,indent=1)
+    #     break
     return coll.insert(data)
 
 
@@ -288,7 +299,7 @@ def harvest_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
     kw = { # Keyword args for the Twitter API call
         'count': 200,
         'trim_user': 'true',
-        'include_rts' : 'true',
+        'include_rts': 'true',
         'since_id': 1
         }
     if screen_name:

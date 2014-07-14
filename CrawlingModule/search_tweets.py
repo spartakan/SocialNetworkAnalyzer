@@ -143,13 +143,10 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
      """
 
     debug_print('Executing twitter_search() method ...  ')
-    kw = {'count': 100}
-
     #Get a collection of relevant Tweets matching a specified query
 
     try:
-        debug_print("kw: " + str(kw))
-        twitter_search_api_tweets = partial(twitter_api.search.tweets, q=q, **kw)
+        twitter_search_api_tweets = partial(twitter_api.search.tweets, q=q, count=100, **kw)
         search_results = make_twitter_request(twitter_search_api_tweets)
         statuses = search_results['statuses']
         debug_print("number of statuses: " + str(len(statuses)) + " max_limit: " + str(max_results))
@@ -220,17 +217,17 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
     coll = db[mongo_db_coll]
     #oll.create_index("recent_retweets")
     coll.create_index("id")
-    coll.create_index("DATE")
+    #coll.create_index("DATE")
     coll.create_index("hashtags.text")
     coll.create_index("retweeted")
-    # for d in data:
-    #     print json.dumps(d,d,indent=1)
-    #     date = d[u'created_at']
-    #     date = datetime.datetime.strptime(date,'%a %b %d %H:%M:%S +0000 %Y')
-    #     print "DATE : ", date
-    #    # d["date_of_creation"] = unicode(date)
-    #     print json.dumps(d,indent=1)
-    #     break
+    for d in data:
+        #debug_print(json.dumps(d, d, indent=1))
+        date = d[u'created_at']
+        date = datetime.datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
+        debug_print("DATE : " + str(date))
+        d["DATE"] = unicode(date)
+        #debug_print(json.dumps(d, indent=1))
+        break
     return coll.insert(data)
 
 

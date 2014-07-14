@@ -16,7 +16,13 @@ from datetime import date
 #to print info messages debug must be true!
 debug = True
 logger = logging.getLogger(__name__)
+
 def debug_print(message):
+    """
+    Prints messages if the debug variable is set to true
+    :param message: message to be printed
+    :return: none
+    """""
     if debug:
         print >> sys.stderr, "INFO: ", message
         print >> sys.stderr.flush()

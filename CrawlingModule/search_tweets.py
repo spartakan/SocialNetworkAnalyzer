@@ -1,44 +1,11 @@
-import logging,os,platform,datetime,json,time,sys,twitter,urllib2
+import logging,datetime,json,time,sys,twitter,urllib2
 from urllib2 import URLError
 from httplib import BadStatusLine
 from functools import partial
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
+from debugging_setup import setup_logging, debug_print
 
-#to print info messages debug must be true!
-debug = True
-logger = logging.getLogger(__name__)
-
-def debug_print(message):
-    """
-    Prints messages if the debug variable is set to true
-    :param message: message to be printed
-    :return: none
-    """""
-    if debug:
-        print >> sys.stderr, "INFO: ", message
-        print >> sys.stderr.flush()
-
-def setup_logging():
-    """
-    Initializing the logging system used to write errors to a log file
-    """
-   #ceating a file handler
-    #logger.level(logging.INFO)
-    if platform.system() == 'Windows':
-        LOG_FILE = os.path.expanduser("C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/error.log").replace("\\", "/")
-    elif platform.system() == 'Linux':
-        LOG_FILE = os.path.abspath(os.path.expanduser("~/twitterAnalyzer/CrawlingModule/Resources/error.log"))
-    handler = logging.FileHandler(LOG_FILE)
-    handler.setLevel(logging.ERROR)
-
-    # create a logging format
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-    # add the handlers to the logger
-    logger.addHandler(handler)
-
-#setup the logger with proper handler
-setup_logging()
+logger = setup_logging()
 
 
 def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
@@ -188,7 +155,9 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
            break
     if statuses:
         debug_print(('Saving %d statsus')%len(statuses))
-        save_to_mongo(statuses, "twitter", q)
+    for tweet in statuses:
+        #print json.dumps(tweet, indent=1)
+        save_to_mongo(tweet, "twitter", q)
 
 
 
@@ -234,9 +203,8 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
     twitter_stream = make_twitter_request(twitter_stream)
     # See https://dev.twitter.com/docs/streaming-apis
     stream = twitter_stream.statuses.filter(track=q)
-
     for tweet in stream:
-        print json.dumps(tweet, indent=1)
+        #print json.dumps(tweet, indent=1)
         save_to_mongo(tweet, "twitter", q)
 
 

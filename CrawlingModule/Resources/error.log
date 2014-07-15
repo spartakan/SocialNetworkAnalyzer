@@ -175,3 +175,148 @@ Traceback (most recent call last):
   File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 170, in twitter_search
     next_results = search_results['search_metadata']['next_results']
 KeyError: 'next_results'
+2014-07-15 17:06:22,776 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:06:22,776 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:06:22,776 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:06:22,776 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:12:11,309 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:12:11,309 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:12:11,309 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:12:11,309 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:12:11,309 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:13:26,970 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:13:26,970 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:13:26,970 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:13:26,970 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:13:26,970 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:37:55,430 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:37:55,430 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:37:55,430 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:37:55,430 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:37:55,430 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:40:05,142 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:40:05,142 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:40:05,142 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:40:05,142 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:40:05,142 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:40:34,118 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:40:34,118 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:40:34,118 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:40:34,118 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-15 17:40:34,118 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'

@@ -2,13 +2,11 @@ import tweepy
 import twitter
 import os
 import platform
-import logging
 from twitter.oauth import read_token_file, write_token_file
+from debugging_setup import setup_logging, debug_print
 
 
-logger = logging.getLogger(__name__)
-#to print info messages debug must be true!
-debug = True
+logger = setup_logging()
 
 def oauth_login():
     """
@@ -22,9 +20,8 @@ def oauth_login():
     CONSUMER_KEY = 'hiXJndRNsYmzrpI9CWmeCJ3r5'
     CONSUMER_SECRET = 'pEs9mzbqeYwl2Ax9OtYPtFowgK6DdTgraZqTPG8Sc2nbID0PIk'
     OAUTH_FILE = ''
-    if debug:
-        print 'INFO: Executing oauth_login() method ... '
-        print 'INFO: Checking operating system : ', platform.system()
+    debug_print('Executing oauth_login() method ... ')
+    debug_print(' Checking operating system : '+ platform.system())
 
     #Check on which operating system is the script running
     if platform.system() == 'Windows':
@@ -36,8 +33,7 @@ def oauth_login():
     try:
         oauth_token, oauth_token_secret = read_token_file(OAUTH_FILE)
     except Exception, e:
-        if debug:
-            print "INFO: IOError: File ", OAUTH_FILE, "not found!"
+            debug_print("IOError: File " + OAUTH_FILE + "not found!")
             logger.error('Failed to open file', exc_info=True)
     else:
         #Check if the reading from the file has been successful and try to authorize with that access token
@@ -47,8 +43,7 @@ def oauth_login():
             except Exception, e:
                 logger.error('Failed request', exc_info=True)
             else:
-                if debug:
-                    print "INFO: Read Access Token from file"
+                debug_print("Read Access Token from file")
                 twitter_api = twitter.Twitter(auth=oauth)
                 return twitter_api
         #The access token isn't in the file so try to obtain him
@@ -63,9 +58,8 @@ def oauth_login():
             except Exception, e:
                 logger.error('Failed request', exc_info=True)
             else:
-                if debug:
-                    print "INFO: GET ACCESS_KEY = '%s'" % auth.access_token.key
-                    print "INFO: GET ACCESS_SECRET = '%s'" % auth.access_token.secret
+                debug_print("GET ACCESS_KEY = " + auth.access_token.key)
+                debug_print("GET ACCESS_SECRET = " + auth.access_token.secret)
                 ACCESS_KEY = auth.access_token.key
                 ACCESS_SECRET = auth.access_token.secret
                 write_token_file(OAUTH_FILE, ACCESS_KEY, ACCESS_SECRET)

@@ -1,57 +1,22 @@
-import logging
-import os
-import platform
-import sys
+import datetime,json,time
 import pymongo
 import datetime
-import json
-import sys
+from debugging_setup import setup_logging, debug_print
 
 
 
 #to print info messages debug must be true!
 debug = True
-logger = logging.getLogger(__name__)
-
-def debug_print(message):
-    """
-    Prints messages if the debug variable is set to true
-    :param message: message to be printed
-    :return: none
-    """""
-    if debug:
-        print >> sys.stderr, "INFO: ", message
-        print >> sys.stderr.flush()
-
-def setup_logging():
-    """
-    Initializing the logging system used to write errors to a log file
-    """
-   #ceating a file handler
-    #logger.level(logging.INFO)
-    if platform.system() == 'Windows':
-        LOG_FILE = os.path.expanduser("C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/error.log").replace("\\", "/")
-    elif platform.system() == 'Linux':
-        LOG_FILE = os.path.abspath(os.path.expanduser("~/twitterAnalyzer/CrawlingModule/Resources/error.log"))
-    handler = logging.FileHandler(LOG_FILE)
-    handler.setLevel(logging.ERROR)
-
-    # create a logging format
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-    # add the handlers to the logger
-    logger.addHandler(handler)
-
-
-#setup the logger with proper handler
-setup_logging()
+logger = setup_logging()
 
 
 def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
     """
-    Storing nontrivial amounts of JSON data from Twitter API with indexing included.
+    Saves only one tweet at a time. The iteration part should be implemented in the method calling
+    this one
+    :parameter data should contain json file with only one tweet
     """
-    debug_print("Executing save_to_mongo() method ...")
+    #debug_print("Executing save_to_mongo() method ...")
     # Connects to the MongoDB server running on
     # localhost:27017 by default
     client = pymongo.MongoClient(**mongo_conn_kw)
@@ -64,14 +29,13 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
     #oll.create_index("recent_retweets")
     coll.ensure_index([("id",1)],unique=True)
     coll.ensure_index("hashtags.text")
-    for d in data:
-        #debug_print(json.dumps(d, d, indent=1))
-        date = d[u'created_at']
-        date = datetime.datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
-        #debug_print("DATE : " + str(date))
-        d["DATE"] = unicode(date)
-        #debug_print(json.dumps(d, indent=1))
-        break
+
+    date = data['created_at']
+    date = datetime.datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
+    #debug_print("DATE : " + str(date))
+    data["DATE"] = unicode(date)
+    #debug_print(json.dumps(d, indent=1))
+    #break
     coll.ensure_index("DATE")
     try:
         status = coll.insert(data)
@@ -103,7 +67,6 @@ def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None,
         result = coll.find_one({"$query": {}, "$orderby": {"id": -1}}, {"id": 1})
        # print result[u'id']
         return result[u'id']
-
     else:
         if criteria is None:
             criteria = {}

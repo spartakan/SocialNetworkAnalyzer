@@ -1,24 +1,33 @@
-import json
-import platform
-import logging
-import os
-import sys
+import json,platform,logging,os,sys
 from authorization import oauth_login
-from search_tweets import twitter_search, save_to_mongo, harvest_user_timeline, load_from_mongo, save_time_series_data, get_and_save_tweets_form_stream_api,twitter_trends
+from search_tweets import twitter_search, harvest_user_timeline, save_time_series_data, get_and_save_tweets_form_stream_api,twitter_trends
 from functools import partial
+from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
+from AnalysisModule.analyze_tweets import  get_common_tweet_entities, extract_tweet_entities,print_prettytable
 
 logger = logging.getLogger(__name__)
 #to print info messages debug must be true!
 debug = True
 
+
+def debug_print(message):
+    """
+    Prints messages if the debug variable is set to true
+    :param message: message to be printed
+    :return: none
+    """""
+    if debug:
+        print >> sys.stderr, "INFO: ", message
+        print >> sys.stderr.flush()
+
 def setup_logging():
     """
     Initializing the logging system used to write errors to a log file
     """
-    #ceating a file handler
+   #ceating a file handler
     #logger.level(logging.INFO)
     if platform.system() == 'Windows':
-        LOG_FILE = os.path.expanduser("H:/twitterAnalyzer/CrawlingModule/Resources/error.log").replace("\\", "/")
+        LOG_FILE = os.path.expanduser("C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/error.log").replace("\\", "/")
     elif platform.system() == 'Linux':
         LOG_FILE = os.path.abspath(os.path.expanduser("~/twitterAnalyzer/CrawlingModule/Resources/error.log"))
     handler = logging.FileHandler(LOG_FILE)
@@ -48,6 +57,8 @@ def main():
             print "5. Search & save tweets from the streaming api"
             print "6. Load tweets from the database for a specific query"
             print "7. Get tweets for specific user account"
+            print "8. Analyze entities"
+            print "9. Print analysis with pretty table"
             action = raw_input('Enter the number of the action: ').strip()
         WORLD_WOE_ID = 1
         if action == '1':
@@ -114,6 +125,14 @@ def main():
                     print "INFO: Getting tweets from user: ", screen_name, " ... "
                 tweets = harvest_user_timeline(api, screen_name="SocialWebMining", max_results=200)
                 save_to_mongo(tweets, "twitter", screen_name)
+        elif action == '8':
+                results = load_from_mongo("twitter","#indyref")
+                get_common_tweet_entities(results)
+        elif action == '9':
+                results = load_from_mongo("twitter","#indyref")
+                common_entities = get_common_tweet_entities(results)
+                print_prettytable(common_entities)
+
         else:
             print "WRONG ACTION!!!"
     else:

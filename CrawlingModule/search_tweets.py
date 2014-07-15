@@ -1,17 +1,8 @@
-import logging
-import os
-import platform
-import pymongo
-import datetime
-import json
-import time
-import sys
-import twitter
-import urllib2
+import logging,os,platform,datetime,json,time,sys,twitter,urllib2
 from urllib2 import URLError
 from httplib import BadStatusLine
 from functools import partial
-from datetime import date
+from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
 
 #to print info messages debug must be true!
 debug = True
@@ -29,14 +20,12 @@ def debug_print(message):
 
 def setup_logging():
     """
-    Setting the logging level(logging.ERROR), file, and format in which the errors will be written to a log file,
-     to the handler used to write everything in the file
-
+    Initializing the logging system used to write errors to a log file
     """
-    #ceating a file handler
+   #ceating a file handler
     #logger.level(logging.INFO)
     if platform.system() == 'Windows':
-        LOG_FILE = os.path.expanduser("H:/twitterAnalyzer/CrawlingModule/Resources/error.log").replace("\\", "/")
+        LOG_FILE = os.path.expanduser("C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/error.log").replace("\\", "/")
     elif platform.system() == 'Linux':
         LOG_FILE = os.path.abspath(os.path.expanduser("~/twitterAnalyzer/CrawlingModule/Resources/error.log"))
     handler = logging.FileHandler(LOG_FILE)
@@ -47,7 +36,6 @@ def setup_logging():
     handler.setFormatter(formatter)
     # add the handlers to the logger
     logger.addHandler(handler)
-
 
 #setup the logger with proper handler
 setup_logging()
@@ -146,10 +134,9 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
     #Get a collection of relevant Tweets matching a specified query
 
     try:
-        twitter_search_api_tweets = partial(twitter_api.search.tweets, q=q, count=100, **kw)
+        twitter_search_api_tweets = partial(twitter_api.search.tweets, q=q, count=180, **kw)
         search_results = make_twitter_request(twitter_search_api_tweets)
-        statuses = search_results['statuses']
-        debug_print("number of statuses: " + str(len(statuses)) + " max_limit: " + str(max_results))
+
     #Handle rate limit
     except urllib2.HTTPError, e:
             if e.e.code == 429 or e.e.code == 420: #rate limit reached
@@ -164,8 +151,9 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
                 print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
                 sys.stderr.flush()
                 time.sleep(60*15 + 10)
+    statuses = search_results['statuses']
+    debug_print("number of statuses: " + str(len(statuses)) + " max_limit: " + str(max_results))
 
-    # Iterate through batches of results by following the cursor until we
     # reach the desired number of results, keeping in mind that OAuth users
     # can "only" make 180 search queries per 15-minute interval. See
     # https://dev.twitter.com/docs/rate-limiting/1.1/limits
@@ -173,100 +161,36 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
     # that number of results may not exist for all queries.
     # Enforce a reasonable limit
     max_results = min(1000, max_results)
+
     print >> sys.stderr, search_results
     # Iterate through more batches of results by following the cursor
     while True:
+        debug_print('*** START LOOP ***')
         try:
             next_results = search_results['search_metadata']['next_results']
         except KeyError, e:
-            logger.error('Failed to find attribute '
-                         + '(WARRNING: might throw this exception '
-                         + 'for some results while searching in the loop)'
-                         , exc_info=True)
+            logger.error('Failed to find attribute ', exc_info=True)
+            debug_print("BREAK: next_results: " + str(len(search_results['statuses'])))
             break
         debug_print("results: " + next_results)
-        debug_print("num of results: " + str(len(next_results)))
         kwargs = dict([kv.split('=') for kv in next_results[1:].split("&")])
+        kwargs['result_type'] = "recent"
         debug_print("kwargs: "+str(kwargs))
         twitter_search_api_tweets = partial(twitter_api.search.tweets, **kwargs)
         search_results = make_twitter_request(twitter_search_api_tweets)
+        debug_print("number of statuses: " + str(len(search_results['statuses'])))
         statuses += search_results['statuses']
+        debug_print("B: length statuses: " + str(len(statuses)))
+        #print json.dumps(search_results,indent=1)
+        #break
         if len(statuses) > max_results:
-            break
+           debug_print("BREAK: statuses: " +  str(len(statuses)))
+           break
     if statuses:
+        debug_print(('Saving %d statsus')%len(statuses))
         save_to_mongo(statuses, "twitter", q)
 
 
-
-
-def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
-    """
-    Storing nontrivial amounts of JSON data from Twitter API with indexing included.
-    """
-    debug_print("Executing save_to_mongo() method ...")
-
-
-    # Connects to the MongoDB server running on
-    # localhost:27017 by default
-    client = pymongo.MongoClient(**mongo_conn_kw)
-
-    # Get a reference to a particular database
-    db = client[mongo_db]
-
-    # Reference a particular collection in the database
-    coll = db[mongo_db_coll]
-    #oll.create_index("recent_retweets")
-    coll.create_index("id")
-    #coll.create_index("DATE")
-    coll.create_index("hashtags.text")
-    coll.create_index("retweeted")
-    for d in data:
-        #debug_print(json.dumps(d, d, indent=1))
-        date = d[u'created_at']
-        date = datetime.datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
-        debug_print("DATE : " + str(date))
-        d["DATE"] = unicode(date)
-        #debug_print(json.dumps(d, indent=1))
-        break
-    return coll.insert(data)
-
-
-
-
-def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None, projection=None, find_since_id=False, **mongo_conn_kw):
-    """
-    Loads data from the specific database and the specific collection by the chosen criteria
-    :param mongo_db
-    :param mongo_db_coll
-    :param return_cursor
-    :param criteria
-    :param projection
-    :param mongo_conn_kw
-    """
-    # Optionally, use criteria and projection to limit the data that is
-    # returned as documented in
-    # http://docs.mongodb.org/manual/reference/method/db.collection.find/
-
-    client = pymongo.MongoClient(**mongo_conn_kw)
-    db = client[mongo_db]
-    coll = db[mongo_db_coll]
-    if find_since_id:
-        result = coll.find_one({"$query": {}, "$orderby": {"id": -1}}, {"id": 1})
-       # print result[u'id']
-        return result[u'id']
-
-    else:
-        if criteria is None:
-            criteria = {}
-        if projection is None:
-            cursor = coll.find(criteria)
-        else:
-            cursor = coll.find(criteria, projection)
-            # Returning a cursor is recommended for large amounts of data
-        if return_cursor:
-            return cursor
-        else:
-            return [item for item in cursor]
 
 
 

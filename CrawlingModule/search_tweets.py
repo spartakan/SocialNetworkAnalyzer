@@ -60,7 +60,7 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
     while True:
         try:
             return twitter_api_func(*args, **kw)
-        except twitter.TwitterHTTPError, e:
+        except twitter.api.TwitterHTTPError, e:
             logger.error(e)
             error_count = 0
             wait_period = handle_twitter_http_error(e, wait_period)
@@ -223,25 +223,26 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
             since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
             debug_print(" since_id: "+ str(since_id))
             kw = {'since_id': since_id}
-            make_twitter_request(twitter_stream, **kw)
+
 
             if e.e.code == 429 or e.e.code == 420:
                 logger.error(e)
                 print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
                 sys.stderr.flush()
                 time.sleep(60*15 + 10)
+                make_twitter_request(twitter_stream, **kw)
             elif e.e.code == 104:
                 logger.error(e)
                 debug_print(e.message)
                 time.sleep(0.02)
                 make_twitter_request(twitter_stream, **kw)
-
-    # See https://dev.twitter.com/docs/streaming-apis
-    stream = twitter_stream.statuses.filter(track=q)
-    if stream:
-        for tweet in stream:
-            #print json.dumps(tweet, indent=1)
-            save_to_mongo(tweet, "twitter", q)
+    else:
+        # See https://dev.twitter.com/docs/streaming-apis
+        stream = twitter_stream.statuses.filter(track=q)
+        if stream:
+            for tweet in stream:
+                #print json.dumps(tweet, indent=1)
+                save_to_mongo(tweet, "twitter", q)
 
 
 

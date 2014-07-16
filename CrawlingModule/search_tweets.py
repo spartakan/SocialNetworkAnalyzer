@@ -1,7 +1,9 @@
-import logging,datetime,json,time,sys,twitter,urllib2
+import logging,datetime,json,time,sys,twitter,urllib2, platform,os
 from urllib2 import URLError
 from httplib import BadStatusLine
 from functools import partial
+if platform.system() == 'Linux':
+    sys.path.insert(0,os.path.abspath("/home/sd/twitterAnalyzer"))
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
 from debugging_setup import setup_logging, debug_print
 

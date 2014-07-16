@@ -1,6 +1,9 @@
 import datetime,json,time
 import pymongo
 import datetime
+import sys,platform,os
+if platform.system() == 'Linux':
+    sys.path.insert(0,os.path.abspath("/home/sd/twitterAnalyzer"))
 from debugging_setup import setup_logging, debug_print
 
 

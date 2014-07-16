@@ -217,7 +217,7 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
     try:
 
         twitter_stream = make_twitter_request(twitter_stream)
-    except (urllib2.HTTPError, SocketError), e:
+    except (urllib2.HTTPError, SocketError,twitter.api.TwitterHTTPError), e:
             logger.error(e)
             #find the highest since_id from database to continue if a rate limitation is reached
             since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)

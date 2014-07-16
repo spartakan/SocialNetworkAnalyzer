@@ -18,6 +18,7 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
     for 401 and 404 errors, which requires special handling by the caller.
     USED in: all functions that make a call to the twitter api
     """
+    print "vlaga u requesr"
 
     def handle_twitter_http_error(e, wait_period=2, sleep_when_rate_limited=True):
         if wait_period > 3600: # Seconds
@@ -34,7 +35,8 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
             logger.error(e)
             return None
         elif e.e.code == 420:
-            print >> sys.stderr, 'Encountered 420 Error (Rate Limit Exceeded)'
+
+            print  'Encountered 420 Error (Rate Limit Exceeded)'
             logger.error(e)
             if sleep_when_rate_limited:
                 print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
@@ -59,14 +61,17 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
     error_count = 0
     while True:
         try:
+            print "vlaga 2 except vo gornata"
             return twitter_api_func(*args, **kw)
-        except twitter.api.TwitterHTTPError, e:
+        except twitter.TwitterHTTPError, e:
+            print "FAKAAAAAAA - - - -  -1"
             logger.error(e)
             error_count = 0
             wait_period = handle_twitter_http_error(e, wait_period)
             if wait_period is None:
                 return
         except URLError, e:
+            print "FAKAAAAAAA - - - -  -1"
             logger.error(e)
             error_count += 1
             print >> sys.stderr, "URLError encountered. Continuing."
@@ -215,27 +220,22 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
 
     twitter_stream = partial(twitter.TwitterStream, auth=twitter_api.auth)
     try:
-
-        twitter_stream = make_twitter_request(twitter_stream)
-    except (urllib2.HTTPError, SocketError,twitter.api.TwitterHTTPError), e:
+            print "try: twitter_stream"
+            twitter_stream = make_twitter_request(twitter_stream)
+    except (urllib2.HTTPError, SocketError,twitter_api.TwitterHTTPError, Exception), e:
+            print "vraka Exception :",e
             logger.error(e)
             #find the highest since_id from database to continue if a rate limitation is reached
             since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
             debug_print(" since_id: "+ str(since_id))
             kw = {'since_id': since_id}
 
+            logger.error(e)
+            print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
+            sys.stderr.flush()
+            time.sleep(60*15 + 10)
+            make_twitter_request(twitter_stream, **kw)
 
-            if e.e.code == 429 or e.e.code == 420:
-                logger.error(e)
-                print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
-                sys.stderr.flush()
-                time.sleep(60*15 + 10)
-                make_twitter_request(twitter_stream, **kw)
-            elif e.e.code == 104:
-                logger.error(e)
-                debug_print(e.message)
-                time.sleep(0.02)
-                make_twitter_request(twitter_stream, **kw)
     else:
         # See https://dev.twitter.com/docs/streaming-apis
         stream = twitter_stream.statuses.filter(track=q)

@@ -26,7 +26,7 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
     # Reference a particular collection in the database
     coll = db[mongo_db_coll]
     #oll.create_index("recent_retweets")
-    coll.ensure_index([("id",1)],unique=True)
+    coll.ensure_index([("id", 1)], unique=True)
     coll.ensure_index("hashtags.text")
 
     date = data['created_at']
@@ -38,7 +38,7 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
     coll.ensure_index("DATE")
     try:
         status = coll.insert(data)
-    except Exception,e :
+    except Exception, e:
         pass
     else:
         return status

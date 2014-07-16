@@ -4,7 +4,7 @@ import os
 import sys
 import platform
 if platform.system() == 'Linux':
-    sys.path.insert(0,os.path.abspath("/home/sd/twitterAnalyzer"))
+    sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from twitter.oauth import read_token_file, write_token_file
 print sys.path
 from debugging_setup import setup_logging, debug_print

@@ -1,4 +1,5 @@
-import logging,datetime,json,time,sys,twitter,urllib2, platform,os
+import logging,datetime,json,time,sys,twitter
+import urllib2, platform, os
 from urllib2 import URLError
 from httplib import BadStatusLine
 from functools import partial
@@ -52,7 +53,7 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
     while True:
         try:
             return twitter_api_func(*args, **kw)
-        except twitter.api.TwitterHTTPError, e:
+        except twitter.TwitterHTTPError, e:
             error_count = 0
             wait_period = handle_twitter_http_error(e, wait_period)
             if wait_period is None:
@@ -167,8 +168,8 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
 
 def save_time_series_data(api_func, mongo_db_name, mongo_db_coll, secs_per_interval=60, max_intervals=15, **mongo_conn_kw):
     """
-    On every 15 seconds executes an api function that makes a call to the Twitter api.
-    This way it prevents reaching the api's rate limit.
+    Executes an api function on a given time-interval if no immediate results are needed.
+    Usually needed for checking trending topics.
     :param api_func
     :param mongo_db_name
     :param mongo_db_coll
@@ -201,8 +202,28 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
     without needing to worry about polling or REST API rate limits.
     For preventing HTTP errors a robust API wrapper is added
     """
+
     twitter_stream = partial(twitter.TwitterStream, auth=twitter_api.auth)
-    twitter_stream = make_twitter_request(twitter_stream)
+    try:
+
+        twitter_stream = make_twitter_request(twitter_stream)
+    except urllib2.HTTPError, e:
+            if e.code == 429 or e.code == 420:
+                 #find the highest since_id from database to continue if a rate limitation is reached
+                since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
+                if since_id:
+                    debug_print(" since_id: "+ str(since_id))
+                    kw = {'since_id': since_id}
+                    make_twitter_request(twitter_stream, **kw)
+                else:
+                    print "No since_id"
+                print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
+                sys.stderr.flush()
+                time.sleep(60*15 + 10)
+            elif e.code == 104:
+                debug_print(e.message)
+                time.sleep(0.02)
+
     # See https://dev.twitter.com/docs/streaming-apis
     stream = twitter_stream.statuses.filter(track=q)
     for tweet in stream:

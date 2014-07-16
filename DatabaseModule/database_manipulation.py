@@ -54,6 +54,7 @@ def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None,
     :param criteria
     :param projection
     :param mongo_conn_kw
+    :param find_since_id determines whether to return just the highest since_id from the collection or whether all documents should be returned
     """
     # Optionally, use criteria and projection to limit the data that is
     # returned as documented in

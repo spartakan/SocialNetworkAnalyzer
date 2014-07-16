@@ -320,3 +320,31 @@ Traceback (most recent call last):
   File "C:\Users\Windows\Desktop\twitterAnalyzer\CrawlingModule\search_tweets.py", line 137, in twitter_search
     next_results = search_results['search_metadata']['next_results']
 KeyError: 'next_results'
+2014-07-16 10:18:47,489 - debugging_setup - ERROR - Failed to open file
+Traceback (most recent call last):
+  File "H:\twitterAnalyzer\CrawlingModule\authorization.py", line 34, in oauth_login
+    oauth_token, oauth_token_secret = read_token_file(OAUTH_FILE)
+  File "C:\Python27\lib\site-packages\twitter\oauth.py", line 74, in read_token_file
+    f = open(filename)
+IOError: [Errno 2] No such file or directory: 'C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt'
+2014-07-16 10:18:47,489 - debugging_setup - ERROR - Failed to open file
+Traceback (most recent call last):
+  File "H:\twitterAnalyzer\CrawlingModule\authorization.py", line 34, in oauth_login
+    oauth_token, oauth_token_secret = read_token_file(OAUTH_FILE)
+  File "C:\Python27\lib\site-packages\twitter\oauth.py", line 74, in read_token_file
+    f = open(filename)
+IOError: [Errno 2] No such file or directory: 'C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt'
+2014-07-16 10:18:47,489 - debugging_setup - ERROR - Failed to open file
+Traceback (most recent call last):
+  File "H:\twitterAnalyzer\CrawlingModule\authorization.py", line 34, in oauth_login
+    oauth_token, oauth_token_secret = read_token_file(OAUTH_FILE)
+  File "C:\Python27\lib\site-packages\twitter\oauth.py", line 74, in read_token_file
+    f = open(filename)
+IOError: [Errno 2] No such file or directory: 'C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt'
+2014-07-16 10:18:47,489 - debugging_setup - ERROR - Failed to open file
+Traceback (most recent call last):
+  File "H:\twitterAnalyzer\CrawlingModule\authorization.py", line 34, in oauth_login
+    oauth_token, oauth_token_secret = read_token_file(OAUTH_FILE)
+  File "C:\Python27\lib\site-packages\twitter\oauth.py", line 74, in read_token_file
+    f = open(filename)
+IOError: [Errno 2] No such file or directory: 'C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt'

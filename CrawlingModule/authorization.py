@@ -25,7 +25,7 @@ def oauth_login():
 
     #Check on which operating system is the script running
     if platform.system() == 'Windows':
-        OAUTH_FILE = os.path.expanduser("C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt").replace("\\", "/")
+        OAUTH_FILE = os.path.expanduser("H:/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt").replace("\\", "/")
     elif platform.system() == 'Linux':
         OAUTH_FILE = os.path.abspath(os.path.expanduser("~/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt"))
 

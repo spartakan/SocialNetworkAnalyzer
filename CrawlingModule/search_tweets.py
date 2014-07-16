@@ -30,8 +30,8 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
         elif e.e.code == 404:
             print >> sys.stderr, 'Encountered 404 Error (Not Found)'
             return None
-        elif e.e.code == 429:
-            print >> sys.stderr, 'Encountered 429 Error (Rate Limit Exceeded)'
+        elif e.e.code == 420:
+            print >> sys.stderr, 'Encountered 420 Error (Rate Limit Exceeded)'
             if sleep_when_rate_limited:
                 print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
                 sys.stderr.flush()

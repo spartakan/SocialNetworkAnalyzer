@@ -38,8 +38,8 @@
       <file leaf-file-name="search_tweets.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/CrawlingModule/search_tweets.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="4.4736843" vertical-offset="624" max-vertical-offset="4528">
-              <caret line="209" column="12" selection-start-line="209" selection-start-column="12" selection-end-line="209" selection-end-column="12" />
+            <state vertical-scroll-proportion="0.47368422" vertical-offset="240" max-vertical-offset="4528">
+              <caret line="33" column="49" selection-start-line="33" selection-start-column="49" selection-end-line="33" selection-end-column="49" />
               <folding>
                 <element signature="e#0#45#0" expanded="true" />
               </folding>
@@ -835,8 +835,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/CrawlingModule/search_tweets.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="4.4736843" vertical-offset="624" max-vertical-offset="4528">
-          <caret line="209" column="12" selection-start-line="209" selection-start-column="12" selection-end-line="209" selection-end-column="12" />
+        <state vertical-scroll-proportion="0.47368422" vertical-offset="240" max-vertical-offset="4528">
+          <caret line="33" column="49" selection-start-line="33" selection-start-column="49" selection-end-line="33" selection-end-column="49" />
           <folding>
             <element signature="e#0#45#0" expanded="true" />
           </folding>

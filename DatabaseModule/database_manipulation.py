@@ -3,10 +3,6 @@ import pymongo
 import datetime
 from debugging_setup import setup_logging, debug_print
 
-
-
-#to print info messages debug must be true!
-debug = True
 logger = setup_logging()
 
 

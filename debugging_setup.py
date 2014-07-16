@@ -1,7 +1,10 @@
-import sys,os,platform,logging
+import sys
+import os
+import platform
+import logging
 
 logger = logging.getLogger(__name__)
-def debug_print(message,debug = True):
+def debug_print(message, debug=True):
     """
     Prints messages if the debug variable is set to true
     :param message: message to be printed

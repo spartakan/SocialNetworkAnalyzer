@@ -1,9 +1,9 @@
 import tweepy
 import twitter
-import os
+import os,sys
 import platform
 from twitter.oauth import read_token_file, write_token_file
-
+print sys.path
 from debugging_setup import setup_logging, debug_print
 
 

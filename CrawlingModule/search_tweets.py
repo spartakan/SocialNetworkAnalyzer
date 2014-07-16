@@ -208,27 +208,27 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
 
         twitter_stream = make_twitter_request(twitter_stream)
     except urllib2.HTTPError, e:
+            #find the highest since_id from database to continue if a rate limitation is reached
+            since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
+            debug_print(" since_id: "+ str(since_id))
+            kw = {'since_id': since_id}
+            make_twitter_request(twitter_stream, **kw)
+
             if e.code == 429 or e.code == 420:
-                 #find the highest since_id from database to continue if a rate limitation is reached
-                since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
-                if since_id:
-                    debug_print(" since_id: "+ str(since_id))
-                    kw = {'since_id': since_id}
-                    make_twitter_request(twitter_stream, **kw)
-                else:
-                    print "No since_id"
                 print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
                 sys.stderr.flush()
                 time.sleep(60*15 + 10)
             elif e.code == 104:
                 debug_print(e.message)
                 time.sleep(0.02)
+                make_twitter_request(twitter_stream, **kw)
 
     # See https://dev.twitter.com/docs/streaming-apis
     stream = twitter_stream.statuses.filter(track=q)
-    for tweet in stream:
-        #print json.dumps(tweet, indent=1)
-        save_to_mongo(tweet, "twitter", q)
+    if stream:
+        for tweet in stream:
+            #print json.dumps(tweet, indent=1)
+            save_to_mongo(tweet, "twitter", q)
 
 
 

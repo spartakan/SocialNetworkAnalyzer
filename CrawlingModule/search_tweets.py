@@ -7,7 +7,7 @@ if platform.system() == 'Linux':
     sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
 from debugging_setup import setup_logging, debug_print
-
+from socket import error as SocketError
 logger = setup_logging()
 
 
@@ -207,7 +207,7 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
     try:
 
         twitter_stream = make_twitter_request(twitter_stream)
-    except urllib2.HTTPError, e:
+    except (urllib2.HTTPError, SocketError), e:
             #find the highest since_id from database to continue if a rate limitation is reached
             since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
             debug_print(" since_id: "+ str(since_id))

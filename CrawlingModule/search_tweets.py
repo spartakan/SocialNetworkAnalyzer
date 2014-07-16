@@ -22,26 +22,33 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
     def handle_twitter_http_error(e, wait_period=2, sleep_when_rate_limited=True):
         if wait_period > 3600: # Seconds
             print >> sys.stderr, 'Too many retries. Quitting.'
+            logger.error(e)
             raise e
         # See https://dev.twitter.com/docs/error-codes-responses for common codes
         if e.e.code == 401:
             print >> sys.stderr, 'Encountered 401 Error (Not Authorized)'
+            logger.error(e)
             return None
         elif e.e.code == 404:
             print >> sys.stderr, 'Encountered 404 Error (Not Found)'
+            logger.error(e)
             return None
         elif e.e.code == 420:
             print >> sys.stderr, 'Encountered 420 Error (Rate Limit Exceeded)'
+            logger.error(e)
             if sleep_when_rate_limited:
                 print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
+                logger.error(e)
                 sys.stderr.flush()
                 time.sleep(60*15 + 5)
                 print >> sys.stderr, '...ZzZ...Awake now and trying again.'
+                logger.error(e)
                 return 2
             else:
                 raise e # Caller must handle the rate limiting issue
         elif e.e.code in (500, 502, 503, 504, 104):  #104 is for socket error : connection reset by peer
             print >> sys.stderr, 'Encountered %i Error. Retrying in %i seconds' % (e.e.code, wait_period)
+            logger.error(e)
             time.sleep(wait_period)
             wait_period *= 1.5
             return wait_period
@@ -54,17 +61,20 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
         try:
             return twitter_api_func(*args, **kw)
         except twitter.TwitterHTTPError, e:
+            logger.error(e)
             error_count = 0
             wait_period = handle_twitter_http_error(e, wait_period)
             if wait_period is None:
                 return
         except URLError, e:
+            logger.error(e)
             error_count += 1
             print >> sys.stderr, "URLError encountered. Continuing."
             if error_count > max_errors:
                 print >> sys.stderr, "Too many consecutive errors...bailing out."
                 raise
         except BadStatusLine, e:
+            logger.error(e)
             error_count += 1
             print >> sys.stderr, "BadStatusLine encountered. Continuing."
             if error_count > max_errors:
@@ -208,17 +218,20 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
 
         twitter_stream = make_twitter_request(twitter_stream)
     except (urllib2.HTTPError, SocketError), e:
+            logger.error(e)
             #find the highest since_id from database to continue if a rate limitation is reached
             since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
             debug_print(" since_id: "+ str(since_id))
             kw = {'since_id': since_id}
             make_twitter_request(twitter_stream, **kw)
 
-            if e.code == 429 or e.code == 420:
+            if e.e.code == 429 or e.e.code == 420:
+                logger.error(e)
                 print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
                 sys.stderr.flush()
                 time.sleep(60*15 + 10)
-            elif e.code == 104:
+            elif e.e.code == 104:
+                logger.error(e)
                 debug_print(e.message)
                 time.sleep(0.02)
                 make_twitter_request(twitter_stream, **kw)

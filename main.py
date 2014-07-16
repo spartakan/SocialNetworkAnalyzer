@@ -1,4 +1,8 @@
-
+import os
+import sys
+import platform
+if platform.system() == 'Linux':
+    sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from CrawlingModule.authorization import oauth_login
 from CrawlingModule.search_tweets import twitter_search, harvest_user_timeline, save_time_series_data, get_and_save_tweets_form_stream_api,twitter_trends
 from functools import partial

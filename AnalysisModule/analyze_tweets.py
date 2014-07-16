@@ -1,18 +1,13 @@
-import logging,os,sys,platform,re
+import logging, os, sys, platform, re
+if platform.system() == 'Linux':
+    sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from collections import Counter
 from prettytable import PrettyTable
 from debugging_setup import setup_logging, debug_print
 
-logger = logging.getLogger(__name__)
 
-def debug_print(message):
-    """
-    Prints messages if the debug variable is set to true
-    :param message: message to be printed
-    :return: none
-    """""
 #setup the logger with proper handler
-setup_logging()
+logger = setup_logging()
 
 
 def extract_tweet_entities(statuses):

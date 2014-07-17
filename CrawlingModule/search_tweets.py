@@ -225,10 +225,9 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
 
     twitter_stream = partial(twitter.TwitterStream, auth=twitter_api.auth)
     try:
-            print "try: twitter_stream"
             twitter_stream = make_twitter_request(twitter_stream)
-    except (urllib2.HTTPError, SocketError,twitter_api.TwitterHTTPError, Exception), e:
-            print "vraka Exception :",e
+    except (urllib2.HTTPError, SocketError, twitter_api.TwitterHTTPError, SocketError), e:
+            print "vraka Exception :", e.message
             logger.error(e)
             #find the highest since_id from database to continue if a rate limitation is reached
             since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)

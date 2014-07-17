@@ -368,3 +368,33 @@ IOError: [Errno 2] No such file or directory: 'C:/Users/Windows/Desktop/twitterA
 2014-07-16 15:34:34,375 - debugging_setup - ERROR - make_twitter_request() takes at least 2 arguments (1 given)
 2014-07-16 15:34:34,375 - debugging_setup - ERROR - make_twitter_request() takes at least 2 arguments (1 given)
 2014-07-16 15:34:34,375 - debugging_setup - ERROR - make_twitter_request() takes at least 2 arguments (1 given)
+2014-07-17 11:11:31,516 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=16706171336428854057&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405591890&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=DWWRFO%2BU3buP7VOdQjRef4wEsw8%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:11:31,516 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=16706171336428854057&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405591890&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=DWWRFO%2BU3buP7VOdQjRef4wEsw8%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:11:31,516 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=16706171336428854057&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405591890&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=DWWRFO%2BU3buP7VOdQjRef4wEsw8%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:11:31,516 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=16706171336428854057&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405591890&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=DWWRFO%2BU3buP7VOdQjRef4wEsw8%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:11:31,516 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=16706171336428854057&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405591890&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=DWWRFO%2BU3buP7VOdQjRef4wEsw8%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:11:31,757 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=16706171336428854057&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405591890&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=DWWRFO%2BU3buP7VOdQjRef4wEsw8%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:11:31,757 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=16706171336428854057&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405591890&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=DWWRFO%2BU3buP7VOdQjRef4wEsw8%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:11:31,757 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=16706171336428854057&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405591890&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=DWWRFO%2BU3buP7VOdQjRef4wEsw8%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:11:31,757 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=16706171336428854057&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405591890&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=DWWRFO%2BU3buP7VOdQjRef4wEsw8%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:11:31,757 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=16706171336428854057&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405591890&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=DWWRFO%2BU3buP7VOdQjRef4wEsw8%3D)
+details: Exceeded connection limit for user
+

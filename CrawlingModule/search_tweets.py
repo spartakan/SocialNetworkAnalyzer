@@ -18,7 +18,6 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
     for 401 and 404 errors, which requires special handling by the caller.
     USED in: all functions that make a call to the twitter api
     """
-    print "vlaga u requesr"
 
     def handle_twitter_http_error(e, wait_period=2, sleep_when_rate_limited=True):
         if wait_period > 3600: # Seconds
@@ -61,17 +60,14 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
     error_count = 0
     while True:
         try:
-            print "vlaga 2 except vo gornata"
             return twitter_api_func(*args, **kw)
         except twitter.TwitterHTTPError, e:
-            print "FAKAAAAAAA - - - -  -1"
             logger.error(e)
             error_count = 0
             wait_period = handle_twitter_http_error(e, wait_period)
             if wait_period is None:
                 return
         except URLError, e:
-            print "FAKAAAAAAA - - - -  -1"
             logger.error(e)
             error_count += 1
             print >> sys.stderr, "URLError encountered. Continuing."
@@ -124,18 +120,27 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
 
     #Handle rate limit
     except urllib2.HTTPError, e:
-            if e.e.code == 429 or e.e.code == 420: #rate limit reached
-                 #find the highest since_id from database to continue if a rate limitation is reached
-                since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
-                if since_id:
-                    debug_print(" since_id: "+ str(since_id))
-                    kw = {'since_id': since_id}
-                    twitter_search(twitter_api, q, **kw)
-                else:
-                    print "No since_id"
-                print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
-                sys.stderr.flush()
-                time.sleep(60*15 + 10)
+        if e.e.code == 429 or e.e.code == 420: #rate limit reached
+             #find the highest since_id from database to continue if a rate limitation is reached
+            since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
+            if since_id:
+                debug_print(" since_id: "+ str(since_id))
+                kw = {'since_id': since_id}
+                twitter_search(twitter_api, q, **kw)
+            else:
+                print "No since_id"
+            print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
+            sys.stderr.flush()
+            time.sleep(60*15 + 10)
+    except SocketError, se:
+        logger.error(se)
+        debug_print("--" + se.message )
+        since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
+        time.sleep(0.05)
+        if since_id:
+            kw = {'since_id': since_id}
+            twitter_search(twitter_api, q, **kw)
+
     statuses = search_results['statuses']
     debug_print("number of statuses: " + str(len(statuses)) + " max_limit: " + str(max_results))
 

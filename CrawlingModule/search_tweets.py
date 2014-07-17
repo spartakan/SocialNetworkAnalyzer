@@ -234,14 +234,15 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
             logger.error(e)
             #find the highest since_id from database to continue if a rate limitation is reached
             since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
-            debug_print(" since_id: "+ str(since_id))
+            debug_print(" since_id: "+ str(since_id + 1))
             kw = {'since_id': since_id}
 
             logger.error(e)
             print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
             sys.stderr.flush()
-            time.sleep(60*15 + 10)
-            make_twitter_request(twitter_stream, **kw)
+            time.sleep(30*1 + 10)
+            twitter_stream = make_twitter_request(twitter_stream, **kw)
+            stream = twitter_stream.statuses.filter(track=q)
 
     else:
         print "stream api method: no exceptions "

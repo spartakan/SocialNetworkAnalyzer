@@ -5,7 +5,7 @@ import sys,platform,os
 if platform.system() == 'Linux':
     sys.path.insert(0,os.path.abspath("/home/sd/twitterAnalyzer"))
 from debugging_setup import setup_logging, debug_print
-
+from pymongo.errors import DuplicateKeyError
 logger = setup_logging()
 
 
@@ -26,19 +26,22 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
     # Reference a particular collection in the database
     coll = db[mongo_db_coll]
     #oll.create_index("recent_retweets")
-    coll.ensure_index([("id", 1)], unique=True)
-    coll.ensure_index("hashtags.text")
+    try:
+        coll.ensure_index([("id", 1)], unique=True)
+        coll.ensure_index("hashtags.text")
 
-    date = data['created_at']
-    date = datetime.datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
-    #debug_print("DATE : " + str(date))
-    data["DATE"] = unicode(date)
-    #debug_print(json.dumps(d, indent=1))
-    #break
-    coll.ensure_index("DATE")
+        date = data['created_at']
+        date = datetime.datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
+        #debug_print("DATE : " + str(date))
+        data["DATE"] = unicode(date)
+        #debug_print(json.dumps(d, indent=1))
+        #break
+        coll.ensure_index("DATE")
+    except (Exception, DuplicateKeyError), e:
+        pass
     try:
         status = coll.insert(data)
-    except Exception, e:
+    except (Exception, DuplicateKeyError), e:
         pass
     else:
         return status

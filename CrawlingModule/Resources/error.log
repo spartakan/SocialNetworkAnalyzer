@@ -398,3 +398,33 @@ details: Exceeded connection limit for user
 2014-07-17 11:11:31,757 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=16706171336428854057&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405591890&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=DWWRFO%2BU3buP7VOdQjRef4wEsw8%3D)
 details: Exceeded connection limit for user
 
+2014-07-17 11:26:42,282 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=1713467855528881627&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405592801&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=488696057984200704&oauth_signature=QfQloDPMVZNiDCGW917zlByFKfY%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:26:42,282 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=1713467855528881627&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405592801&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=488696057984200704&oauth_signature=QfQloDPMVZNiDCGW917zlByFKfY%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:26:42,282 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=1713467855528881627&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405592801&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=488696057984200704&oauth_signature=QfQloDPMVZNiDCGW917zlByFKfY%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:26:42,282 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=1713467855528881627&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405592801&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=488696057984200704&oauth_signature=QfQloDPMVZNiDCGW917zlByFKfY%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:26:42,282 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=1713467855528881627&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405592801&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=488696057984200704&oauth_signature=QfQloDPMVZNiDCGW917zlByFKfY%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:26:42,288 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=1713467855528881627&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405592801&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=488696057984200704&oauth_signature=QfQloDPMVZNiDCGW917zlByFKfY%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:26:42,288 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=1713467855528881627&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405592801&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=488696057984200704&oauth_signature=QfQloDPMVZNiDCGW917zlByFKfY%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:26:42,288 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=1713467855528881627&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405592801&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=488696057984200704&oauth_signature=QfQloDPMVZNiDCGW917zlByFKfY%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:26:42,288 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=1713467855528881627&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405592801&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=488696057984200704&oauth_signature=QfQloDPMVZNiDCGW917zlByFKfY%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:26:42,288 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=1713467855528881627&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405592801&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=488696057984200704&oauth_signature=QfQloDPMVZNiDCGW917zlByFKfY%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+

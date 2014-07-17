@@ -35,7 +35,6 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
             logger.error(e.message)
             return None
         elif e.e.code == 420:
-
             print  'Encountered 420 Error (Rate Limit Exceeded)'
             logger.error(e)
             if sleep_when_rate_limited:
@@ -63,7 +62,7 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
     while True:
         try:
             return twitter_api_func(*args, **kw)
-        except twitter.TwitterHTTPError, e:
+        except TwitterHTTPError, e:
             logger.error(e.message)
             error_count = 0
             wait_period = handle_twitter_http_error(e, wait_period)
@@ -122,7 +121,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
 
     #Handle rate limit
     except urllib2.HTTPError, e:
-        if e.e.code == 429 or e.e.code == 420: #rate limit reached
+        if e.e.code == 429 : #rate limit reached TODO: handle this error  inside methods 
              #find the highest since_id from database to continue if a rate limitation is reached
             since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
             if since_id:
@@ -238,9 +237,9 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
             kw = {'since_id': since_id}
 
             logger.error(e)
-            print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
+            print >> sys.stderr, "Retrying in 5 minutes...ZzZ..."
             sys.stderr.flush()
-            time.sleep(30*1 + 10)
+            time.sleep(60*5 + 10)
             twitter_stream = make_twitter_request(twitter_stream, **kw)
             stream = twitter_stream.statuses.filter(track=q)
 

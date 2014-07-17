@@ -428,3 +428,93 @@ details: Unknown URL. See Twitter Streaming API documentation at http://dev.twit
 2014-07-17 11:26:42,288 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=1713467855528881627&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405592801&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=488696057984200704&oauth_signature=QfQloDPMVZNiDCGW917zlByFKfY%3D)
 details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
 
+2014-07-17 11:45:20,704 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=3194904056782592299&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405593919&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=Lt%2Fr2%2BIfWx%2FhF2UHIxot6Zag5cM%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:45:20,704 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=3194904056782592299&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405593919&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=Lt%2Fr2%2BIfWx%2FhF2UHIxot6Zag5cM%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:45:20,704 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=3194904056782592299&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405593919&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=Lt%2Fr2%2BIfWx%2FhF2UHIxot6Zag5cM%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:45:20,704 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=3194904056782592299&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405593919&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=Lt%2Fr2%2BIfWx%2FhF2UHIxot6Zag5cM%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:45:20,704 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=3194904056782592299&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405593919&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=Lt%2Fr2%2BIfWx%2FhF2UHIxot6Zag5cM%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:45:20,904 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=3194904056782592299&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405593919&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=Lt%2Fr2%2BIfWx%2FhF2UHIxot6Zag5cM%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:45:20,904 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=3194904056782592299&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405593919&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=Lt%2Fr2%2BIfWx%2FhF2UHIxot6Zag5cM%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:45:20,904 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=3194904056782592299&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405593919&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=Lt%2Fr2%2BIfWx%2FhF2UHIxot6Zag5cM%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:45:20,904 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=3194904056782592299&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405593919&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=Lt%2Fr2%2BIfWx%2FhF2UHIxot6Zag5cM%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:45:20,904 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=3194904056782592299&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405593919&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=Lt%2Fr2%2BIfWx%2FhF2UHIxot6Zag5cM%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:50:31,470 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=13753145646574352750&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594230&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=489723013672091648&oauth_signature=hDAgTWfpoD1XS4Ilag%2FJHS3oGSQ%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:50:31,470 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=13753145646574352750&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594230&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=489723013672091648&oauth_signature=hDAgTWfpoD1XS4Ilag%2FJHS3oGSQ%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:50:31,470 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=13753145646574352750&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594230&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=489723013672091648&oauth_signature=hDAgTWfpoD1XS4Ilag%2FJHS3oGSQ%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:50:31,470 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=13753145646574352750&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594230&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=489723013672091648&oauth_signature=hDAgTWfpoD1XS4Ilag%2FJHS3oGSQ%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:50:31,470 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=13753145646574352750&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594230&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=489723013672091648&oauth_signature=hDAgTWfpoD1XS4Ilag%2FJHS3oGSQ%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:50:31,476 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=13753145646574352750&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594230&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=489723013672091648&oauth_signature=hDAgTWfpoD1XS4Ilag%2FJHS3oGSQ%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:50:31,476 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=13753145646574352750&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594230&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=489723013672091648&oauth_signature=hDAgTWfpoD1XS4Ilag%2FJHS3oGSQ%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:50:31,476 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=13753145646574352750&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594230&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=489723013672091648&oauth_signature=hDAgTWfpoD1XS4Ilag%2FJHS3oGSQ%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:50:31,476 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=13753145646574352750&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594230&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=489723013672091648&oauth_signature=hDAgTWfpoD1XS4Ilag%2FJHS3oGSQ%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:50:31,476 - debugging_setup - ERROR - Twitter sent status 404 for URL: 1.1.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=13753145646574352750&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594230&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&since_id=489723013672091648&oauth_signature=hDAgTWfpoD1XS4Ilag%2FJHS3oGSQ%3D)
+details: Unknown URL. See Twitter Streaming API documentation at http://dev.twitter.com/pages/streaming_api
+
+2014-07-17 11:57:12,760 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=17810385255608638377&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594631&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=u4JnriXyMKHjtnQMDZdCeq0tSIE%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:57:12,760 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=17810385255608638377&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594631&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=u4JnriXyMKHjtnQMDZdCeq0tSIE%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:57:12,760 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=17810385255608638377&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594631&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=u4JnriXyMKHjtnQMDZdCeq0tSIE%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:57:12,760 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=17810385255608638377&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594631&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=u4JnriXyMKHjtnQMDZdCeq0tSIE%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:57:12,760 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=17810385255608638377&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594631&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=u4JnriXyMKHjtnQMDZdCeq0tSIE%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:57:12,979 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=17810385255608638377&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594631&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=u4JnriXyMKHjtnQMDZdCeq0tSIE%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:57:12,979 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=17810385255608638377&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594631&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=u4JnriXyMKHjtnQMDZdCeq0tSIE%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:57:12,979 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=17810385255608638377&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594631&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=u4JnriXyMKHjtnQMDZdCeq0tSIE%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:57:12,979 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=17810385255608638377&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594631&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=u4JnriXyMKHjtnQMDZdCeq0tSIE%3D)
+details: Exceeded connection limit for user
+
+2014-07-17 11:57:12,979 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=17810385255608638377&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594631&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=u4JnriXyMKHjtnQMDZdCeq0tSIE%3D)
+details: Exceeded connection limit for user
+

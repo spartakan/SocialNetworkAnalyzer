@@ -121,7 +121,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
 
     #Handle rate limit
     except urllib2.HTTPError, e:
-        if e.e.code == 429 : #rate limit reached TODO: handle this error  inside methods 
+        if e.e.code == 429 : #rate limit reached TODO: handle this error  inside methods
              #find the highest since_id from database to continue if a rate limitation is reached
             since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
             if since_id:

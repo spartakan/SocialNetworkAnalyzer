@@ -518,3 +518,53 @@ details: Exceeded connection limit for user
 2014-07-17 11:57:12,979 - debugging_setup - ERROR - Twitter sent status 420 for URL: 1.1/statuses/filter.json using parameters: (oauth_consumer_key=hiXJndRNsYmzrpI9CWmeCJ3r5&oauth_nonce=17810385255608638377&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1405594631&oauth_token=1153865756-6OznbRyM7ybgxmRTnTSKlzRBrJcmf9OCYqzmaaq&oauth_version=1.0&track=%23indyref&oauth_signature=u4JnriXyMKHjtnQMDZdCeq0tSIE%3D)
 details: Exceeded connection limit for user
 
+2014-07-23 16:03:03,049 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "H:\twitterAnalyzer\CrawlingModule\search_tweets.py", line 161, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-23 16:03:03,049 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "H:\twitterAnalyzer\CrawlingModule\search_tweets.py", line 161, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-23 16:03:03,049 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "H:\twitterAnalyzer\CrawlingModule\search_tweets.py", line 161, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-23 16:03:03,049 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "H:\twitterAnalyzer\CrawlingModule\search_tweets.py", line 161, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-23 16:03:03,049 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "H:\twitterAnalyzer\CrawlingModule\search_tweets.py", line 161, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-23 16:03:37,048 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "H:\twitterAnalyzer\CrawlingModule\search_tweets.py", line 161, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-23 16:03:37,048 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "H:\twitterAnalyzer\CrawlingModule\search_tweets.py", line 161, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-23 16:03:37,048 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "H:\twitterAnalyzer\CrawlingModule\search_tweets.py", line 161, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-23 16:03:37,048 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "H:\twitterAnalyzer\CrawlingModule\search_tweets.py", line 161, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'
+2014-07-23 16:03:37,048 - debugging_setup - ERROR - Failed to find attribute 
+Traceback (most recent call last):
+  File "H:\twitterAnalyzer\CrawlingModule\search_tweets.py", line 161, in twitter_search
+    next_results = search_results['search_metadata']['next_results']
+KeyError: 'next_results'

@@ -230,13 +230,13 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
             stream = twitter_stream.statuses.filter(track=q)
     except (urllib2.HTTPError, SocketError, TwitterHTTPError, SocketError), e:
             print "stream api method : Exception :", e.message
-            logger.error(e)
             #find the highest since_id from database to continue if a rate limitation is reached
             since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
             debug_print(" since_id: "+ str(since_id + 1))
             kw = {'since_id': since_id}
 
             logger.error(e)
+            debug_print(e)
             print >> sys.stderr, "Retrying in 5 minutes...ZzZ..."
             sys.stderr.flush()
             time.sleep(60*5 + 10)
@@ -290,7 +290,7 @@ def harvest_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
         # Necessary for traversing the timeline in Twitter's v1.1 API:
         # get the next query's max-id parameter to pass in.
         # See https://dev.twitter.com/docs/working-with-timelines.
-        kw['max_id'] = min([tweet['id'] for tweet in tweets]) - 1
+        kw['kw'] = min([tweet['id'] for tweet in tweets]) - 1
         tweets = make_twitter_request(twitter_api.statuses.user_timeline, **kw)
         results += tweets
         print >> sys.stderr, 'Fetched %i tweets' % (len(tweets))

@@ -38,10 +38,14 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
         #break
         coll.ensure_index("DATE")
     except (Exception, DuplicateKeyError), e:
+        debug_print(e)
+        logger.error(e)
         pass
     try:
         status = coll.insert(data)
     except (Exception, DuplicateKeyError), e:
+        debug_print(e)
+        logger.error(e)
         pass
     else:
         return status

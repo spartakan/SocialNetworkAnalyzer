@@ -14,8 +14,8 @@ import twitter
 
 
 
-def get_list_memebers(twitter_api,max_results=1000, slug="FollowLater-Macedonia",owner_screen_name="@BalkanBabes"):
-    debug_print("1. Executing get list members ...")
+def get_list_memebers(twitter_api, max_results=1000, slug="FollowLater-Macedonia", owner_screen_name="@BalkanBabes"):
+    debug_print("Getting tweets from list members: Exec get_list_members method ...")
 
     #get all the statuses for a specific list and its owner without retweets
     #response = twitter_api.lists.statuses(owner_screen_name = "@spartakan", slug="community-councils",
@@ -26,7 +26,7 @@ def get_list_memebers(twitter_api,max_results=1000, slug="FollowLater-Macedonia"
     if since_id is None:
         since_id = 1
 
-    debug_print("2. Getting since_id from db: "+str(since_id))
+    debug_print("1. Getting since_id from db: "+str(since_id))
     kw = {
         'count': 100,
         'since_id': since_id,
@@ -39,7 +39,7 @@ def get_list_memebers(twitter_api,max_results=1000, slug="FollowLater-Macedonia"
     if response is None:
         response = []
 
-    debug_print("3. First response len : "+str(len(response)))
+    debug_print("2. First response len : "+str(len(response)))
     results = response
     #print json.dumps(response,indent=1)
     page_num = 1
@@ -48,16 +48,16 @@ def get_list_memebers(twitter_api,max_results=1000, slug="FollowLater-Macedonia"
     if max_results == kw['count']:
         page_num = max_pages # Prevent loop entry
 
-    #find all new tweets after the last response
+    #find all new tweets after the first response
     while page_num < max_pages and len(response) > 0 and len(results) < max_results:
         kw['max_id'] = min([tweet['id'] for tweet in response]) - 1
         response = twitter_api.lists.statuses(owner_screen_name=owner_screen_name, slug=slug, **kw)
         results += response
-        debug_print(str(page_num+3)+". All results len : "+str(len(results)) + " |  New response len : "+str(len(response)))
+        debug_print(str(page_num+2)+". All results len : "+str(len(results)) + " |  New response len : "+str(len(response)))
         page_num += 1
 
     #Saving all results to database
     for tweet in results:
         #print json.dumps(tweet, indent=1)
         save_to_mongo(tweet, "twitter", slug)
-    debug_print(str(page_num+3)+". All Results are saved in database")
+    debug_print(str(page_num+2)+". All Results are saved in database")

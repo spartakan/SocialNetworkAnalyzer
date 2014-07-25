@@ -15,7 +15,7 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
     this one
     :parameter data should contain json file with only one tweet
     """
-    #debug_print("Executing save_to_mongo() method ...")
+    #debug_print("Saving to database: exec save_to_mongo() method ...")
     # Connects to the MongoDB server running on
     # localhost:27017 by default
     client = pymongo.MongoClient(**mongo_conn_kw)

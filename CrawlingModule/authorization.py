@@ -24,9 +24,8 @@ def oauth_login():
     CONSUMER_KEY = 'hiXJndRNsYmzrpI9CWmeCJ3r5'
     CONSUMER_SECRET = 'pEs9mzbqeYwl2Ax9OtYPtFowgK6DdTgraZqTPG8Sc2nbID0PIk'
     OAUTH_FILE = ''
-    debug_print('Executing oauth_login() method ... ')
-    debug_print(' Checking operating system : '+ platform.system())
-
+    debug_print('Authorizing : exec of Oauth_login method ... ')
+    debug_print('Checking operating system : '+ platform.system())
     #Check on which operating system is the script running
     if platform.system() == 'Windows':
         OAUTH_FILE = os.path.expanduser("H:/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt").replace("\\", "/")
@@ -47,7 +46,7 @@ def oauth_login():
             except Exception, e:
                 logger.error('Failed request', exc_info=True)
             else:
-                debug_print("Read Access Token from file")
+                debug_print("Reading Access Token from file ...")
                 twitter_api = twitter.Twitter(auth=oauth)
                 return twitter_api
         #The access token isn't in the file so try to obtain him

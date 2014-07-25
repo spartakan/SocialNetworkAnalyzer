@@ -290,7 +290,7 @@ def harvest_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
         # Necessary for traversing the timeline in Twitter's v1.1 API:
         # get the next query's max-id parameter to pass in.
         # See https://dev.twitter.com/docs/working-with-timelines.
-        kw['kw'] = min([tweet['id'] for tweet in tweets]) - 1
+        kw['max_id'] = min([tweet['id'] for tweet in tweets]) - 1
         tweets = make_twitter_request(twitter_api.statuses.user_timeline, **kw)
         results += tweets
         print >> sys.stderr, 'Fetched %i tweets' % (len(tweets))

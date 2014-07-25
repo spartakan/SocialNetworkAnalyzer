@@ -11,7 +11,7 @@ def debug_print(message, debug=True):
     :return: none
     """""
     if debug:
-        print >> sys.stderr, "INFO: ", message
+        print >> sys.stderr, "INFO| ", message
         print >> sys.stderr.flush()
 
 def setup_logging():

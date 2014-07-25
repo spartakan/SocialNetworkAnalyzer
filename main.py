@@ -1,11 +1,13 @@
-import os
-import sys
-import platform
-if platform.system() == 'Linux':
-    sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
+
 from CrawlingModule.authorization import oauth_login
 from CrawlingModule.search_tweets import twitter_search, harvest_user_timeline, save_time_series_data, get_and_save_tweets_form_stream_api,twitter_trends
+from CrawlingModule.get_list import get_list_memebers
 from functools import partial
+import sys
+import platform
+import os
+if platform.system() == 'Linux':
+    sys.path.insert(0,os.path.abspath("/home/sd/twitterAnalyzer"))
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
 from AnalysisModule.analyze_tweets import get_common_tweet_entities,extract_tweet_entities,print_prettytable
 from debugging_setup import setup_logging, debug_print
@@ -22,6 +24,7 @@ def main():
             print "Type the number of the action you want to be executed: "
             print "1. Find the trending topics in the world"
             print "2. Search & save trending topics on 15 seconds"
+            print "3. Get list members"
             print "4. Search & save tweets for a specific query"
             print "5. Search & save tweets from the streaming api"
             print "7. Get tweets for specific user account"
@@ -45,7 +48,8 @@ def main():
             trending_topics = partial(twitter_trends, api, WORLD_WOE_ID)
             #get and save the trending topics
             save_time_series_data(trending_topics, 'twitter', '#trends')
-
+        elif action == '3':
+            get_list_memebers(api)
         elif action == '4' or action == '5' :
             q = None
             print "Read How to build a query first ! ( https://dev.twitter.com/docs/using-search )  "

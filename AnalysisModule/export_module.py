@@ -24,3 +24,20 @@ for tweet in tweets:
 print G.nodes(data=True)
 print(G.number_of_nodes())
 #nx.write_gml(G,"c:/mongodb/test.gml")
+
+def create_keyplayers_graph(user_id, followers_ids):
+    debug_print("Creating a graph to find key players : exec - create_keyplayers_graph method ...")
+    G=nx.Graph()
+    #add the main user
+    G.add_node(user_id)
+    for id in followers_ids:
+        G.add_node(id)
+    print "nodes:"
+    print G.nodes()
+    print("num of nodes: "+str(G.number_of_nodes()))
+
+    for id in followers_ids:
+        G.add_edge(user_id, id)
+    print G.edges()
+    print "num of edges: ", G.number_of_edges()
+    nx.write_gml(G, "c:/data/graph_followers.gml")

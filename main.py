@@ -10,10 +10,10 @@ if platform.system() == 'Linux':
     sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
 from AnalysisModule.analyze_tweets import get_common_tweet_entities,extract_tweet_entities,print_prettytable
-from AnalysisModule.export_module import create_keyplayers_graph
+from AnalysisModule.export_module import create_keyplayers_graph,export_graph_to_gml
 from debugging_setup import setup_logging, debug_print
 from CrawlingModule.get_friends_followers import get_friends_followers_ids
-
+import networkx as nx
 def main():
     api = oauth_login()
     setup_logging()
@@ -93,6 +93,7 @@ def main():
                 common_entities = get_common_tweet_entities(results)
                 print_prettytable(common_entities)
         elif action == '10':
+            graph = nx.Graph()
             members = get_list_members(api)
             for member in members[:10]:
                 friends_ids, followers_ids = get_friends_followers_ids(api,
@@ -103,7 +104,18 @@ def main():
                 print friends_ids
                 print followers_ids
                 print "mem id : ", member['id']
-                create_keyplayers_graph(member['id'], followers_ids)
+               # create_keyplayers_graph(graph=graph,member['id'], followers_ids)
+        elif action == '11':
+                graph = nx.Graph()
+                members = get_list_members(api)
+                for member in members[:10]:
+                    followers = get_friends_followers_ids(api,
+                                                                        screen_name=member['screen_name'],
+                                                                        friends_limit=10,
+                                                                        followers_limit=10)
+                    graph = create_keyplayers_graph(graph=graph,user=member, followers=followers)
+                export_graph_to_gml(graph)
+
         else:
             print "WRONG ACTION!!!"
     else:

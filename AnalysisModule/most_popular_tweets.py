@@ -6,7 +6,7 @@ from debugging_setup import debug_print
 
 print "Execution 1"
 
-def find_popular_tweets(retweet_threshold=3):
+def find_popular_tweets(statuses, tweeshold=3):
     """ You could also consider using the favorite_count parameter as part of
         this heuristic, possibly using it to provide an additional boost to
         popular tweets in a ranked formulation  """
@@ -24,7 +24,5 @@ def find_popular_tweets(retweet_threshold=3):
         print " "
         print tweet['text'], " [  weight  :  ", weight, " ]"
 
-        if weight > retweet_threshold:
-            print "valid tweet : ", tweet['_id']
 
 find_popular_tweets()

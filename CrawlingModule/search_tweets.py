@@ -22,7 +22,7 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
     for 401 and 404 errors, which requires special handling by the caller.
     USED in: all functions that make a call to the twitter api
     """
-
+    debug_print('EXEC make_twitter_request method : ')
     def handle_twitter_http_error(e, wait_period=2, sleep_when_rate_limited=True):
         if wait_period > 3600: # Seconds
             print >> sys.stderr, 'Too many retries. Quitting.'
@@ -97,6 +97,7 @@ def twitter_trends(twitter_api, woe_id):
     # Prefix ID with the underscore for query string parameterization.
     # Without the underscore, the twitter package appends the ID value
     # to the URL itself as a special-case keyword argument.
+    debug_print('EXEC twitter_trends method : ')
     twitter_api_trends = partial(twitter_api.trends.place, _id=woe_id)
     make_twitter_request(twitter_api_trends)
     return make_twitter_request(twitter_api_trends)
@@ -115,7 +116,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
      :param kw
      """
 
-    debug_print('Executing twitter_search() method ...  ')
+    debug_print('EXEC twitter_search method : ')
     #Get a collection of relevant Tweets matching a specified query
 
     try:
@@ -130,26 +131,27 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
             if since_id:
                 debug_print(" since_id: "+ str(since_id))
                 kw = {'since_id': since_id}
-                twitter_search(twitter_api, q, **kw)
             else:
-                print "No since_id"
-            print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
+                debug_print("  No since_id")
+            debug_print("  Retrying in 15 minutes...ZzZ...")
             sys.stderr.flush()
             time.sleep(60*15 + 10)
+            debug_print("  Woke up ...")
             twitter_search(twitter_api, q, **kw)
 
     except SocketError, se:
         logger.error(se)
-        debug_print("--" + se.message)
+        debug_print("  " + se.message)
         since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
-        debug_print("Retrying in 0.05 sec ...ZzZ...")
+        debug_print("  Retrying in 0.05 sec ...ZzZ...")
         time.sleep(0.05)
+        debug_print("  Woke up ...")
         if since_id:
             kw = {'since_id': since_id}
         twitter_search(twitter_api, q, **kw)
 
     statuses = search_results['statuses']
-    debug_print("number of statuses: " + str(len(statuses)) + " max_limit: " + str(max_results))
+    debug_print("  number of statuses: " + str(len(statuses)) + " max_limit: " + str(max_results))
 
     # reach the desired number of results, keeping in mind that OAuth users
     # can "only" make 180 search queries per 15-minute interval. See
@@ -167,7 +169,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
             next_results = search_results['search_metadata']['next_results']
         except KeyError, e:
             logger.error('Failed to find attribute ', exc_info=True)
-            debug_print("BREAK: next_results: " + str(len(search_results['statuses'])))
+            debug_print("  BREAK: next_results: " + str(len(search_results['statuses'])))
             break
         debug_print("results: " + next_results)
         kwargs = dict([kv.split('=') for kv in next_results[1:].split("&")])
@@ -175,16 +177,15 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
         debug_print("kwargs: "+str(kwargs))
         twitter_search_api_tweets = partial(twitter_api.search.tweets, **kwargs)
         search_results = make_twitter_request(twitter_search_api_tweets)
-        debug_print("number of statuses: " + str(len(search_results['statuses'])))
+        debug_print("  number of statuses: " + str(len(search_results['statuses'])))
         statuses += search_results['statuses']
-        debug_print("B: length statuses: " + str(len(statuses)))
         #print json.dumps(search_results,indent=1)
         #break
         if len(statuses) > max_results:
-           debug_print("BREAK: statuses: " +  str(len(statuses)))
+           debug_print("  BREAK: statuses: " +  str(len(statuses)))
            break
     if statuses:
-        debug_print(('Saving %d statsus')%len(statuses))
+        debug_print(('  Saving %d statsus')%len(statuses))
     for tweet in statuses:
         #print json.dumps(tweet, indent=1)
         save_to_mongo(tweet, "twitter", q)
@@ -204,6 +205,7 @@ def save_time_series_data(api_func, mongo_db_name, mongo_db_coll, secs_per_inter
     :param max_intervals
     :param mongo_conn_kw
     """
+    debug_print('EXEC save_time_series_data method : ')
     # Default settings of 15 intervals and 1 API call per interval ensure that
     # you will not exceed the Twitter rate limit.
     interval = 0
@@ -229,28 +231,29 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
     without needing to worry about polling or REST API rate limits.
     For preventing HTTP errors a robust API wrapper is added
     """
-
+    debug_print('EXEC get_and_save_tweets_form_stream_api method : ')
     twitter_stream = partial(twitter.TwitterStream, auth=twitter_api.auth)
     try:
             twitter_stream = make_twitter_request(twitter_stream)
             stream = twitter_stream.statuses.filter(track=q)
     except (urllib2.HTTPError, SocketError, TwitterHTTPError, SocketError), e:
-            print "stream api method : Exception :", e.message
+            debug_print("  " + e.message)
             #find the highest since_id from database to continue if a rate limitation is reached
             since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
-            debug_print(" since_id: "+ str(since_id + 1))
+            debug_print(" since_id: " + str(since_id + 1))
             kw = {'since_id': since_id}
 
             logger.error(e)
             debug_print(e)
-            print >> sys.stderr, "Retrying in 5 minutes...ZzZ..."
+            debug_print("  Retrying in 5 minutes...ZzZ...")
             sys.stderr.flush()
             time.sleep(60*5 + 10)
+            debug_print("  Woke up ...")
             twitter_stream = make_twitter_request(twitter_stream, **kw)
             stream = twitter_stream.statuses.filter(track=q)
 
     else:
-        print "stream api method: no exceptions "
+        debug_print("  No exceptions ")
         # See https://dev.twitter.com/docs/streaming-apis
 
         if stream:
@@ -265,6 +268,7 @@ def harvest_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
     Harvest all of user's most recent tweets. Number of retrieved tweets can grow to 3,200
     so a robust API wrapper is added
     """
+    debug_print('EXEC harvest_user_timeline method : ')
     assert (screen_name != None) != (user_id != None), \
         "Must have screen_name or user_id, but not both"
 
@@ -286,7 +290,7 @@ def harvest_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
         tweets = []
 
     results += tweets
-    print >> sys.stderr, 'Fetched %i tweets' % len(tweets)
+    debug_print('  Fetched %i tweets' + str(len(tweets)))
     page_num = 1
 
     if max_results == kw['count']:
@@ -299,7 +303,7 @@ def harvest_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
         kw['max_id'] = min([tweet['id'] for tweet in tweets]) - 1
         tweets = make_twitter_request(twitter_api.statuses.user_timeline, **kw)
         results += tweets
-        print >> sys.stderr, 'Fetched %i tweets' % (len(tweets))
+        debug_print('  Fetched %i tweets' + str(len(tweets)))
         page_num += 1
-    print >> sys.stderr, 'Done fetching tweets'
+    debug_print('  Done fetching tweets')
     return results[:max_results]

@@ -37,16 +37,17 @@ def create_keyplayers_graph(graph, user, followers):
     for follower in followers:
         graph.add_node(follower['id'], screen_name=follower['screen_name'])
     #debug_print("nodes : " + graph.nodes())
-    debug_print("num of nodes: "+str(graph.number_of_nodes()))
+    debug_print("  num of nodes: "+str(graph.number_of_nodes()))
 
     #add edges
     for follower in followers:
         #directed from follower -> to user
         graph.add_edge(follower['id'], user['id'])
     #debug_print("edges : " + graph.edges())
-    debug_print("num of edges: " + str(graph.number_of_edges()))
+    debug_print("  num of edges: " + str(graph.number_of_edges()))
     return graph
 
 
 def export_graph_to_gml(graph):
+    debug_print("EXEC - export_graph_to_gml method :")
     nx.write_gml(graph, "c:/data/graph_followers2.gml")

@@ -84,7 +84,7 @@ def get_list_memebers(twitter_api, owner_screen_name="spartakan", slug="communit
             sys.stderr.flush()
             debug_print("  Rate limit reached . Retrying in 15 min ...zZz...")
             logger.error(e)
-            time.sleep(60*1 + 10)
+            time.sleep(60*15 + 10)
             debug_print("  Woke up ... ")
             debug_print("  cursor after waking up: "+str(cursor))
     return members

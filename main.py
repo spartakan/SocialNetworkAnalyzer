@@ -33,7 +33,7 @@ def main():
             print "7. Get tweets for specific user account"
             print "8. Analyze entities"
             print "9. Print analysis with pretty table"
-            print "10. find friends and followers"
+            print "11. find  followers of list members"
             action = raw_input('Enter the number of the action: ').strip()
         WORLD_WOE_ID = 1
         if action == '0':
@@ -93,27 +93,16 @@ def main():
                 common_entities = get_common_tweet_entities(results)
                 print_prettytable(common_entities)
         elif action == '10':
-            graph = nx.Graph()
-            members = get_list_members(api)
-            for member in members[:10]:
-                friends_ids, followers_ids = get_friends_followers_ids(api,
-                                                                    screen_name=member['screen_name'],
-                                                                    friends_limit=10,
-                                                                    followers_limit=10)
-
-                print friends_ids
-                print followers_ids
-                print "mem id : ", member['id']
-               # create_keyplayers_graph(graph=graph,member['id'], followers_ids)
+            print ""
         elif action == '11':
                 graph = nx.Graph()
                 members = get_list_members(api)
-                for member in members[:10]:
-                    followers = get_friends_followers_ids(api,
-                                                                        screen_name=member['screen_name'],
+                for member in members[:2]:
+                    print member['screen_name']
+                    followers = get_friends_followers_ids(api, screen_name=member['screen_name'],
                                                                         friends_limit=10,
-                                                                        followers_limit=10)
-                    graph = create_keyplayers_graph(graph=graph,user=member, followers=followers)
+                                                                        followers_limit=15)
+                    graph = create_keyplayers_graph(graph=graph, user=member, followers=followers)
                 export_graph_to_gml(graph)
 
         else:

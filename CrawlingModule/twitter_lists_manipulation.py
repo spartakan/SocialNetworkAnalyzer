@@ -15,7 +15,7 @@ import twitter
 
 
 def get_tweets_form_list_members(twitter_api, max_results=1000, slug="FollowLater-Macedonia", owner_screen_name="@BalkanBabes"):
-    debug_print("Getting tweets from list members: Exec get_tweets_form_list_members method ...")
+    debug_print("EXEC get_tweets_form_list_members method :")
 
     #get all the statuses for a specific list and its owner without retweets
     #response = twitter_api.lists.statuses(owner_screen_name = "@spartakan", slug="community-councils",
@@ -64,7 +64,7 @@ def get_tweets_form_list_members(twitter_api, max_results=1000, slug="FollowLate
     debug_print("4. All Results are saved in database")
 
 def get_list_members(twitter_api, owner_screen_name="@spartakan", slug="community-councils"):
-
+    debug_print("EXEC get_list_members method :")
     response = twitter_api.lists.members(owner_screen_name = owner_screen_name, slug=slug)
     #print(json.dumps(members, indent=1))
     next_cursor = response['next_cursor']

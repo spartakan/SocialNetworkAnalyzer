@@ -1,10 +1,14 @@
 from functools import partial
 from sys import maxint
-import sys
+import sys, os, platform
+if platform.system() == 'Linux':
+    sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
+from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
+from debugging_setup import debug_print
 
 def get_friends_followers_ids(twitter_api, screen_name=None, user_id=None,
                               friends_limit=maxint, followers_limit=maxint):
-
+    debug_print("EXEC get_friends_followers_ids method :")
     # Must have either screen_name or user_id (logical xor)
     assert (screen_name != None) != (user_id != None), \
     "Must have screen_name or user_id, but not both"
@@ -51,5 +55,16 @@ def get_friends_followers_ids(twitter_api, screen_name=None, user_id=None,
     # # Do something useful with the IDs, like store them to disk...
     # return friends_ids[:friends_limit], followers_ids[:followers_limit]
 
-    followers = partial(twitter_api.followers, count=100)
+    #get the whole json object for each user
+    get_followers = partial(twitter_api.followers.list, count=followers_limit)
+    cursor = -1
+    followers = []
+    while cursor != 0:
+        response = get_followers(screen_name=screen_name, cursor=cursor)
+        if response is not None:
+            cursor = response['next_cursor']
+            followers += response['users']
+            debug_print("num of total followers: " + str(len(followers))
+                        + " num of users from last response: " + str(len(response['users'])))
+
     return followers

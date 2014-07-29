@@ -106,7 +106,7 @@ def main():
                 for member in members[:3]:
                     followers = get_friends_followers(api, screen_name=member['screen_name'],
                                                                         friends_limit=10,
-                                                                        followers_limit=15)
+                                                                        followers_limit=100)
                     graph = create_keyplayers_graph(graph=graph, user=member, followers=followers)
                 export_graph_to_gml(graph)
         elif action == '12':

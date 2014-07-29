@@ -17,6 +17,7 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
     this one
     :parameter data should contain json file with only one tweet
     """
+    debug_print("EXEC save_to_mongo method :")
     #debug_print("Saving to database: exec save_to_mongo() method ...")
     # Connects to the MongoDB server running on
     # localhost:27017 by default
@@ -65,6 +66,7 @@ def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None,
     :param mongo_conn_kw
     :param find_since_id determines whether to return just the highest since_id from the collection or whether all documents should be returned
     """
+    debug_print("EXEC load_from_mongo method :")
     # Optionally, use criteria and projection to limit the data that is
     # returned as documented in
     # http://docs.mongodb.org/manual/reference/method/db.collection.find/

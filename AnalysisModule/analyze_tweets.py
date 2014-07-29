@@ -7,11 +7,12 @@ from debugging_setup import setup_logging, debug_print
 import logging
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
-import  collections
+
 
 def extract_tweet_entities(statuses):
-# See https://dev.twitter.com/docs/tweet-entities for more details on tweet
-# entities
+    debug_print("EXEC extract_tweet_entities method :")
+    # See https://dev.twitter.com/docs/tweet-entities for more details on tweet
+    # entities
     if len(statuses) == 0:
         return [], [], [], [], []
     screen_names = [user_mention['screen_name']
@@ -38,6 +39,7 @@ def extract_tweet_entities(statuses):
 
 
 def get_common_tweet_entities(statuses, entity_threshold=3):
+    debug_print("EXEC get_common_tweet_entities method :")
     # Create a flat list of all tweet entities
     tweet_entities = [ e
                         for status in statuses
@@ -60,17 +62,9 @@ def print_prettytable(common_entities):
 
 
 def find_popular_tweets(twitter_api, statuses, retweet_threshold=3):
-
-    # You could also consider using the favorite_count parameter as part of
-    # this  heuristic, possibly using it to provide an additional boost to
-    # popular tweets in a ranked formulation
-
-    # return [ status
-    #             for status in statuses
-    #                 if status['retweet_count'] > retweet_threshold ]
-
-    print '{0:10}  {1:10}   {2:20}   {3:20} '.format("Retweets", "Favorites", "User", "Tweet")
+    debug_print("EXEC find_popular_tweets method :")
     statuses = sort_statuses(statuses)
+    print '{0:10}  {1:10}   {2:20}   {3:20} '.format("Retweets", "Favorites", "User", "Tweet")
     for status in statuses:
         if status['retweet_count'] > retweet_threshold:
             text = status['text']
@@ -78,7 +72,9 @@ def find_popular_tweets(twitter_api, statuses, retweet_threshold=3):
             print '{0:10d}  {1:10d}   {2:20}   {3:20} '.format(status['retweet_count'], status['favorite_count'], status['user']['name'], text)
 
 
+
 def sort_statuses(statuses):
+    debug_print("EXEC sort_statuses method :")
     # sort statuses by retweets, then by favourites
     for i in range(0, len(statuses)):
         for j in range(i, len(statuses)):

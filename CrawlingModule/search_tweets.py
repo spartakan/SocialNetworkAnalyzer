@@ -240,15 +240,15 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
             debug_print("  " + e.message)
             #find the highest since_id from database to continue if a rate limitation is reached
             since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
-            debug_print(" since_id: " + str(since_id + 1))
+            debug_print(" since_id: %d " % (since_id + 1))
             kw = {'since_id': since_id}
 
             logger.error(e)
             debug_print(e)
-            debug_print("  Rate limit reached. Start:" + str(time.ctime()) + " . Retrying in 5 min ...zZz...")
+            debug_print("  Rate limit reached. Start: %s. Retrying in 5 min ...zZz..."%(str(time.ctime())))
             sys.stderr.flush()
             time.sleep(60*5 + 10)
-            debug_print("  Woke up ... End: " + str(time.ctime()))
+            debug_print("  Woke up ... End: %s" % (str(time.ctime())))
             twitter_stream = make_twitter_request(twitter_stream, **kw)
             stream = twitter_stream.statuses.filter(track=q)
 
@@ -290,7 +290,7 @@ def harvest_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
         tweets = []
 
     results += tweets
-    debug_print('  Fetched %i tweets' + str(len(tweets)))
+    debug_print('  Fetched %i tweets' % len(tweets))
     page_num = 1
 
     if max_results == kw['count']:
@@ -303,7 +303,7 @@ def harvest_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
         kw['max_id'] = min([tweet['id'] for tweet in tweets]) - 1
         tweets = make_twitter_request(twitter_api.statuses.user_timeline, **kw)
         results += tweets
-        debug_print('  Fetched %i tweets' + str(len(tweets)))
+        debug_print('  Fetched %i tweets' % (len(tweets)))
         page_num += 1
     debug_print('  Done fetching tweets')
     return results[:max_results]

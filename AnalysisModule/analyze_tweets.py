@@ -7,7 +7,7 @@ from debugging_setup import setup_logging, debug_print
 import logging
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
-
+import  collections
 
 def extract_tweet_entities(statuses):
 # See https://dev.twitter.com/docs/tweet-entities for more details on tweet
@@ -37,9 +37,6 @@ def extract_tweet_entities(statuses):
     return screen_names, hashtags, urls, media, symbols
 
 
-
-
-
 def get_common_tweet_entities(statuses, entity_threshold=3):
     # Create a flat list of all tweet entities
     tweet_entities = [ e
@@ -49,8 +46,8 @@ def get_common_tweet_entities(statuses, entity_threshold=3):
                     ]
     c = Counter(tweet_entities).most_common()
     # Compute frequencies
-    return [ (k,v)
-            for (k,v) in c
+    return [(k, v)
+            for(k, v) in c
                 if v >= entity_threshold
             ]
 
@@ -61,3 +58,33 @@ def print_prettytable(common_entities):
     pt.align['Entity'], pt.align['Count'] = 'l', 'r' # Set column alignment
     print pt
 
+
+def find_popular_tweets(twitter_api, statuses, retweet_threshold=3):
+
+    # You could also consider using the favorite_count parameter as part of
+    # this  heuristic, possibly using it to provide an additional boost to
+    # popular tweets in a ranked formulation
+
+    # return [ status
+    #             for status in statuses
+    #                 if status['retweet_count'] > retweet_threshold ]
+
+    print '{0:10}  {1:10}   {2:20}   {3:20} '.format("Retweets", "Favorites", "User", "Tweet")
+    statuses = sort_statuses(statuses)
+    for status in statuses:
+        if status['retweet_count'] > retweet_threshold:
+            text = status['text']
+            text = text.encode('latin-1', 'ignore')
+            print '{0:10d}  {1:10d}   {2:20}   {3:20} '.format(status['retweet_count'], status['favorite_count'], status['user']['name'], text)
+
+
+def sort_statuses(statuses):
+    # sort statuses by retweets, then by favourites
+    for i in range(0, len(statuses)):
+        for j in range(i, len(statuses)):
+            if statuses[i]['retweet_count'] < statuses[j]['retweet_count']:
+                statuses[i], statuses[j] = statuses[j], statuses[i]
+            elif statuses[i]['retweet_count'] == statuses[j]['retweet_count']:
+                if statuses[i]['favorite_count'] < statuses[j]['favorite_count']:
+                    statuses[i], statuses[j] = statuses[j], statuses[i]
+    return statuses

@@ -13,9 +13,9 @@ logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 
 
-def get_friends_followers_ids(twitter_api, screen_name=None, user_id=None,
+def get_friends_followers(twitter_api, screen_name=None, user_id=None,
                               friends_limit=maxint, followers_limit=maxint):
-    debug_print("EXEC get_friends_followers_ids method :")
+    debug_print("EXEC get_friends_followers method :")
     # Must have either screen_name or user_id (logical xor)
     assert (screen_name != None) != (user_id != None), \
     "Must have screen_name or user_id, but not both"
@@ -74,13 +74,13 @@ def get_friends_followers_ids(twitter_api, screen_name=None, user_id=None,
             if response is not None:
                 cursor = response['next_cursor']
                 followers += response['users']
-                debug_print("num of total followers: " + str(len(followers))
-                            + " num of users from last response: " + str(len(response['users'])))
+                debug_print("  users (last response): " + str(len(response['users'])))
+                debug_print("  total followers: " + str(len(followers)))
         except TwitterHTTPError, e:
             debug_print(e)
             sys.stderr.flush()
-            debug_print("Rate limit reached . Retrying in 15 min ...zZz...")
+            debug_print("  Rate limit reached. Start:" + str(time.ctime()) + " . Retrying in 15 min ...zZz...")
             logger.error(e)
-            time.sleep(60*1 + 10)
-            debug_print("Woke up ... ")
+            time.sleep(60*15 + 10)
+            debug_print("  Woke up ... End: " + str(time.ctime()))
     return followers

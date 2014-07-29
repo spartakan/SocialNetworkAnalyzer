@@ -41,11 +41,11 @@ def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
             print  'Encountered 420 Error (Rate Limit Exceeded)'
             logger.error(e)
             if sleep_when_rate_limited:
-                print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
+                debug_print("  Rate limit reached. Start:" + str(time.ctime()) + " . Retrying in 15 min ...zZz...")
                 logger.error(e.message)
                 sys.stderr.flush()
                 time.sleep(60*15 + 5)
-                print >> sys.stderr, '...ZzZ...Awake now and trying again.'
+                debug_print("  Woke up ... End: " + str(time.ctime()))
                 logger.error(e.message)
                 return 2
             else:
@@ -133,19 +133,19 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
                 kw = {'since_id': since_id}
             else:
                 debug_print("  No since_id")
-            debug_print("  Retrying in 15 minutes...ZzZ...")
+            debug_print("  Rate limit reached. Start:" + str(time.ctime()) + " . Retrying in 15 min ...zZz...")
             sys.stderr.flush()
             time.sleep(60*15 + 10)
-            debug_print("  Woke up ...")
+            debug_print("  Woke up ... End: " + str(time.ctime()))
             twitter_search(twitter_api, q, **kw)
 
     except SocketError, se:
         logger.error(se)
         debug_print("  " + se.message)
         since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
-        debug_print("  Retrying in 0.05 sec ...ZzZ...")
+        debug_print("  SocketError occurred. Start:" + str(time.ctime()) + " . Retrying in 0.05 sec ...zZz...")
         time.sleep(0.05)
-        debug_print("  Woke up ...")
+        debug_print("  Woke up ... End: " + str(time.ctime()))
         if since_id:
             kw = {'since_id': since_id}
         twitter_search(twitter_api, q, **kw)
@@ -245,10 +245,10 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
 
             logger.error(e)
             debug_print(e)
-            debug_print("  Retrying in 5 minutes...ZzZ...")
+            debug_print("  Rate limit reached. Start:" + str(time.ctime()) + " . Retrying in 5 min ...zZz...")
             sys.stderr.flush()
             time.sleep(60*5 + 10)
-            debug_print("  Woke up ...")
+            debug_print("  Woke up ... End: " + str(time.ctime()))
             twitter_stream = make_twitter_request(twitter_stream, **kw)
             stream = twitter_stream.statuses.filter(track=q)
 

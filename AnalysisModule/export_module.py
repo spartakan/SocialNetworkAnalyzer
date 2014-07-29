@@ -16,7 +16,7 @@ def create_graph(G):
     #get tweets from database
     criteria = {"retweet_count": {"$gt": 400}}
     projection = {"_id": 1, "retweet_count": 1, "favorite_count":1}
-    tweets = load_from_mongo("twitter","#indyref",criteria=criteria,projection=projection)
+    tweets = load_from_mongo("twitter", "#indyref" , criteria=criteria,projection=projection)
     debug_print("Printing fetched data in export_module ...")
     debug_print([tweet for tweet in tweets])
     #add all the tweets as nodes with weight determined from the number of retweets and favourites
@@ -32,17 +32,20 @@ def create_graph(G):
 
 def create_keyplayers_graph(graph, user, followers):
     debug_print("EXEC - create_keyplayers_graph method :")
-    #add the main user
+
+    #add the user who is followed as a node
     graph.add_node(user['id'], screen_name=user['screen_name'])
+
+    #add the followers as nodes
     for follower in followers:
         graph.add_node(follower['id'], screen_name=follower['screen_name'])
     #debug_print("nodes : " + graph.nodes())
     debug_print("  num of nodes: "+str(graph.number_of_nodes()))
 
-    #add edges
+    #add edges from the followers to the one who is followed
     for follower in followers:
-        #directed from follower -> to user
         graph.add_edge(follower['id'], user['id'])
+
     #debug_print("edges : " + graph.edges())
     debug_print("  num of edges: " + str(graph.number_of_edges()))
     return graph

@@ -9,11 +9,11 @@ import os
 if platform.system() == 'Linux':
     sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
-from AnalysisModule.analyze_tweets import get_common_tweet_entities,extract_tweet_entities,print_prettytable
+from AnalysisModule.analyze_tweets import get_common_tweet_entities,extract_tweet_entities,print_prettytable,find_popular_tweets
 from AnalysisModule.export_module import create_keyplayers_graph,export_graph_to_gml
 from debugging_setup import setup_logging, debug_print
-from CrawlingModule.get_friends_followers import get_friends_followers_ids
-from CrawlingModule.get_list import get_list_memebers, get_list_memebers_statuses
+from CrawlingModule.get_friends_followers import get_friends_followers
+from CrawlingModule.list_members import get_list_members, get_list_members_statuses
 import networkx as nx
 import logging
 
@@ -28,7 +28,7 @@ def main():
         action = None
         while not action:
             print "Type the number of the action you want to be executed: "
-            print "0. Find list members"
+            print "0. Save statuses from list members to database"
             print "1. Find the trending topics in the world"
             print "2. Search & save trending topics on 15 seconds"
             print "3. Get list members"
@@ -37,14 +37,13 @@ def main():
             print "7. Get tweets for specific user account"
             print "8. Analyze entities"
             print "9. Print analysis with pretty table"
-            print "10. Print list memberss"
+            print "10. Print list members"
             print "11. find  followers of list members"
+            print "12. find  popular tweets from list members"
             action = raw_input('Enter the number of the action: ').strip()
         WORLD_WOE_ID = 1
         if action == '0':
-            members = get_list_members(api)
-            if members:
-                create_keyplayers_graph(members)
+            get_list_members_statuses(api)
 
         elif action == '1':
             #print trending topics
@@ -90,7 +89,7 @@ def main():
                 save_to_mongo(tweets, "twitter", screen_name)
 
         elif action == '8':
-                results = load_from_mongo("twitter" ,"#indyref")
+                results = load_from_mongo("twitter", "#indyref")
                 get_common_tweet_entities(results)
 
         elif action == '9':
@@ -98,16 +97,21 @@ def main():
                 common_entities = get_common_tweet_entities(results)
                 print_prettytable(common_entities)
         elif action == '10':
-            get_list_memebers(api)
+            get_list_members(api)
         elif action == '11':
+                #create directed graph
                 graph = nx.DiGraph()
                 members = get_list_members(api)
-                for member in members[:10]:
-                    followers = get_friends_followers_ids(api, screen_name=member['screen_name'],
+                #add all the connections between the members and their followers
+                for member in members[:3]:
+                    followers = get_friends_followers(api, screen_name=member['screen_name'],
                                                                         friends_limit=10,
                                                                         followers_limit=15)
                     graph = create_keyplayers_graph(graph=graph, user=member, followers=followers)
                 export_graph_to_gml(graph)
+        elif action == '12':
+            statuses = load_from_mongo("twitter", "community-councils")
+            find_popular_tweets(twitter_api=api, statuses=statuses)
 
         else:
             print "WRONG ACTION!!!"

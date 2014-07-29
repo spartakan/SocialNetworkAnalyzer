@@ -1,7 +1,7 @@
 
 from authorization import oauth_login
 from search_tweets import twitter_search, harvest_user_timeline, save_time_series_data, get_and_save_tweets_form_stream_api,twitter_trends
-from get_list import get_list_memebers
+from list_members import get_list_members
 from functools import partial
 import sys
 import platform
@@ -49,7 +49,7 @@ def main():
             #get and save the trending topics
             save_time_series_data(trending_topics, 'twitter', '#trends')
         elif action == '3':
-            get_list_memebers(api)
+            get_list_members(api)
         elif action == '4' or action == '5' :
             q = None
             print "Read How to build a query first ! ( https://dev.twitter.com/docs/using-search )  "

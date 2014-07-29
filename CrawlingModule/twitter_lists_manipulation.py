@@ -6,11 +6,14 @@ from functools import partial
 if platform.system() == 'Linux':
     sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
-from debugging_setup import setup_logging, debug_print
 from socket import error as SocketError
 from twitter.api import TwitterHTTPError
-logger = setup_logging()
 import twitter
+
+from debugging_setup import setup_logging, debug_print
+import logging
+logger = logging.getLogger(__name__)
+logger = setup_logging(logger)
 
 
 

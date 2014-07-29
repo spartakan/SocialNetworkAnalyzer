@@ -14,7 +14,7 @@ def debug_print(message, debug=True):
         print >> sys.stderr, "INFO| ", message
         print >> sys.stderr.flush()
 
-def setup_logging():
+def setup_logging(logger):
     """
     Initializing the logging system used to write errors to a log file
     """

@@ -6,7 +6,9 @@ if platform.system() == 'Linux':
     sys.path.insert(0,os.path.abspath("/home/sd/twitterAnalyzer"))
 from debugging_setup import setup_logging, debug_print
 from pymongo.errors import DuplicateKeyError
-logger = setup_logging()
+import logging
+logger = logging.getLogger(__name__)
+logger = setup_logging(logger)
 
 
 def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):

@@ -5,6 +5,13 @@ if platform.system() == 'Linux':
     sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
 from debugging_setup import debug_print
+from twitter.api import TwitterHTTPError
+import time
+from debugging_setup import setup_logging, debug_print
+import logging
+logger = logging.getLogger(__name__)
+logger = setup_logging(logger)
+
 
 def get_friends_followers_ids(twitter_api, screen_name=None, user_id=None,
                               friends_limit=maxint, followers_limit=maxint):
@@ -56,15 +63,24 @@ def get_friends_followers_ids(twitter_api, screen_name=None, user_id=None,
     # return friends_ids[:friends_limit], followers_ids[:followers_limit]
 
     #get the whole json object for each user
+
     get_followers = partial(twitter_api.followers.list, count=followers_limit)
     cursor = -1
     followers = []
-    while cursor != 0:
-        response = get_followers(screen_name=screen_name, cursor=cursor)
-        if response is not None:
-            cursor = response['next_cursor']
-            followers += response['users']
-            debug_print("num of total followers: " + str(len(followers))
-                        + " num of users from last response: " + str(len(response['users'])))
 
+    while cursor != 0:
+        try:
+            response = get_followers(screen_name=screen_name, cursor=cursor)
+            if response is not None:
+                cursor = response['next_cursor']
+                followers += response['users']
+                debug_print("num of total followers: " + str(len(followers))
+                            + " num of users from last response: " + str(len(response['users'])))
+        except TwitterHTTPError, e:
+            debug_print(e)
+            sys.stderr.flush()
+            debug_print("Rate limit reached . Retrying in 15 min ...zZz...")
+            logger.error(e)
+            time.sleep(60*1 + 10)
+            debug_print("Woke up ... ")
     return followers

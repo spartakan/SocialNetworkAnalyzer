@@ -3,6 +3,11 @@ if platform.system() == 'Linux':
     sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
 from debugging_setup import  debug_print
+from debugging_setup import setup_logging, debug_print
+import logging
+logger = logging.getLogger(__name__)
+logger = setup_logging(logger)
+
 import networkx as nx
 
 
@@ -31,16 +36,15 @@ def create_keyplayers_graph(graph, user, followers):
     graph.add_node(user['id'], screen_name=user['screen_name'])
     for follower in followers:
         graph.add_node(follower['id'], screen_name=follower['screen_name'])
-    print "nodes:"
-    print graph.nodes()
-    print("num of nodes: "+str(graph.number_of_nodes()))
+    #debug_print("nodes : " + graph.nodes())
+    debug_print("num of nodes: "+str(graph.number_of_nodes()))
 
     #add edges
     for follower in followers:
         #directed from follower -> to user
         graph.add_edge(follower['id'], user['id'])
-    print graph.edges()
-    print "num of edges: ", graph.number_of_edges()
+    #debug_print("edges : " + graph.edges())
+    debug_print("num of edges: " + str(graph.number_of_edges()))
     return graph
 
 

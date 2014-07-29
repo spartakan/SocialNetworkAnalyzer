@@ -8,9 +8,9 @@ if platform.system() == 'Linux':
 from twitter.oauth import read_token_file, write_token_file
 print sys.path
 from debugging_setup import setup_logging, debug_print
-
-
-logger = setup_logging()
+import logging
+logger = logging.getLogger(__name__)
+logger = setup_logging(logger)
 
 def oauth_login():
     """

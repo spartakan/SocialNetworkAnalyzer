@@ -9,7 +9,10 @@ from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
 from debugging_setup import setup_logging, debug_print
 from socket import error as SocketError
 from twitter.api import TwitterHTTPError
-logger = setup_logging()
+import logging
+logger = logging.getLogger(__name__)
+logger = setup_logging(logger)
+
 
 
 def make_twitter_request(twitter_api_func, max_errors=10, *args, **kw):
@@ -133,14 +136,17 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
             print >> sys.stderr, "Retrying in 15 minutes...ZzZ..."
             sys.stderr.flush()
             time.sleep(60*15 + 10)
+            twitter_search(twitter_api, q, **kw)
+
     except SocketError, se:
         logger.error(se)
-        debug_print("--" + se.message )
+        debug_print("--" + se.message)
         since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
+        debug_print("Retrying in 0.05 sec ...ZzZ...")
         time.sleep(0.05)
         if since_id:
             kw = {'since_id': since_id}
-            twitter_search(twitter_api, q, **kw)
+        twitter_search(twitter_api, q, **kw)
 
     statuses = search_results['statuses']
     debug_print("number of statuses: " + str(len(statuses)) + " max_limit: " + str(max_results))

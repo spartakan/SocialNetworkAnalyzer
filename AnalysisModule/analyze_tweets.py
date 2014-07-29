@@ -4,10 +4,9 @@ if platform.system() == 'Linux':
 from collections import Counter
 from prettytable import PrettyTable
 from debugging_setup import setup_logging, debug_print
-
-
-#setup the logger with proper handler
-logger = setup_logging()
+import logging
+logger = logging.getLogger(__name__)
+logger = setup_logging(logger)
 
 
 def extract_tweet_entities(statuses):

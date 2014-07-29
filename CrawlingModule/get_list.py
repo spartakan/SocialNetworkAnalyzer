@@ -9,17 +9,15 @@ from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
 from debugging_setup import setup_logging, debug_print
 from socket import error as SocketError
 from twitter.api import TwitterHTTPError
-logger = setup_logging()
 import twitter
+import logging
+logger = logging.getLogger(__name__)
+logger = setup_logging(logger)
 
 
 
-def get_list_memebers(twitter_api, max_results=1000, slug="FollowLater-Macedonia", owner_screen_name="@BalkanBabes"):
-    debug_print("Getting tweets from list members: Exec get_list_members method ...")
-
-    #get all the statuses for a specific list and its owner without retweets
-    #response = twitter_api.lists.statuses(owner_screen_name = "@spartakan", slug="community-councils",
-                                            # count=100,include_rts=False,*kw)
+def get_list_memebers_statuses(twitter_api, max_results=1000,owner_screen_name = "@spartakan", slug="community-councils"):
+    debug_print("EXEC get_list_members method :")
 
     #get last tweet from mongo
     since_id = load_from_mongo(mongo_db="twitter", mongo_db_coll=slug, find_since_id=True)
@@ -32,6 +30,7 @@ def get_list_memebers(twitter_api, max_results=1000, slug="FollowLater-Macedonia
         'since_id': since_id,
         'include_rts': False
     }
+    #get all statuses from list members
     response = twitter_api.lists.statuses(owner_screen_name=owner_screen_name, slug=slug,
                                           **kw)
 
@@ -61,3 +60,32 @@ def get_list_memebers(twitter_api, max_results=1000, slug="FollowLater-Macedonia
         #print json.dumps(tweet, indent=1)
         save_to_mongo(tweet, "twitter", slug)
     debug_print(str(page_num+2)+". All Results are saved in database")
+
+
+
+
+def get_list_memebers(twitter_api, owner_screen_name="spartakan", slug="community-councils"):
+    debug_print("EXEC get_list_members method :")
+    members = []
+    cursor = -1
+    #get all members of the list
+    while cursor != 0:
+        try:
+            response = twitter_api.lists.members(owner_screen_name=owner_screen_name, slug=slug, cursor=cursor)
+            debug_print("  next cursor: " + str(response['next_cursor']))
+            if response is not None:
+
+                cursor = response['next_cursor']
+                members += response['users']
+                debug_print("  users (last response): " + str(len(response['users'])))
+                debug_print("  total members: " + str(len(members)))
+        except TwitterHTTPError, e:
+            debug_print(e)
+            sys.stderr.flush()
+            debug_print("  Rate limit reached . Retrying in 15 min ...zZz...")
+            logger.error(e)
+            time.sleep(60*1 + 10)
+            debug_print("  Woke up ... ")
+            debug_print("  cursor after waking up: "+str(cursor))
+    return members
+

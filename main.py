@@ -13,10 +13,14 @@ from AnalysisModule.analyze_tweets import get_common_tweet_entities,extract_twee
 from AnalysisModule.export_module import create_keyplayers_graph,export_graph_to_gml
 from debugging_setup import setup_logging, debug_print
 from CrawlingModule.get_friends_followers import get_friends_followers_ids
+from CrawlingModule.get_list import get_list_memebers, get_list_memebers_statuses
 import networkx as nx
+import logging
+
 def main():
     api = oauth_login()
-    setup_logging()
+    logger = logging.getLogger(__name__)
+    logger = setup_logging(logger)
 
 
     if api:
@@ -33,6 +37,7 @@ def main():
             print "7. Get tweets for specific user account"
             print "8. Analyze entities"
             print "9. Print analysis with pretty table"
+            print "10. Print list memberss"
             print "11. find  followers of list members"
             action = raw_input('Enter the number of the action: ').strip()
         WORLD_WOE_ID = 1
@@ -93,12 +98,11 @@ def main():
                 common_entities = get_common_tweet_entities(results)
                 print_prettytable(common_entities)
         elif action == '10':
-            print ""
+            get_list_memebers(api)
         elif action == '11':
-                graph = nx.Graph()
+                graph = nx.DiGraph()
                 members = get_list_members(api)
-                for member in members[:2]:
-                    print member['screen_name']
+                for member in members[:10]:
                     followers = get_friends_followers_ids(api, screen_name=member['screen_name'],
                                                                         friends_limit=10,
                                                                         followers_limit=15)

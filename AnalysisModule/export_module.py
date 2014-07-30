@@ -10,35 +10,20 @@ logger = setup_logging(logger)
 
 import networkx as nx
 
-
-def create_graph(G):
-    debug_print("EXEC - create_graph method :")
-    #get tweets from database
-    criteria = {"retweet_count": {"$gt": 400}}
-    projection = {"_id": 1, "retweet_count": 1, "favorite_count":1}
-    tweets = load_from_mongo("twitter", "#indyref" , criteria=criteria,projection=projection)
-    debug_print("Printing fetched data in export_module ...")
-    debug_print([tweet for tweet in tweets])
-    #add all the tweets as nodes with weight determined from the number of retweets and favourites
-    for tweet in tweets:
-        weight = tweet['retweet_count'] * 0.6
-        weight = weight + tweet['favorite_count']* 0.4
-        # G.add_node(name_of_node, attr1 = attr1, attr2= attr2 ...)
-        G.add_node(tweet['_id'], retweet_count=tweet['retweet_count'], weight = weight)
-    print G.nodes(data=True)
-    print(G.number_of_nodes())
-    #nx.write_gml(G,"c:/mongodb/test.gml")
-
-
 def create_keyplayers_graph(graph, user, followers):
     debug_print("EXEC - create_keyplayers_graph method :")
 
     #add the user who is followed as a node
-    graph.add_node(user['id'], screen_name=user['screen_name'])
+    graph.add_node(user['id'], screen_name=user['screen_name'], location=user['location'],
+                   followers_count=user['followers_count'], statuses_count=user['followers_count'],
+                   friends_count=user['friends_count'], created_at=user['created_at'])
 
     #add the followers as nodes
     for follower in followers:
-        graph.add_node(follower['id'], screen_name=follower['screen_name'])
+        graph.add_node(follower['id'], screen_name=follower['screen_name'], location=follower['location'],
+                   followers_count=follower['followers_count'], statuses_count=follower['followers_count'],
+                   friends_count=follower['friends_count'], created_at=follower['created_at'])
+
     #debug_print("nodes : " + graph.nodes())
     debug_print("  num of nodes: "+str(graph.number_of_nodes()))
 
@@ -51,6 +36,16 @@ def create_keyplayers_graph(graph, user, followers):
     return graph
 
 
-def export_graph_to_gml(graph):
+def export_graph_to_gml(graph,path):
     debug_print("EXEC - export_graph_to_gml method :")
-    nx.write_gml(graph, "c:/data/graph_followers2.gml")
+    nx.write_gml(graph, path)
+
+
+def import_graph_from_gml(path):
+    debug_print("EXEC - import_graph_from_gml method :")
+    graph = None
+    try:
+        graph = nx.read_gml(path)
+    except Exception, e:
+        debug_print("  Exception: %s" % e)
+    return  graph

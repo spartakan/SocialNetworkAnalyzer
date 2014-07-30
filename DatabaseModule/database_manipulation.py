@@ -3,7 +3,7 @@ import pymongo
 import datetime
 import sys,platform,os
 if platform.system() == 'Linux':
-    sys.path.insert(0,os.path.abspath("/home/sd/twitterAnalyzer"))
+    sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from debugging_setup import setup_logging, debug_print
 from pymongo.errors import DuplicateKeyError
 import logging
@@ -11,14 +11,17 @@ logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 
 
-def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
+def save_to_mongo(data, mongo_db, mongo_db_coll, indexes=None, **mongo_conn_kw):
     """
-    Saves only one tweet at a time. The iteration part should be implemented in the method calling
+    Saves only one entity at a time. The iteration part should be implemented in the method calling
     this one
-    :parameter data should contain json file with only one tweet
+    :parameter data should contain json file with only one object/entity
+    :parameter mongo_db contains the name of the database
+    :parameter mongo_db_coll contains the name of the collection
+    :parameter indexes contains a list of all the indexes you want to ensure besides the default: id=id; DATE=created_at;
     """
     debug_print("EXEC save_to_mongo method :")
-    #debug_print("Saving to database: exec save_to_mongo() method ...")
+
     # Connects to the MongoDB server running on
     # localhost:27017 by default
     client = pymongo.MongoClient(**mongo_conn_kw)
@@ -31,8 +34,6 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
     #oll.create_index("recent_retweets")
     try:
         coll.ensure_index([("id", 1)], unique=True)
-        coll.ensure_index("hashtags.text")
-
         date = data['created_at']
         date = datetime.datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
         #debug_print("DATE : " + str(date))
@@ -40,14 +41,19 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
         #debug_print(json.dumps(d, indent=1))
         #break
         coll.ensure_index("DATE")
+        #ensure all other indexes
+        if indexes is not None:
+            for idx in indexes:
+                coll.ensure_index(idx)
+
     except (Exception, DuplicateKeyError), e:
-        debug_print(e)
+        debug_print("  Exception: %s" % e.message)
         logger.error(e)
         pass
     try:
         status = coll.insert(data)
     except (Exception, DuplicateKeyError), e:
-        debug_print(e)
+        debug_print("  Exception: %s" % e.message)
         logger.error(e)
         pass
     else:
@@ -77,13 +83,18 @@ def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None,
     if find_since_id:
         result = coll.find_one({"$query": {}, "$orderby": {"id": -1}}, {"id": 1})
        # print result[u'id']
-        return result[u'id']
+        if result:
+            return result[u'id']
+        else:
+            return None
     else:
         if criteria is None:
             criteria = {}
         if projection is None:
             cursor = coll.find(criteria)
         else:
+            print criteria
+            print projection
             cursor = coll.find(criteria, projection)
             # Returning a cursor is recommended for large amounts of data
         if return_cursor:

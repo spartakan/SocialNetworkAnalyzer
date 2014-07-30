@@ -54,7 +54,7 @@ def get_list_members_statuses(twitter_api, max_results=1000, owner_screen_name =
 
     #Saving all results to database
     for tweet in results:
-        save_to_mongo(tweet, "twitter", slug)
+        save_to_mongo(tweet, "twitter", "FollowLater-Macedonia1")
     debug_print(" All Results are saved in database")
 
 

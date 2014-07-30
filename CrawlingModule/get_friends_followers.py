@@ -79,8 +79,9 @@ def get_friends_followers(twitter_api, screen_name=None, user_id=None,
         except TwitterHTTPError, e:
             debug_print(e)
             sys.stderr.flush()
-            debug_print("  Rate limit reached. Start: %s . Retrying in 15 min ...zZz..." % (str(time.ctime())))
             logger.error(e)
-            time.sleep(60*15 + 10)
-            debug_print("  Woke up ... End: %s"  % (str(time.ctime())))
+            if e.e.code == 88:
+                debug_print("  Rate limit reached. Start: %s . Retrying in 15 min ...zZz..." % (str(time.ctime())))
+                time.sleep(60*15 + 10)
+                debug_print("  Woke up ... End: %s"  % (str(time.ctime())))
     return followers

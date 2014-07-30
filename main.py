@@ -3,14 +3,14 @@ from CrawlingModule.authorization import oauth_login
 from CrawlingModule.search_tweets import twitter_search, harvest_user_timeline, save_time_series_data, get_and_save_tweets_form_stream_api,twitter_trends
 from CrawlingModule.twitter_lists_manipulation import get_tweets_form_list_members,get_list_members
 from functools import partial
-import sys
+import sys,json
 import platform
 import os
 if platform.system() == 'Linux':
     sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
 from AnalysisModule.analyze_tweets import get_common_tweet_entities,extract_tweet_entities,print_prettytable,find_popular_tweets
-from AnalysisModule.export_module import create_keyplayers_graph,export_graph_to_gml
+from AnalysisModule.export_module import create_keyplayers_graph,export_graph_to_gml,import_graph_from_gml
 from debugging_setup import setup_logging, debug_print
 from CrawlingModule.get_friends_followers import get_friends_followers
 from CrawlingModule.list_members import get_list_members, get_list_members_statuses
@@ -42,8 +42,32 @@ def main():
             print "12. find  popular tweets from list members"
             action = raw_input('Enter the number of the action: ').strip()
         WORLD_WOE_ID = 1
-        if action == '0':
-            get_list_members_statuses(api)
+
+        if action == '-1':
+            criteria = {"in_reply_to_user_id": {"$ne": None}, "$where": "this.user.id != this.in_reply_to_user_id"}
+            projection = {"id": 1, "user.screen_name": 1, "in_reply_to_screen_name": 1, "in_reply_to_user_id": 1, "text": 1}
+            results = load_from_mongo(mongo_db="twitter", mongo_db_coll="incredible-developers",
+                                      criteria=criteria, projection=projection)
+
+            debug_print("  num of edges/results: %d" % len(results))
+            G = nx.DiGraph()
+            members = get_list_members(api,owner_screen_name="PitchswagLtd", slug="incredible-developers")
+            debug_print("  num of members: %d" % len(members))
+            for member in members:
+                G.add_node(member['id'], screen_name=member['screen_name'], location=member['location'],
+                   followers_count=member['followers_count'], statuses_count=member['followers_count'],
+                   friends_count=member['friends_count'], created_at=member['created_at'])
+            #i=0
+            for result in results:
+                #print i,result['user']['screen_name'],result['in_reply_to_screen_name'],result['text']
+                #i+=1
+                if G.has_node(result['id'])and G.has_node(result['in_reply_to_user_id']):
+                    G.add_edge(result['id'], result['in_reply_to_user_id'])
+            export_graph_to_gml(G, "c:/data/graph_followers_FollowLater-Macedonia.gml")
+
+        elif action == '0':
+
+            get_list_members_statuses(api, owner_screen_name="BalkanBabes", slug="FollowLater-Macedonia")
 
         elif action == '1':
             #print trending topics
@@ -86,7 +110,7 @@ def main():
                     screen_name = raw_input('Enter a query:').strip()
                 debug_print("Getting tweets from user: "+ screen_name+ " ... ")
                 tweets = harvest_user_timeline(api, screen_name="SocialWebMining", max_results=200)
-                save_to_mongo(tweets, "twitter", screen_name)
+                save_to_mongo(tweets, "twitter", screen_name, indexes="hashtags.text")
 
         elif action == '8':
                 results = load_from_mongo("twitter", "#indyref")
@@ -101,12 +125,23 @@ def main():
         elif action == '11':
                 #create directed graph
                 graph = nx.DiGraph()
-                members = get_list_members(api)
+                slug = "FollowLater-Macedonia"
+                db_coll_name = "%s_%s" % (slug, "members")
+                owner = "BalkanBabes"
+                members = get_list_members(api, slug=slug,owner_screen_name=owner)
+
                 #add all the connections between the members and their followers
-                for member in members[:3]:
+                for member in members[:15]:
                     followers = get_friends_followers(api, screen_name=member['screen_name'],
                                                                         friends_limit=10,
                                                                         followers_limit=100)
+                    #save each member to database
+                    save_to_mongo(data=member, mongo_db="twitter", mongo_db_coll=db_coll_name)
+
+                    #save each follower to database
+                    for follower in followers:
+                        save_to_mongo(data=follower, mongo_db="twitter", mongo_db_coll=db_coll_name)
+
                     graph = create_keyplayers_graph(graph=graph, user=member, followers=followers)
                 export_graph_to_gml(graph)
         elif action == '12':

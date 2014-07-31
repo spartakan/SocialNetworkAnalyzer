@@ -1,16 +1,13 @@
-import tweepy
-import twitter
-import os
-import sys
-import platform
+import tweepy, twitter, os, sys, logging, platform
 if platform.system() == 'Linux':
     sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from twitter.oauth import read_token_file, write_token_file
-print sys.path
 from debugging_setup import setup_logging, debug_print
-import logging
+
+#create a logger for this module , set it up, and use it to write errors to file
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
+
 
 def oauth_login():
     """
@@ -19,14 +16,16 @@ def oauth_login():
     If the application is being authorized for the first time, the access key & secret are saved into a file
     and with every other execution of the script, the access token & secret are read from the oauth file.
     :returns twitter_api
-    :libraries tweepy, twitter
     """
+    #Consumer key & secret from https://apps.twitter.com/
     CONSUMER_KEY = 'hiXJndRNsYmzrpI9CWmeCJ3r5'
     CONSUMER_SECRET = 'pEs9mzbqeYwl2Ax9OtYPtFowgK6DdTgraZqTPG8Sc2nbID0PIk'
     OAUTH_FILE = ''
-    debug_print('Authorizing : exec of Oauth_login method ... ')
-    debug_print('Checking operating system : '+ platform.system())
-    #Check on which operating system is the script running
+    debug_print("EXEC oauth_login method :")
+    debug_print("  Authorizing...")
+    debug_print("  Checking operating system : %s  ; for file's path " % platform.system())
+
+    #Check on which operating system the script is running and get the file from that path
     if platform.system() == 'Windows':
         OAUTH_FILE = os.path.expanduser("H:/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt").replace("\\", "/")
     elif platform.system() == 'Linux':
@@ -35,21 +34,23 @@ def oauth_login():
     #Read the access token from a file
     try:
         oauth_token, oauth_token_secret = read_token_file(OAUTH_FILE)
-    except Exception, e:
-            debug_print("IOError: File " + OAUTH_FILE + "not found!")
+    except IOError, e:
+            debug_print("  %s" % e.message)
             logger.error('Failed to open file', exc_info=True)
     else:
-        #Check if the reading from the file has been successful and try to authorize with that access token
+        #get authorization with the access token read from file
         if oauth_token and oauth_token_secret:
             try:
                 oauth = twitter.oauth.OAuth(oauth_token, oauth_token_secret, CONSUMER_KEY, CONSUMER_SECRET)
             except Exception, e:
-                logger.error('Failed request', exc_info=True)
+                debug_print("  %s" % e.message)
+                logger.error(e.message)
             else:
                 debug_print("Reading Access Token from file ...")
                 twitter_api = twitter.Twitter(auth=oauth)
                 return twitter_api
-        #The access token isn't in the file so try to obtain him
+
+        #No access token in the file, make a request for it
         else:
             auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
             auth.secure = True
@@ -59,13 +60,15 @@ def oauth_login():
             try:
                 auth.get_access_token(verifier)
             except Exception, e:
-                logger.error('Failed request', exc_info=True)
+                debug_print("  %s" % e.message)
+                logger.error(e.message)
             else:
                 debug_print("GET ACCESS_KEY = " + auth.access_token.key)
                 debug_print("GET ACCESS_SECRET = " + auth.access_token.secret)
                 ACCESS_KEY = auth.access_token.key
                 ACCESS_SECRET = auth.access_token.secret
                 write_token_file(OAUTH_FILE, ACCESS_KEY, ACCESS_SECRET)
+                #get authorization with the new access token
                 oauth = twitter.oauth.OAuth(ACCESS_KEY, ACCESS_SECRET, CONSUMER_KEY, CONSUMER_SECRET)
                 twitter_api = twitter.Twitter(auth=oauth)
                 return twitter_api

@@ -1,7 +1,7 @@
 
 from authorization import oauth_login
 from search_tweets import twitter_search, harvest_user_timeline, save_time_series_data, get_and_save_tweets_form_stream_api,twitter_trends
-from list_members import get_list_members
+from list import get_list_members
 from functools import partial
 import sys
 import platform
@@ -9,7 +9,7 @@ import os
 if platform.system() == 'Linux':
     sys.path.insert(0,os.path.abspath("/home/sd/twitterAnalyzer"))
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
-from AnalysisModule.analyze_tweets import get_common_tweet_entities,extract_tweet_entities,print_prettytable
+from AnalysisModule.tweets_analysis import get_common_tweet_entities,extract_tweet_entities,print_prettytable
 from debugging_setup import setup_logging, debug_print
 
 def main():

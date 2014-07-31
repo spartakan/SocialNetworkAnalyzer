@@ -93,8 +93,6 @@ def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None,
         if projection is None:
             cursor = coll.find(criteria)
         else:
-            print criteria
-            print projection
             cursor = coll.find(criteria, projection)
             # Returning a cursor is recommended for large amounts of data
         if return_cursor:

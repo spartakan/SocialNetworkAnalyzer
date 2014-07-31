@@ -3,17 +3,17 @@ from CrawlingModule.authorization import oauth_login
 from CrawlingModule.search_tweets import twitter_search, harvest_user_timeline, save_time_series_data, get_and_save_tweets_form_stream_api,twitter_trends
 from CrawlingModule.twitter_lists_manipulation import get_tweets_form_list_members,get_list_members
 from functools import partial
-import sys,json
+import sys, json
 import platform
 import os
 if platform.system() == 'Linux':
     sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
-from AnalysisModule.analyze_tweets import get_common_tweet_entities,extract_tweet_entities,print_prettytable,find_popular_tweets
-from AnalysisModule.export_module import create_keyplayers_graph,export_graph_to_gml,import_graph_from_gml
+from AnalysisModule.tweets_analysis import get_common_tweet_entities,extract_tweet_entities,print_prettytable,find_popular_tweets
+from AnalysisModule.graph import create_keyplayers_graph,export_graph_to_gml,import_graph_from_gml
 from debugging_setup import setup_logging, debug_print
-from CrawlingModule.get_friends_followers import get_friends_followers
-from CrawlingModule.list_members import get_list_members, get_list_members_statuses
+from CrawlingModule.user import get_friends_followers
+from CrawlingModule.list import get_list_members, get_list_members_statuses
 import networkx as nx
 import logging
 
@@ -28,6 +28,7 @@ def main():
         action = None
         while not action:
             print "Type the number of the action you want to be executed: "
+            print "1. To export data and see who is talking from the members of the list"
             print "0. Save statuses from list members to database"
             print "1. Find the trending topics in the world"
             print "2. Search & save trending topics on 15 seconds"
@@ -43,31 +44,42 @@ def main():
             action = raw_input('Enter the number of the action: ').strip()
         WORLD_WOE_ID = 1
 
-        if action == '-1':
+        if action == '-2':
+            results = load_from_mongo(mongo_db="twitter", mongo_db_coll="community-councils")
+            screen_names, hashtags, urls, media, symbols = extract_tweet_entities(results)
+            #remove duplicates
+            hashtags = set(hashtags)
+            print "num of hashtags: ",len(hashtags)
+            for hashtag in hashtags:
+                print "#", hashtag
+
+        elif action == '-1':
+
             criteria = {"in_reply_to_user_id": {"$ne": None}, "$where": "this.user.id != this.in_reply_to_user_id"}
             projection = {"id": 1, "user.screen_name": 1, "in_reply_to_screen_name": 1, "in_reply_to_user_id": 1, "text": 1}
-            results = load_from_mongo(mongo_db="twitter", mongo_db_coll="incredible-developers",
+            results = load_from_mongo(mongo_db="twitter", mongo_db_coll="community-councils",
                                       criteria=criteria, projection=projection)
 
             debug_print("  num of edges/results: %d" % len(results))
             G = nx.DiGraph()
-            members = get_list_members(api,owner_screen_name="PitchswagLtd", slug="incredible-developers")
+            members = get_list_members(api)
             debug_print("  num of members: %d" % len(members))
             for member in members:
                 G.add_node(member['id'], screen_name=member['screen_name'], location=member['location'],
                    followers_count=member['followers_count'], statuses_count=member['followers_count'],
                    friends_count=member['friends_count'], created_at=member['created_at'])
-            #i=0
+            i = 0
             for result in results:
-                #print i,result['user']['screen_name'],result['in_reply_to_screen_name'],result['text']
-                #i+=1
-                if G.has_node(result['id'])and G.has_node(result['in_reply_to_user_id']):
+
+                if G.has_node(result['id']) and G.has_node(result['in_reply_to_user_id']):
+                    debug_print("%d) user: %s \n          in reply to: %s \n          text: %s" % (i,result['user']['screen_name'],result['in_reply_to_screen_name'],result['text']))
+                    i += 1
                     G.add_edge(result['id'], result['in_reply_to_user_id'])
             export_graph_to_gml(G, "c:/data/graph_followers_FollowLater-Macedonia.gml")
 
         elif action == '0':
 
-            get_list_members_statuses(api, owner_screen_name="BalkanBabes", slug="FollowLater-Macedonia")
+            get_list_members_statuses(api, owner_screen_name="spartakan", slug="community-councils")
 
         elif action == '1':
             #print trending topics
@@ -95,7 +107,6 @@ def main():
                 q = raw_input('Enter a query:').strip()
             if action == '4':
                 debug_print("Searching tweets for the query:" + q)
-                #search_tweets = partial(twitter_search, api, q, 10000)
                 #save_time_series_data(search_tweets, 'twitter', q)
                 results = twitter_search(api, q, 1000)
                 debug_print("Tweets saved into database")

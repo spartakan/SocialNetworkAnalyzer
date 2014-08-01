@@ -1,4 +1,6 @@
 import logging, os, sys, platform, re
+from DatabaseModule.database_manipulation import load_from_mongo,load_from_mongo_with_mapreduce
+from bson.code import Code
 if platform.system() == 'Linux':
     sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from collections import Counter
@@ -45,8 +47,74 @@ def extract_tweet_entities(statuses):
     return screen_names, hashtags, urls, media, symbols
 
 
+def get_listsof_popular_tweet_entities(statuses = None, entity_threshold=3):
+    """ Returns lists of most popular entities whose appearance exceeds the threshold.
+    :parameter statuses - list of statuses from which the entities should be extracted
+    :parameter entity_entity_threshold - the smallest number of appearances that needs to be excited for a status to be considered popular
+    :returns screen_names, hashtags, urls, media, symbols - dictionaries where the entity is a key and the number of appearances is a value
+    """
+    debug_print("EXEC get_common_tweet_entities method :")
+    screen_names, hashtags, urls, media, symbols = [],[],[],[],[]
+    if statuses: # find most popular hashtags ina given list
+
+        screen_names, hashtags, urls, media, symbols = extract_tweet_entities(statuses)
+        screen_names_counter = Counter(screen_names).most_common()
+        hashtags_counter = Counter(hashtags).most_common()
+        urls_counter = Counter(urls).most_common()
+        media_counter = Counter(media).most_common()
+        symbols_counter = Counter(symbols).most_common()
+
+        screen_names = [(k, v)
+                        for(k, v) in screen_names_counter
+                        if v >= entity_threshold]
+        hashtags = [(k, v)
+                    for(k, v) in hashtags_counter
+                    if v >= entity_threshold]
+        urls = [(k, v)
+                for(k, v) in urls_counter
+                if v >= entity_threshold]
+        media = [(k, v)
+                 for(k, v) in media_counter
+                 if v >= entity_threshold]
+        symbols = [(k, v)
+                   for(k, v) in symbols_counter
+                   if v >= entity_threshold]
+
+    return screen_names, hashtags, urls, media, symbols
+
+
+    #To create different map - reduce functions check: http://api.mongodb.org/python/2.0/examples/map_reduce.html
+    # and http://cookbook.mongodb.org/patterns/count_tags/
+
+    #count the number of occurrences for each hashtag in the hashtags array, across the entire collection
+    #via mongo
+
+    # map = Code(" function() {"
+    #            "if (!this.entities.hashtags) {"
+    #            "  return;"
+    #            " }"
+    #            " for (index in this.entities.hashtags) {"
+    #            "    emit(this.entities.hashtags[index].text, 1);"
+    #            "}"
+    #            "}")
+    # #sum over all of the emitted values for a given key
+    # reduce = Code("function(previous, current) {"
+    #               "var count = 0;"
+    #               "for (index in current) {"
+    #               " count += current[index];"
+    #               " }"
+    #               " return count;"
+    #               "}")
+    #
+    #
+    # hashtags = load_from_mongo_with_mapreduce(mongo_db="twitter", mongo_db_coll="community-councils", map=map, reduce=reduce, newDatabase="popularHashtags")
+    # #print hashtags
+
+
+
+
 def get_common_tweet_entities(statuses, entity_threshold=3):
-    """ Returns most common entities in a list of statuses whose appearance exceeds the threshold.
+    """ Returns a list most common entities in a list of statuses whose appearance exceeds the threshold.
     :parameter statuses - list of statuses from which the entities should be extracted
     :parameter entity_entity_threshold - the smallest number of appearances that needs to be excited for a status to be considered popular
     :returns (k,v) - dictionary where the entity is a key and the number of appearances is a value
@@ -57,12 +125,15 @@ def get_common_tweet_entities(statuses, entity_threshold=3):
                         for status in statuses
                             for entity_type in extract_tweet_entities([status])
                                 for e in entity_type]
-
+    print  tweet_entities
     c = Counter(tweet_entities).most_common()
+    #sorted(c.items(), key=c.items(), reverse=True)
     # Compute frequencies and return dictionary
     return [(k, v)
             for(k, v) in c
-            if v >= entity_threshold]
+                if v >= entity_threshold]
+            #sorted(c.items(), key=c.items(), reverse=True)
+
 
 
 def print_prettytable(common_entities):
@@ -92,6 +163,7 @@ def find_popular_tweets(statuses, retweet_threshold=3):
             text = status['text']
             text = text.encode('latin-1', 'ignore')  # for special characters that may occur
             print '{0:10d}  {1:10d}   {2:20}   {3:20} '.format(status['retweet_count'], status['favorite_count'], status['user']['name'], text)
+
 
 
 def sort_statuses(statuses, order="DESC"):

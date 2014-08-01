@@ -9,10 +9,10 @@ import os
 if platform.system() == 'Linux':
     sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
-from AnalysisModule.tweets_analysis import get_common_tweet_entities,extract_tweet_entities,print_prettytable,find_popular_tweets
+from AnalysisModule.tweets_analysis import get_common_tweet_entities,extract_tweet_entities,print_prettytable, get_listsof_popular_tweet_entities
 from AnalysisModule.graph import create_keyplayers_graph,export_graph_to_gml,import_graph_from_gml
 from debugging_setup import setup_logging, debug_print
-from CrawlingModule.user import get_friends_followers
+from CrawlingModule.user import get_friends_followers_ids,get_followers
 from CrawlingModule.list import get_list_members, get_list_members_statuses
 import networkx as nx
 import logging
@@ -27,8 +27,10 @@ def main():
         debug_print("Successfully authenticated and authorized")
         action = None
         while not action:
+            print "-3.Find most popular hashtags in a cllection of tweets"
+            print "-2.Find all unique hashtags in a cllection of tweets"
             print "Type the number of the action you want to be executed: "
-            print "1. To export data and see who is talking from the members of the list"
+            print "-1. To export data and see who is talking from the members of the list"
             print "0. Save statuses from list members to database"
             print "1. Find the trending topics in the world"
             print "2. Search & save trending topics on 15 seconds"
@@ -44,7 +46,15 @@ def main():
             action = raw_input('Enter the number of the action: ').strip()
         WORLD_WOE_ID = 1
 
-        if action == '-2':
+        if action == '-3':
+            results = load_from_mongo(mongo_db="twitter", mongo_db_coll="community-councils")
+            screen_names, hashtags, urls, media, symbols = get_listsof_popular_tweet_entities(results, 25)
+            #hashtags = get_listsof_popular_tweet_entities(entity_threshold= 25)
+            for (k, v) in hashtags:
+                  print k, " : ", v
+
+
+        elif action == '-2':
             results = load_from_mongo(mongo_db="twitter", mongo_db_coll="community-councils")
             screen_names, hashtags, urls, media, symbols = extract_tweet_entities(results)
             #remove duplicates

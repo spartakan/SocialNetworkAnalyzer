@@ -1,4 +1,5 @@
 import datetime,json,time
+from pip._vendor.distlib.database import new_dist_class
 import pymongo
 import datetime
 import sys,platform,os
@@ -99,3 +100,30 @@ def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None,
             return cursor
         else:
             return [item for item in cursor]
+
+
+def load_from_mongo_with_mapreduce(mongo_db, mongo_db_coll, map,reduce, newDatabase="default_map_reduce", limit=5, order=pymongo.DESCENDING, **mongo_conn_kw):
+    """
+    Loads data from the specific database and the specific collection by the chosen criteria
+    :param mongo_db
+    :param mongo_db_coll
+    :param map
+    :param reduce
+    :param limit
+    :parameterorder
+    :param mongo_conn_kw
+
+    """
+    debug_print("EXEC load_from_mongo method :")
+    # Optionally, use criteria and projection to limit the data that is
+    # returned as documented in
+    # http://docs.mongodb.org/manual/reference/method/db.collection.find/
+
+    client = pymongo.MongoClient(**mongo_conn_kw)
+    db = client[mongo_db]
+    coll = db[mongo_db_coll]
+    result = coll.map_reduce(map, reduce,newDatabase)
+    #for r in result.find().sort("value", order).limit(limit):
+        #print r
+
+    return result.find().sort("value", order).limit(limit)

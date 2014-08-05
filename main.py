@@ -48,7 +48,7 @@ def main():
 
         if action == '-3':
             results = load_from_mongo(mongo_db="twitter", mongo_db_coll="community-councils")
-            screen_names, hashtags, urls, media, symbols = get_listsof_popular_tweet_entities(results, 25)
+            screen_names, hashtags, urls, media, symbols = get_listsof_popular_tweet_entities(results,0)
             #hashtags = get_listsof_popular_tweet_entities(entity_threshold= 25)
             for (k, v) in hashtags:
                   print k, " : ", v

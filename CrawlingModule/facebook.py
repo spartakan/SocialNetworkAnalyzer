@@ -1,11 +1,11 @@
-import requests # pip install requests
+import requests  # pip install requests
 import json
-import xlrd
-from debugging_setup import setup_logging, debug_print
+import xlrd  # pip install xlrd
+from config import *
 
 
 def authorize():
-    oauth_url = "https://graph.facebook.com/oauth/access_token?client_secret=d309eff5bcd6a6d02cc8602b2ba9e438&client_id=784369068293517&grant_type=client_credentials"
+    oauth_url = "https://graph.facebook.com/oauth/access_token?client_secret="+facebook_CONSUMER_SECRET+"&client_id="+facebook_CONSUMER_SECRET+"&grant_type=client_credentials"
     result = requests.get(oauth_url)
     print result.text
     result = result.text.split("=")
@@ -34,10 +34,10 @@ def get_data(ACCESS_TOKEN, name):
 
 
 def sort_pages(pages, order="DESC"):
-    """ Sorts the list of statuses first by number of retweets then by number of favorites
-    :parameter statuses - list of statuses to sort
+    """ Sorts the list of pages first by number of likes then by number of people talking about it
+    :parameter pages - list of pages to sort
     :parameter order - order in which the list should be sorted. values: ASC and DESC
-    :returns statuses - sorted ist of statuses
+    :returns pages - sorted ist of pages
     """
     #debug_print("EXEC sort_pages method :")
     #print pages

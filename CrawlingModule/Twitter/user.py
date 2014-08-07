@@ -1,9 +1,7 @@
 from functools import partial
-import sys, os, platform, time, logging
-if platform.system() == 'Linux':
-    sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
+import time
+from config import *
 from twitter.api import TwitterHTTPError
-from debugging_setup import setup_logging, debug_print
 from sys import maxint
 
 #create a logger for this module , set it up, and use it to write errors to file
@@ -43,7 +41,7 @@ def get_followers(twitter_api, screen_name=None, followers_limit=None):
                 if e.e.code == 88:   # rate limit is reached
                     debug_print("  Rate limit reached. Start: %s . Retrying in 15 min ...zZz..." % (str(time.ctime())))
                     time.sleep(60*15 + 10)
-                    debug_print("  Woke up ... End: %s"  % (str(time.ctime())))
+                    debug_print("  Woke up ... End: %s" % (str(time.ctime())))
     return followers
 
 
@@ -65,7 +63,6 @@ def get_friends_followers_ids(twitter_api, screen_name=None, user_id=None,
     # See https://dev.twitter.com/docs/api/1.1/get/friends/ids and
     # https://dev.twitter.com/docs/api/1.1/get/followers/ids for details
     # on API parameters
-
 
     get_friends_ids = partial(twitter_api.friends.ids, count=5000)
     get_followers_ids = partial(twitter_api.followers.ids, count=5000)

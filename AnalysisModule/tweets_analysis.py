@@ -1,12 +1,9 @@
 import logging, os, sys, platform, re
 from DatabaseModule.database_manipulation import load_from_mongo,load_from_mongo_with_mapreduce
 from bson.code import Code
-if platform.system() == 'Linux':
-    sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
 from collections import Counter
 from prettytable import PrettyTable
-from debugging_setup import setup_logging, debug_print
-
+from config import *
 #create a logger for this module , set it up, and use it to write errors to file
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)

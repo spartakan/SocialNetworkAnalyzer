@@ -1,9 +1,6 @@
-import sys, os, platform, logging
-if platform.system() == 'Linux':
-    sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
-from debugging_setup import setup_logging, debug_print
-import networkx as nx
 
+import networkx as nx
+from config import *
 #create a logger for this module , set it up, and use it to write errors to file
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)

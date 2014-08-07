@@ -1,21 +1,16 @@
-
-from CrawlingModule.authorization import oauth_login
-from CrawlingModule.search_tweets import twitter_search, harvest_user_timeline, save_time_series_data, get_and_save_tweets_form_stream_api,twitter_trends
-from CrawlingModule.twitter_lists_manipulation import get_tweets_form_list_members,get_list_members
 from functools import partial
-import sys, json
-import platform
-import os
-if platform.system() == 'Linux':
-    sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
+
+import networkx as nx
+
+from config import *
+from CrawlingModule.Twitter.authorization import oauth_login
+from CrawlingModule.Twitter.search_tweets import twitter_search, harvest_user_timeline, save_time_series_data, get_and_save_tweets_form_stream_api,twitter_trends
+from CrawlingModule.Twitter.twitter_lists_manipulation import get_tweets_form_list_members
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
 from AnalysisModule.tweets_analysis import get_common_tweet_entities,extract_tweet_entities,print_prettytable, get_listsof_popular_tweet_entities
-from AnalysisModule.graph import create_keyplayers_graph,export_graph_to_gml,import_graph_from_gml
-from debugging_setup import setup_logging, debug_print
-from CrawlingModule.user import get_friends_followers_ids,get_followers
-from CrawlingModule.list import get_list_members, get_list_members_statuses
-import networkx as nx
-import logging
+from AnalysisModule.graph import create_keyplayers_graph,export_graph_to_gml
+from CrawlingModule.Twitter.list import get_list_members, get_list_members_statuses
+
 
 def main():
     api = oauth_login()

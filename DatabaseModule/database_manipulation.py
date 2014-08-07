@@ -1,11 +1,6 @@
-import datetime,json,time
-from pip._vendor.distlib.database import new_dist_class
-import pymongo
 import datetime
-import sys,platform,os
-if platform.system() == 'Linux':
-    sys.path.insert(0, os.path.abspath("/home/sd/twitterAnalyzer"))
-from debugging_setup import setup_logging, debug_print
+import pymongo
+from config import *
 from pymongo.errors import DuplicateKeyError
 import logging
 logger = logging.getLogger(__name__)

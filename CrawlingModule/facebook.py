@@ -62,7 +62,7 @@ def sort_pages(pages, order="DESC"):
 
 
 access_token = authorize()
-workbook = xlrd.open_workbook(filename="C:/Users/zz2005/Desktop/CC Social media (1).xlsx")
+workbook = xlrd.open_workbook(filename=facebook_PAGES)
 sheet = workbook.sheet_by_index(0)
 pages = []
 debug_print("Getting info for pages. Might take few minutes...")
@@ -72,6 +72,7 @@ for cell in sheet.col_values(colx=3):
     base = parts[0]
     #get just the name or id
     url_parts = base.split("/")
+    page_part = url_parts[len(url_parts)-2]
     last = url_parts[len(url_parts)-1]
     #print last
 
@@ -83,7 +84,7 @@ for cell in sheet.col_values(colx=3):
 
 pages = sort_pages(pages)
 #print '{0:10}     {1:10}     {2:20} '.format("Likes", "Talking about", "Page")
-#for i in range(0,len(pages)):
-    #print '{0:10}     {1:10}     {2:20} '.format(pages[i]['likes'], pages[i]['talking_about_count'], pages[i]['name'])
-print json.dumps(pages[0], indent=1)
+for i in range(0,len(pages)):
+    print '{0:10}     {1:10}     {2:20} '.format(pages[i]['likes'], pages[i]['talking_about_count'], pages[i]['name'])
+    #print json.dumps(pages[3], indent=1)
 

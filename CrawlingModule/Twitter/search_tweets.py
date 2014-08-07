@@ -205,7 +205,7 @@ def save_time_series_data(api_func, mongo_db_name, mongo_db_coll, secs_per_inter
     """
     debug_print('EXEC save_time_series_data method : ')
     # Default settings of 15 intervals and 1 API call per interval ensure that
-    # you will not exceed the Twitter rate limit.
+    # you will not exceed the TwitterWrapper rate limit.
     interval = 0
     while True:
         # A timestamp of the form "2013-06-14 12:52:07"
@@ -270,7 +270,7 @@ def harvest_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
     assert (screen_name != None) != (user_id != None), \
         "Must have screen_name or user_id, but not both"
 
-    kw = { # Keyword args for the Twitter API call
+    kw = { # Keyword args for the TwitterWrapper API call
         'count': 200,
         'trim_user': 'true',
         'include_rts': 'true',
@@ -295,7 +295,7 @@ def harvest_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
         page_num = max_pages # Prevent loop entry
 
     while page_num < max_pages and len(tweets) > 0 and len(results) < max_results:
-        # Necessary for traversing the timeline in Twitter's v1.1 API:
+        # Necessary for traversing the timeline in TwitterWrapper's v1.1 API:
         # get the next query's max-id parameter to pass in.
         # See https://dev.twitter.com/docs/working-with-timelines.
         kw['max_id'] = min([tweet['id'] for tweet in tweets]) - 1

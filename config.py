@@ -6,7 +6,8 @@ from debugging_setup import setup_logging, debug_print
 
 #set system path
 if platform.system() == 'Windows':
-    sys.path.append(os.path.abspath("H:/twitterAnalyzer"))
+    #sys.path.append(os.path.abspath("H:/twitterAnalyzer"))
+    sys.path.append(os.path.abspath("C:/Users/Windows/Desktop/twitterAnalyzer"))
 elif platform.system() == 'Linux':
     sys.path.insert(0,os.path.abspath("/home/sd/twitterAnalyzer"))
     print "SYS PATH : ",sys.path
@@ -24,6 +25,8 @@ twitter_CONSUMER_KEY = 'hiXJndRNsYmzrpI9CWmeCJ3r5'
 twitter_CONSUMER_SECRET = 'pEs9mzbqeYwl2Ax9OtYPtFowgK6DdTgraZqTPG8Sc2nbID0PIk'
 twitter_OAUTH_FILE = ''
 if platform.system() == 'Windows':
-    twitter_OAUTH_FILE = os.path.expanduser("H:/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt").replace("\\", "/")
+   # twitter_OAUTH_FILE = os.path.expanduser("H:/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt").replace("\\", "/")
+    twitter_OAUTH_FILE = os.path.expanduser("C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt").replace("\\", "/")
 elif platform.system() == 'Linux':
     twitter_OAUTH_FILE = os.path.abspath(os.path.expanduser("~/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt"))
+

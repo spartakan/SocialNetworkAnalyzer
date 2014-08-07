@@ -2,10 +2,10 @@ import requests  # pip install requests
 import json
 import xlrd  # pip install xlrd
 from config import *
-
+#from Database.database_manipulation import
 
 def authorize():
-    oauth_url = "https://graph.facebook.com/oauth/access_token?client_secret="+facebook_CONSUMER_SECRET+"&client_id="+facebook_CONSUMER_SECRET+"&grant_type=client_credentials"
+    oauth_url = "https://graph.facebook.com/oauth/access_token?client_secret="+facebook_CONSUMER_SECRET+"&client_id="+facebook_CONSUMER_ID+"&grant_type=client_credentials"
     result = requests.get(oauth_url)
     print result.text
     result = result.text.split("=")
@@ -83,7 +83,7 @@ for cell in sheet.col_values(colx=3):
 
 pages = sort_pages(pages)
 #print '{0:10}     {1:10}     {2:20} '.format("Likes", "Talking about", "Page")
-for i in range(0,len(pages)):
+#for i in range(0,len(pages)):
     #print '{0:10}     {1:10}     {2:20} '.format(pages[i]['likes'], pages[i]['talking_about_count'], pages[i]['name'])
-    print pages[i]
+print json.dumps(pages[0], indent=1)
 

@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 
 
-def oauth_login():
+def authorize():
     """
     Authorize the application to access the user's profile
     using twitter's API v1.1's Authentication Model (oAuth dance)
@@ -17,7 +17,7 @@ def oauth_login():
     :returns twitter_api
     """
 
-    debug_print("EXEC oauth_login method :")
+    debug_print("EXEC authorize method :")
     debug_print("  Authorizing...")
     debug_print("  Checking operating system : %s  ; for file's path " % platform.system())
 

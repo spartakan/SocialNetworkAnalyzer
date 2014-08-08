@@ -217,14 +217,12 @@ def get_users_for_hashtag_list(hashtags):
         projection = {"user.screen_name": 1, "_id": 0}
         results = load_from_mongo(mongo_db="twitter", mongo_db_coll="community-councils",
                                   criteria=criteria, projection=projection)
-        #print hashtag
-        #print results[0]
+
         unique_users = set()
         for user in results:
             #print user["user"]["screen_name"]
             unique_users.add(user["user"]["screen_name"])
-
-
-        print len(unique_users)
+        #print hashtag
+        #print len(unique_users)
         users_per_hashtag.update({hashtag:unique_users})
     return users_per_hashtag

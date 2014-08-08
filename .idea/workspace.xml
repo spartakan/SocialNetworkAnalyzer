@@ -23,25 +23,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="tweets_analysis.py" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/AnalysisModule/tweets_analysis.py">
+      <file leaf-file-name="facebook.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/CrawlingModule/Facebook/facebook.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7692308" vertical-offset="3344" max-vertical-offset="3760">
-              <caret line="229" column="4" selection-start-line="229" selection-start-column="4" selection-end-line="229" selection-end-column="4" />
+            <state vertical-scroll-proportion="0.78341794" vertical-offset="1057" max-vertical-offset="1648">
+              <caret line="95" column="25" selection-start-line="95" selection-start-column="25" selection-end-line="95" selection-end-column="25" />
               <folding>
-                <element signature="e#0#37#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="576" max-vertical-offset="2928">
-              <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#29#0" expanded="true" />
+                <element signature="e#0#39#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -93,16 +81,19 @@
         <option value="$PROJECT_DIR$/DatabaseModule/database_manipulation.py" />
         <option value="$PROJECT_DIR$/DatabaseModule/FacebookWrapper/database_manipulation_facebook.py" />
         <option value="$PROJECT_DIR$/DatabaseModule/TwitterWrapper/database_manipulation_twitter.py" />
-        <option value="$PROJECT_DIR$/AnalysisModule/tweets_analysis.py" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/AnalysisModule/tweets_analysis.py" />
+        <option value="$PROJECT_DIR$/CrawlingModule/Twitter/authorization.py" />
+        <option value="$PROJECT_DIR$/CrawlingModule/Facebook/authorization.py" />
+        <option value="$PROJECT_DIR$/CrawlingModule/Facebook/facebook.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="300" />
-    <option name="y" value="93" />
-    <option name="width" value="1349" />
-    <option name="height" value="931" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -207,6 +198,24 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="Twitter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="twitterAnalyzer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="twitterAnalyzer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CrawlingModule" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="Facebook" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -252,25 +261,7 @@
       <recent name="H:\twitterAnalyzer\CrawlingModule" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main (1)">
-    <configuration default="false" name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CrawlingModule" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="twitterAnalyzer" />
-      <option name="SCRIPT_NAME" value="H:\twitterAnalyzer\main.py" />
-      <option name="PARAMETERS" value="" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="Python.facebook (1)">
     <configuration default="false" name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -344,6 +335,24 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="twitterAnalyzer" />
       <option name="SCRIPT_NAME" value="H:\twitterAnalyzer\CrawlingModule\Facebook\facebook.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="facebook (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CrawlingModule/Facebook" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="twitterAnalyzer" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CrawlingModule/Facebook/facebook.py" />
       <option name="PARAMETERS" value="" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
@@ -471,19 +480,19 @@
       <method />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.main" />
-      <item index="1" class="java.lang.String" itemvalue="Python.main (1)" />
-      <item index="2" class="java.lang.String" itemvalue="Python tests.Unittests in twitterAnalyzer" />
-      <item index="3" class="java.lang.String" itemvalue="Python.get_list" />
-      <item index="4" class="java.lang.String" itemvalue="Python.facebook" />
+      <item index="0" class="java.lang.String" itemvalue="Python.main (1)" />
+      <item index="1" class="java.lang.String" itemvalue="Python tests.Unittests in twitterAnalyzer" />
+      <item index="2" class="java.lang.String" itemvalue="Python.get_list" />
+      <item index="3" class="java.lang.String" itemvalue="Python.facebook" />
+      <item index="4" class="java.lang.String" itemvalue="Python.facebook (1)" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.main (1)" />
-        <item index="1" class="java.lang.String" itemvalue="Python.facebook" />
-        <item index="2" class="java.lang.String" itemvalue="Python.get_list" />
-        <item index="3" class="java.lang.String" itemvalue="Python tests.Unittests in twitterAnalyzer" />
-        <item index="4" class="java.lang.String" itemvalue="Python.main" />
+        <item index="0" class="java.lang.String" itemvalue="Python.facebook (1)" />
+        <item index="1" class="java.lang.String" itemvalue="Python.main (1)" />
+        <item index="2" class="java.lang.String" itemvalue="Python.facebook" />
+        <item index="3" class="java.lang.String" itemvalue="Python.get_list" />
+        <item index="4" class="java.lang.String" itemvalue="Python tests.Unittests in twitterAnalyzer" />
       </list>
     </recent_temporary>
   </component>
@@ -520,7 +529,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="300" y="93" width="1349" height="931" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -528,11 +537,11 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32918552" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3242894" sideWeight="0.49961862" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1884058" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.13013698" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.4095607" sideWeight="0.11289092" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.4095607" sideWeight="0.8871091" order="2" side_tool="false" content_ui="tabs" x="0" y="451" width="1344" height="241" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3114572" sideWeight="0.11327714" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3114572" sideWeight="0.88672286" order="2" side_tool="false" content_ui="tabs" x="0" y="451" width="1344" height="241" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -585,7 +594,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="1615">
           <caret line="7" column="138" selection-start-line="7" selection-start-column="138" selection-end-line="7" selection-end-column="138" />
           <folding>
-            <element signature="e#0#39#0" expanded="false" />
+            <element signature="e#0#39#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -737,13 +746,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CrawlingModule/Twitter/authorization.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.2368422" vertical-offset="781" max-vertical-offset="1275">
-          <caret line="10" column="18" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Python27/Lib/ntpath.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="8704">
@@ -812,29 +814,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CrawlingModule/Facebook/facebook.py">
+    <entry file="file://$PROJECT_DIR$/AnalysisModule/tweets_analysis.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1536">
-          <caret line="3" column="20" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="20" />
+        <state vertical-scroll-proportion="0.46153846" vertical-offset="3312" max-vertical-offset="3728">
+          <caret line="219" column="0" selection-start-line="219" selection-start-column="0" selection-end-line="219" selection-end-column="0" />
           <folding>
-            <element signature="e#0#39#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DatabaseModule/database_manipulation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.30769232" vertical-offset="624" max-vertical-offset="1808">
-          <caret line="28" column="59" selection-start-line="28" selection-start-column="59" selection-end-line="28" selection-end-column="59" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#0#37#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="576" max-vertical-offset="2928">
+        <state vertical-scroll-proportion="0.5" vertical-offset="576" max-vertical-offset="2928">
           <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
           <folding>
             <element signature="e#0#29#0" expanded="true" />
@@ -842,12 +834,40 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AnalysisModule/tweets_analysis.py">
+    <entry file="file://$PROJECT_DIR$/CrawlingModule/Twitter/authorization.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7692308" vertical-offset="3344" max-vertical-offset="3760">
-          <caret line="229" column="4" selection-start-line="229" selection-start-column="4" selection-end-line="229" selection-end-column="4" />
+        <state vertical-scroll-proportion="0.67676765" vertical-offset="673" max-vertical-offset="1168">
+          <caret line="65" column="32" selection-start-line="65" selection-start-column="32" selection-end-line="65" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CrawlingModule/Facebook/authorization.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.13278009" vertical-offset="0" max-vertical-offset="482">
+          <caret line="4" column="16" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="16" />
           <folding>
-            <element signature="e#0#37#0" expanded="true" />
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DatabaseModule/database_manipulation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1217" max-vertical-offset="1808">
+          <caret line="28" column="59" selection-start-line="28" selection-start-column="59" selection-end-line="28" selection-end-column="59" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CrawlingModule/Facebook/facebook.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.78341794" vertical-offset="1057" max-vertical-offset="1648">
+          <caret line="95" column="25" selection-start-line="95" selection-start-column="25" selection-end-line="95" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
           </folding>
         </state>
       </provider>

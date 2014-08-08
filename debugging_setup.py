@@ -21,8 +21,10 @@ def setup_logging(logger):
    #ceating a file handler
     #logger.level(logging.INFO)
     if platform.system() == 'Windows':
-       # LOG_FILE = os.path.expanduser("H:/twitterAnalyzer/CrawlingModule/Resources/error.log").replace("\\", "/")
-        LOG_FILE = os.path.expanduser("C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/error.log").replace("\\", "/")
+        if os.path.exists("H:/twitterAnalyzer/CrawlingModule/Resources/error.log"):
+            LOG_FILE = os.path.expanduser("H:/twitterAnalyzer/CrawlingModule/Resources/error.log").replace("\\", "/")
+        elif os.path.exists("C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/error.log"):
+            LOG_FILE = os.path.expanduser("C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/error.log").replace("\\", "/")
     elif platform.system() == 'Linux':
         LOG_FILE = os.path.abspath(os.path.expanduser("~/twitterAnalyzer/CrawlingModule/Resources/error.log"))
     handler = logging.FileHandler(LOG_FILE)

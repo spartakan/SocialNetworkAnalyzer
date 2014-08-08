@@ -7,7 +7,7 @@ from CrawlingModule.Twitter.authorization import oauth_login
 from CrawlingModule.Twitter.search_tweets import twitter_search, harvest_user_timeline, save_time_series_data, get_and_save_tweets_form_stream_api,twitter_trends
 from CrawlingModule.Twitter.twitter_lists_manipulation import get_tweets_form_list_members
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
-from AnalysisModule.tweets_analysis import get_common_tweet_entities,extract_tweet_entities,print_prettytable, get_listsof_popular_tweet_entities
+from AnalysisModule.tweets_analysis import get_common_tweet_entities,extract_tweet_entities,print_prettytable, get_popular_tweet_entities_list,get_popular_hashtags,get_users_for_hashtag_list
 from AnalysisModule.graph import create_keyplayers_graph,export_graph_to_gml
 from CrawlingModule.Twitter.list import get_list_members, get_list_members_statuses
 
@@ -42,11 +42,12 @@ def main():
         WORLD_WOE_ID = 1
 
         if action == '-3':
-            results = load_from_mongo(mongo_db="twitter", mongo_db_coll="community-councils")
-            screen_names, hashtags, urls, media, symbols = get_listsof_popular_tweet_entities(results,0)
-            #hashtags = get_listsof_popular_tweet_entities(entity_threshold= 25)
-            for (k, v) in hashtags:
-                  print k, " : ", v
+            hashtags_dict = get_popular_hashtags()
+            hashtags = hashtags_dict.keys()
+            for hashtag in hashtags:
+                print hashtag
+            dict = get_users_for_hashtag_list(hashtags_dict.keys())
+
 
 
         elif action == '-2':

@@ -20,6 +20,16 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, coll=None, **mongo_conn_kw):
     # Connects to the MongoDB server running on
     # localhost:27017 by default
 
+    if coll is None:
+        client = pymongo.MongoClient(**mongo_conn_kw)
+
+        # Get a reference to a particular database
+        db = client[mongo_db]
+
+        # Reference a particular collection in the database
+        coll = db[mongo_db_coll]
+
+
     try:
         status = coll.insert(data)
     except (Exception, DuplicateKeyError), e:

@@ -18,6 +18,7 @@ def save_to_mongo_facebook(data, mongo_db, mongo_db_coll, indexes=None, **mongo_
     :parameter mongo_db_coll contains the name of the collection
     :parameter indexes contains a list of all the indexes you want to ensure besides the default: id=id; DATE=created_at;
     """
+
     debug_print("EXEC save_to_mongo_facebook method :")
     save_to_mongo(data=data, mongo_db=mongo_db ,mongo_db_coll=mongo_db_coll)
 

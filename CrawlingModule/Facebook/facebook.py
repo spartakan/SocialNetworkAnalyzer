@@ -3,7 +3,7 @@ import json
 import xlrd  # pip install xlrd
 from config import *
 from CrawlingModule.Facebook.authorization import authorize
-
+from DatabaseModule.FacebookWrapper.database_manipulation_facebook import save_to_mongo_facebook
 
 def get_page_posts(ACCESS_TOKEN, page_id=None,limit = 100):
 
@@ -23,8 +23,7 @@ def get_page_posts(ACCESS_TOKEN, page_id=None,limit = 100):
         i=0
         #call for the rest of the posts
         while True:
-            print i
-            i+=1
+
             try:
                 next = content["paging"]["next"]
                 print("next: ",next)
@@ -118,7 +117,7 @@ for i in range(0, len(pages)):
     print pages[i]['name'], len(results)
 
     print json.dumps(results, indent=1)
-
+    save_to_mongo_facebook(mongo_db="facebook",mongo_db_coll=pages[i]['name'],data=results)
     #for res in results:
         #print res
         #print json.dumps(res, indent=1)

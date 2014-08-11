@@ -4,7 +4,8 @@ from urllib2 import URLError
 from httplib import BadStatusLine
 from functools import partial
 from config import *
-from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
+from DatabaseModule.TwitterWrapper.database_manipulation_twitter import save_to_mongo_twitter
+from DatabaseModule.database_manipulation import load_from_mongo
 from socket import error as SocketError
 from twitter.api import TwitterHTTPError
 
@@ -186,7 +187,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
         debug_print(('  Saving %d statsus')%len(statuses))
     for tweet in statuses:
         #print json.dumps(tweet, indent=1)
-        save_to_mongo(tweet, "twitter", q,indexes="hashtags.text")
+        save_to_mongo_twitter(tweet, "twitter", q,indexes="hashtags.text")
 
 
 
@@ -210,7 +211,7 @@ def save_time_series_data(api_func, mongo_db_name, mongo_db_coll, secs_per_inter
     while True:
         # A timestamp of the form "2013-06-14 12:52:07"
         now = str(datetime.datetime.now()).split(".")[0]
-        ids = save_to_mongo(api_func(), mongo_db_name, mongo_db_coll, indexes="hashtags.text")
+        ids = save_to_mongo_twitter(api_func(), mongo_db_name, mongo_db_coll, indexes="hashtags.text")
         print >> sys.stderr, "Writing {0} trends to database ".format(len(ids))
         print >> sys.stderr, "wait for 15 seconds ... "
         print >> sys.stderr.flush()
@@ -231,25 +232,25 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
     """
     debug_print('EXEC get_and_save_tweets_form_stream_api method : ')
     twitter_stream = partial(twitter.TwitterStream, auth=twitter_api.auth)
-    
+
     try:
-            twitter_stream = make_twitter_request(twitter_stream)
-            stream = twitter_stream.statuses.filter(track=q)
+            twitter_stream_res = make_twitter_request(twitter_stream)
+            stream = twitter_stream_res.statuses.filter(track=q)
     except (urllib2.HTTPError, SocketError, TwitterHTTPError, SocketError), e:
             debug_print("  " + e.message)
             #find the highest since_id from database to continue if a rate limitation is reached
-            since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
-            debug_print(" since_id: %d " % (since_id + 1))
-            kw = {'since_id': since_id}
+            #since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
+            #debug_print(" since_id: %d " % (since_id + 1))
+            #kw = {'since_id': since_id}
 
             logger.error(e)
             debug_print(e)
-            debug_print("  Rate limit reached. Start: %s. Retrying in 5 min ...zZz..."%(str(time.ctime())))
+            debug_print("  Rate limit reached. Start: %s. Retrying in 15 min ...zZz..."%(str(time.ctime())))
             sys.stderr.flush()
-            time.sleep(60*5 + 10)
+            time.sleep(60*15 + 10)
             debug_print("  Woke up ... End: %s" % (str(time.ctime())))
-            twitter_stream = make_twitter_request(twitter_stream, **kw)
-            stream = twitter_stream.statuses.filter(track=q)
+            twitter_stream_res = make_twitter_request(twitter_stream)
+            stream = twitter_stream_res.statuses.filter(track=q)
 
     else:
         debug_print("  No exceptions ")
@@ -258,7 +259,7 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
         if stream:
             for tweet in stream:
                 #print json.dumps(tweet, indent=1)
-                save_to_mongo(tweet, "twitter", q, indexes="hashtags.text")
+                save_to_mongo_twitter(tweet, "twitter", q)
 
 
 

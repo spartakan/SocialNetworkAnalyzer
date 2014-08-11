@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 
 
-def save_to_mongo_twitter(data, mongo_db, mongo_db_coll, indexes=None, **mongo_conn_kw):
+def save_to_mongo_twitter(data, mongo_db, mongo_db_coll, **mongo_conn_kw):
     """
     Saves only one entity at a time. The iteration part should be implemented in the method calling
     this one
@@ -37,13 +37,11 @@ def save_to_mongo_twitter(data, mongo_db, mongo_db_coll, indexes=None, **mongo_c
         #break
         coll.ensure_index("DATE")
         #ensure all other indexes
-        if indexes is not None:
-            for idx in indexes:
-                coll.ensure_index(idx)
-
+        status = coll.insert(data)
     except (Exception, DuplicateKeyError), e:
         debug_print("  Exception: %s" % e.message)
         logger.error(e)
         pass
-    save_to_mongo(mongo_db,mongo_db_coll,coll)
+    else:
+        return status
 

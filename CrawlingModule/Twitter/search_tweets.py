@@ -187,7 +187,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
         debug_print(('  Saving %d statsus')%len(statuses))
     for tweet in statuses:
         #print json.dumps(tweet, indent=1)
-        save_to_mongo_twitter(tweet, "twitter", q,indexes="hashtags.text")
+        save_to_mongo_twitter(tweet, "twitter", q)
 
 
 
@@ -211,7 +211,7 @@ def save_time_series_data(api_func, mongo_db_name, mongo_db_coll, secs_per_inter
     while True:
         # A timestamp of the form "2013-06-14 12:52:07"
         now = str(datetime.datetime.now()).split(".")[0]
-        ids = save_to_mongo_twitter(api_func(), mongo_db_name, mongo_db_coll, indexes="hashtags.text")
+        ids = save_to_mongo_twitter(api_func(), mongo_db_name, mongo_db_coll)
         print >> sys.stderr, "Writing {0} trends to database ".format(len(ids))
         print >> sys.stderr, "wait for 15 seconds ... "
         print >> sys.stderr.flush()

@@ -231,27 +231,29 @@ def get_and_save_tweets_form_stream_api(twitter_api, q):
     """
     debug_print('EXEC get_and_save_tweets_form_stream_api method : ')
     twitter_stream = partial(twitter.TwitterStream, auth=twitter_api.auth)
-    while True:
-        try:
-                twitter_stream = make_twitter_request(twitter_stream)
-                stream = twitter_stream.statuses.filter(track=q)
-        except (urllib2.HTTPError, SocketError, TwitterHTTPError, SocketError), e:
-                debug_print("  " + e.message)
-                #find the highest since_id from database to continue if a rate limitation is reached
-                since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
-                debug_print(" since_id: %d " % (since_id + 1))
-                kw = {'since_id': since_id}
+    
+    try:
+            twitter_stream = make_twitter_request(twitter_stream)
+            stream = twitter_stream.statuses.filter(track=q)
+    except (urllib2.HTTPError, SocketError, TwitterHTTPError, SocketError), e:
+            debug_print("  " + e.message)
+            #find the highest since_id from database to continue if a rate limitation is reached
+            since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
+            debug_print(" since_id: %d " % (since_id + 1))
+            kw = {'since_id': since_id}
 
-                logger.error(e)
-                debug_print(e)
-                debug_print("  Rate limit reached. Start: %s. Retrying in 5 min ...zZz..."%(str(time.ctime())))
-                sys.stderr.flush()
-                time.sleep(60*5 + 10)
-                debug_print("  Woke up ... End: %s" % (str(time.ctime())))
+            logger.error(e)
+            debug_print(e)
+            debug_print("  Rate limit reached. Start: %s. Retrying in 5 min ...zZz..."%(str(time.ctime())))
+            sys.stderr.flush()
+            time.sleep(60*5 + 10)
+            debug_print("  Woke up ... End: %s" % (str(time.ctime())))
+            twitter_stream = make_twitter_request(twitter_stream, **kw)
+            stream = twitter_stream.statuses.filter(track=q)
 
-        else:
-            debug_print("  No exceptions ")
-            # See https://dev.twitter.com/docs/streaming-apis
+    else:
+        debug_print("  No exceptions ")
+        # See https://dev.twitter.com/docs/streaming-apis
 
         if stream:
             for tweet in stream:

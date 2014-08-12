@@ -20,14 +20,14 @@ elif platform.system() == 'Linux':
 #Consumer key & secret for facebook
 facebook_CONSUMER_ID = "784369068293517"
 facebook_CONSUMER_SECRET = "d309eff5bcd6a6d02cc8602b2ba9e438"
-facebook_PAGES=""
+facebook_path_to_PAGES_FILE=""
 if platform.system()=="Windows":
     if os.path.exists("C:/Users/zz2005/Desktop/CC Social media (1).xlsx"):
-        facebook_PAGES="C:/Users/zz2005/Desktop/CC Social media (1).xlsx"
-        debug_print("  Path exists: %s"%facebook_PAGES)
+        facebook_path_to_PAGES_FILE="C:/Users/zz2005/Desktop/CC Social media (1).xlsx"
+        debug_print("  Path exists: %s"%facebook_path_to_PAGES_FILE)
     elif os.path.exists("C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/CC Social media.xlsx"):
-        facebook_PAGES="C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/CC Social media.xlsx"
-        debug_print("  Path exists: %s"%facebook_PAGES)
+        facebook_path_to_PAGES_FILE="C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/CC Social media.xlsx"
+        debug_print("  Path exists: %s"%facebook_path_to_PAGES_FILE)
     else:
         debug_print("  Path Not Found!")
 

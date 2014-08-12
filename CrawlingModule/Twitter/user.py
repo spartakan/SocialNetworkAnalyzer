@@ -3,13 +3,13 @@ import time
 from config import *
 from twitter.api import TwitterHTTPError
 from sys import maxint
-from CrawlingModule.Twitter.tweets import make_twitter_request
+from CrawlingModule.Twitter.tweets import twitter_make_robust_request
 #create a logger for this module , set it up, and use it to write errors to file
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 
 
-def get_followers(twitter_api, screen_name=None, followers_limit=None):
+def twitter_get_followers(twitter_api, screen_name=None, followers_limit=None):
     """ Retrieve a list of followers(full information represented as a json file) for a specific user.
         For more information on how the file is structured check https://dev.twitter.com/docs/api/1.1/get/followers/list
     :parameter twitter_api
@@ -17,7 +17,7 @@ def get_followers(twitter_api, screen_name=None, followers_limit=None):
     :parameter followers_limit - The maximum number of users to return
     :returns followers - list of followers, each represented as a json object
     """
-    debug_print("EXEC get_followers method :")
+    debug_print("EXEC twitter_get_followers method :")
     #set the cursor to -1 (first page)
     cursor = -1
     followers = []
@@ -45,7 +45,7 @@ def get_followers(twitter_api, screen_name=None, followers_limit=None):
     return followers
 
 
-def get_friends_followers_ids(twitter_api, screen_name=None, user_id=None,
+def twitter_get_friends_followers_ids(twitter_api, screen_name=None, user_id=None,
                               friends_limit=maxint, followers_limit=maxint):
     """ Retrieves all the ids of friends and followers for a specific user.
     :parameter twitter_api
@@ -55,7 +55,7 @@ def get_friends_followers_ids(twitter_api, screen_name=None, user_id=None,
     :parameter followers_limit
     :returns friends_ids, followers_ids - lists of friends ids and followers ids
     """
-    debug_print("EXEC get_friends_followers_ids method :")
+    debug_print("EXEC twitter_get_friends_followers_ids method :")
     # Must have either screen_name or user_id (logical xor)
     assert (screen_name != None) != (user_id != None), \
     "Must have screen_name or user_id, but not both"
@@ -80,7 +80,7 @@ def get_friends_followers_ids(twitter_api, screen_name=None, user_id=None,
         cursor = -1
         while cursor != 0:
 
-            # Use make_twitter_request via the partially bound callable...
+            # Use twitter_make_robust_request via the partially bound callable...
             try:
                 if screen_name:
                     response = twitter_api_func(screen_name=screen_name, cursor=cursor)
@@ -132,7 +132,7 @@ def twitter_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
         kw['user_id'] = user_id
     max_pages = 16
     results = []
-    tweets = make_twitter_request(twitter_api.statuses.user_timeline, **kw)
+    tweets = twitter_make_robust_request(twitter_api.statuses.user_timeline, **kw)
 
     if tweets is None:# 401 (Not Authorized) - Need to bail out on loop entry
         tweets = []
@@ -149,7 +149,7 @@ def twitter_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
         # get the next query's max-id parameter to pass in.
         # See https://dev.twitter.com/docs/working-with-timelines.
         kw['max_id'] = min([tweet['id'] for tweet in tweets]) - 1
-        tweets = make_twitter_request(twitter_api.statuses.user_timeline, **kw)
+        tweets = twitter_make_robust_request(twitter_api.statuses.user_timeline, **kw)
         results += tweets
         debug_print('  Fetched %i tweets' % (len(tweets)))
         page_num += 1

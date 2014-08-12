@@ -7,8 +7,8 @@ logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 
 
-def get_list_members_statuses(twitter_api, max_results=1000, owner_screen_name = "@spartakan", slug="community-councils"):
-    debug_print("EXEC get_list_members method :")
+def twitter_get_list_members_tweets(twitter_api, max_results=1000, owner_screen_name = "@spartakan", slug="community-councils"):
+    debug_print("EXEC twitter_get_list_members method :")
 
     #get id of last tweet from mongo
     since_id = load_from_mongo(mongo_db="twitter", mongo_db_coll=slug, find_since_id=True)
@@ -50,8 +50,8 @@ def get_list_members_statuses(twitter_api, max_results=1000, owner_screen_name =
     debug_print(" All Results are saved in database")
 
 
-def get_list_members(twitter_api, owner_screen_name="spartakan", slug="community-councils"):
-    debug_print("EXEC get_list_members method :")
+def twitter_get_list_members(twitter_api, owner_screen_name="spartakan", slug="community-councils"):
+    debug_print("EXEC twitter_get_list_members method :")
     members = []
     cursor = -1
     #get all members from the list (returns full json objects)

@@ -60,3 +60,4 @@ def import_graph_from_gml(path):
     except Exception, e:
         debug_print("  Exception: %s" % e)
     return  graph
+

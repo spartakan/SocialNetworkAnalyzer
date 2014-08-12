@@ -3,7 +3,7 @@ import time
 from config import *
 from twitter.api import TwitterHTTPError
 from sys import maxint
-
+from CrawlingModule.Twitter.tweets import make_twitter_request
 #create a logger for this module , set it up, and use it to write errors to file
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
@@ -108,3 +108,50 @@ def get_friends_followers_ids(twitter_api, screen_name=None, user_id=None,
                     break
 
     return friends_ids[:friends_limit], followers_ids[:followers_limit]
+
+
+
+def twitter_user_timeline(twitter_api, screen_name=None, user_id=None, max_results=1000):
+    """
+    Harvest all of user's most recent tweets. Number of retrieved tweets can grow to 3,200
+    so a robust API wrapper is added
+    """
+    debug_print('EXEC twitter_user_timeline method : ')
+    assert (screen_name != None) != (user_id != None), \
+        "Must have screen_name or user_id, but not both"
+
+    kw = { # Keyword args for the TwitterWrapper API call
+        'count': 200,
+        'trim_user': 'true',
+        'include_rts': 'true',
+        'since_id': 1
+        }
+    if screen_name:
+        kw['screen_name'] = screen_name
+    else:
+        kw['user_id'] = user_id
+    max_pages = 16
+    results = []
+    tweets = make_twitter_request(twitter_api.statuses.user_timeline, **kw)
+
+    if tweets is None:# 401 (Not Authorized) - Need to bail out on loop entry
+        tweets = []
+
+    results += tweets
+    debug_print('  Fetched %i tweets' % len(tweets))
+    page_num = 1
+
+    if max_results == kw['count']:
+        page_num = max_pages # Prevent loop entry
+
+    while page_num < max_pages and len(tweets) > 0 and len(results) < max_results:
+        # Necessary for traversing the timeline in TwitterWrapper's v1.1 API:
+        # get the next query's max-id parameter to pass in.
+        # See https://dev.twitter.com/docs/working-with-timelines.
+        kw['max_id'] = min([tweet['id'] for tweet in tweets]) - 1
+        tweets = make_twitter_request(twitter_api.statuses.user_timeline, **kw)
+        results += tweets
+        debug_print('  Fetched %i tweets' % (len(tweets)))
+        page_num += 1
+    debug_print('  Done fetching tweets')
+    return results[:max_results]

@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 
 
-def authorize():
+def twitter_authorize():
     """
     Authorize the application to access the user's profile
     using twitter's API v1.1's Authentication Model (oAuth dance)
@@ -17,7 +17,7 @@ def authorize():
     :returns twitter_api
     """
 
-    debug_print("EXEC authorize method :")
+    debug_print("EXEC twitter_authorize method :")
     debug_print("  Authorizing...")
     debug_print("  Checking operating system : %s  ; for file's path " % platform.system())
 
@@ -33,7 +33,7 @@ def authorize():
         if oauth_token and oauth_token_secret:
             try:
                 oauth = twitter.oauth.OAuth(oauth_token, oauth_token_secret, twitter_CONSUMER_KEY, twitter_CONSUMER_SECRET)
-            except Exception, e: # can't authorize
+            except Exception, e: # can't twitter_authorize
                 debug_print("  %s" % e.message)
                 logger.error(e.message)
             else:  # authorized
@@ -46,7 +46,7 @@ def authorize():
             auth = tweepy.OAuthHandler(twitter_CONSUMER_KEY, twitter_CONSUMER_SECRET)
             auth.secure = True
             auth_url = auth.get_authorization_url()
-            print 'Please authorize: ' + auth_url
+            print 'Please twitter_authorize: ' + auth_url
             verifier = raw_input('PIN: ').strip()
             try:
                 auth.get_access_token(verifier)

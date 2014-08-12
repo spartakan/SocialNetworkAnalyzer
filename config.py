@@ -32,6 +32,7 @@ if platform.system()=="Windows":
         debug_print("  Path Not Found!")
 
 #Consumer key & secret from https://apps.twitter.com/ for twitter authorization
+path_to_graph_file = "c:/data/graph_community-councils.gml" #where to export the .gml file
 twitter_CONSUMER_KEY = 'hiXJndRNsYmzrpI9CWmeCJ3r5'
 twitter_CONSUMER_SECRET = 'pEs9mzbqeYwl2Ax9OtYPtFowgK6DdTgraZqTPG8Sc2nbID0PIk'
 twitter_OAUTH_FILE = ''

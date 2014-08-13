@@ -103,11 +103,10 @@ def twitter_menu():
             print "2. Create & export graph of members of twitter list and their followers"
             print "3. Get statuses of list members"
             print "4. Find the trending topics in the world"
-            print "5. Search & save trending topics on 15 seconds"
+            print "5. Call function for saving tweets from list members on interval( predefined for community-council)"
             print "6. Get list members"
             print "7. Search & save tweets for a specific query"
             print "8. Search & save tweets from the streaming api"
-
             print "9. Get all tweets from a user's timeline"
             print "10. Print common entities"
             print "11. Get list members"
@@ -169,8 +168,10 @@ def twitter_menu():
                     print "trend: ", w['name']
 
         elif action == '5':  # find trending topics on a time interval
+
             #making a partial class from twitter_search to later add it as an argument in twitter_call_function_on_interval
             tweets_from_list_members = partial(twitter_get_list_members_tweets, api)
+
             #get and save the trending topics on time intervals
             twitter_call_function_on_interval(tweets_from_list_members)
 

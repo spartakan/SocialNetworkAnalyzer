@@ -23,11 +23,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="main.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="main.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-10.285714" vertical-offset="2496" max-vertical-offset="4448">
-              <caret line="174" column="70" selection-start-line="174" selection-start-column="70" selection-end-line="174" selection-end-column="70" />
+            <state vertical-scroll-proportion="0.20253165" vertical-offset="1568" max-vertical-offset="4464">
+              <caret line="105" column="27" selection-start-line="105" selection-start-column="27" selection-end-line="105" selection-end-column="27" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
               </folding>
@@ -35,21 +35,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="list.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CrawlingModule/Twitter/list.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="336" max-vertical-offset="1264">
-              <caret line="9" column="96" selection-start-line="9" selection-start-column="87" selection-end-line="9" selection-end-column="96" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tweets.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="tweets.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CrawlingModule/Twitter/tweets.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.03786575" vertical-offset="2954" max-vertical-offset="4112">
-              <caret line="195" column="20" selection-start-line="195" selection-start-column="12" selection-end-line="195" selection-end-column="37" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2954" max-vertical-offset="4112">
+              <caret line="195" column="30" selection-start-line="195" selection-start-column="4" selection-end-line="195" selection-end-column="37" />
               <folding />
             </state>
           </provider>
@@ -113,8 +103,8 @@
         <option value="$PROJECT_DIR$/DatabaseModule/database_manipulation.py" />
         <option value="$PROJECT_DIR$/AnalysisModule/Facebook/pages.py" />
         <option value="$PROJECT_DIR$/CrawlingModule/Twitter/list.py" />
-        <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/CrawlingModule/Twitter/tweets.py" />
+        <option value="$PROJECT_DIR$/main.py" />
       </list>
     </option>
   </component>
@@ -907,29 +897,29 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.285714" vertical-offset="2496" max-vertical-offset="4448">
-          <caret line="174" column="70" selection-start-line="174" selection-start-column="70" selection-end-line="174" selection-end-column="70" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CrawlingModule/Twitter/list.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1264">
-          <caret line="9" column="96" selection-start-line="9" selection-start-column="87" selection-end-line="9" selection-end-column="96" />
+        <state vertical-scroll-proportion="0.44061962" vertical-offset="240" max-vertical-offset="1264">
+          <caret line="35" column="34" selection-start-line="35" selection-start-column="34" selection-end-line="35" selection-end-column="34" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/CrawlingModule/Twitter/tweets.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.03786575" vertical-offset="2954" max-vertical-offset="4112">
-          <caret line="195" column="20" selection-start-line="195" selection-start-column="12" selection-end-line="195" selection-end-column="37" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="2954" max-vertical-offset="4112">
+          <caret line="195" column="30" selection-start-line="195" selection-start-column="4" selection-end-line="195" selection-end-column="37" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.20253165" vertical-offset="1568" max-vertical-offset="4464">
+          <caret line="105" column="27" selection-start-line="105" selection-start-column="27" selection-end-line="105" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

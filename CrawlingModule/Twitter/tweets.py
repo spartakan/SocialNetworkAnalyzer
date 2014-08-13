@@ -193,7 +193,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
 
 
 
-def twitter_call_function_on_interval(api_func, secs_per_interval=60 ,max_intervals=15, **mongo_conn_kw):
+def twitter_call_function_on_interval(api_func, secs_per_interval=60 ,max_intervals=30, **mongo_conn_kw):
     """
     Executes an api function on a given time-interval if no immediate results are needed.
     Usually needed for checking trending topics.

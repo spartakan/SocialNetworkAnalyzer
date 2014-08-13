@@ -195,6 +195,7 @@ def get_popular_hashtags(mongo_db="twitter", mongo_db_coll="community-councils")
 
     :returns dict hashtags
     """
+    debug_print("EXEC get_popular_hashtags method :")
     results = load_from_mongo(mongo_db=mongo_db, mongo_db_coll=mongo_db_coll)
     screen_names, hashtags, urls, media, symbols = get_popular_tweet_entities_list(results,25)
     #hashtags = get_popular_tweet_entities_list(entity_threshold= 25)
@@ -210,10 +211,11 @@ def get_users_for_hashtag_list(hashtags):
     :param hashtags:
     :return: users_per_hashtag dictionary
     """
+    debug_print("EXEC get_users_for_hashtag_list method :")
     users_per_hashtag = {}
-    for hashtag in hashtags:
 
-        criteria = {"entities.hashtags.text": "%s"%hashtag}
+    for hashtag in hashtags:
+        criteria = {"entities.hashtags.text": "%s" % hashtag}
         projection = {"user.screen_name": 1, "_id": 0}
         results = load_from_mongo(mongo_db="twitter", mongo_db_coll="community-councils",
                                   criteria=criteria, projection=projection)

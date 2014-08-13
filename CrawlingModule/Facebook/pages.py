@@ -5,40 +5,43 @@ from config import *
 from CrawlingModule.Facebook.authorization import facebook_authorize
 from DatabaseModule.FacebookWrapper.database_manipulation import facebook_save_to_mongo
 
-def facebook_get_page_posts(ACCESS_TOKEN, page_id=None, limit=100):
 
+def facebook_get_page_posts(ACCESS_TOKEN, page_id=None, limit=200):
+
+    debug_print("EXEC facebook_get_page_posts method :")
     if page_id:
         base_url = 'https://graph.facebook.com/'+page_id+"/posts"
         fields = ''
-        #url = '%s?fields=%s&access_token=%s' % (base_url.strip(), fields, ACCESS_TOKEN)
-        url = '%s?access_token=%s' % (base_url.strip(), ACCESS_TOKEN)
-        print url
+        url = '%s?fields=%s&access_token=%s' % (base_url.strip(), fields, ACCESS_TOKEN)
+        debug_print("  url: %s"%url)
         result = []
         content = requests.get(url).json()
-        num_results=len(content["data"])
-        if num_results >= limit :
+        num_results = len(content["data"])
+        if num_results >= limit:
             return content["data"]
 
         result = content["data"]
-        i=0
         #call for the rest of the posts
         while True:
 
             try:
                 next = content["paging"]["next"]
-                print("next: ",next)
+                #print("next: ", next)
                 content = requests.get(next).json()
                 result += content["data"]
 
             except Exception, e: # no next result
                 print e.message
                 break
-            if len(result)>= limit:
+            if len(result) >= limit:
                     break
-        return result #json.dumps(content, indent=1)
+        return result  # json.dumps(content, indent=1)
 
 
 def facebook_get_page_data(access_token, name):
+
+    debug_print("EXEC facebook_get_page_data method :")
+
     base_url = 'https://graph.facebook.com/'+name
     #fields = 'id,name,likes,talking_about_count'
     fields = ''
@@ -91,12 +94,13 @@ def facebook_read_pages_from_excel(access_token, file=facebook_path_to_PAGES_FIL
 
     """ This function is custom made for a specific excel file, modify it for further use
     :param file
-    :returns pages - dictionary of pages and their facebook data
+    :returns pages - aray of pages' names or ids
     """
+    debug_print("EXEC facebook_read_pages_from_excel method :")
     workbook = xlrd.open_workbook(filename=file)  # get all facebook links from excel file
     sheet = workbook.sheet_by_index(0)  # get the 0 sheet
     pages = []
-    debug_print("Reading pages' names from file. Might take few minutes...")
+    debug_print("  Reading pages' names from file. Might take few minutes...")
 
     for cell in sheet.col_values(colx=3):  # read column number 3
         parts = cell.split("?")   # split URLs that look like
@@ -106,27 +110,40 @@ def facebook_read_pages_from_excel(access_token, file=facebook_path_to_PAGES_FIL
 
         base = parts[0]  # get the base of the url if it contains parameters after a ?
         url_parts = base.split("/")
-        last = url_parts[len(url_parts)-1]  # get the name or id whichever one is last
-        page = None
-        if last:
-            page = facebook_get_page_data(access_token, last+"")  # id might be integer
-        if page is not None:
-            pages.append(dict(page))  # add to dictionary of pages and their facebook data in json format
+        page_name_or_id = url_parts[len(url_parts)-1]  # get the name or id whichever one is last
+
+        if page_name_or_id is not None:
+            debug_print("  page name or id: %s"%page_name_or_id)
+            pages.append(page_name_or_id)  # add to dictionary of pages and their facebook data in json format
 
     return pages
 
+
 def facebook_print_page_data(pages=None):
+    debug_print("EXEC facebook_print_page_data method :")
     if pages is not None:
         pages = facebook_sort_pages(pages)
         print '{0:10}     {1:10}     {2:20} '.format("Likes", "Talking about", "Page")
         for i in range(0, len(pages)):
             print '{0:10}     {1:10}     {2:20} '.format(pages[i]['likes'], pages[i]['talking_about_count'], pages[i]['name'])
 
-
-def facebook_save_posts(page, posts):
-    """Saves posts for pages into mongo. The name od the page is the collection and facebook is the database
-    :param page - name of collection
-    :param posts - data to be saved
-    """
-    facebook_save_to_mongo(mongo_db="facebook", mongo_db_coll=page, data=posts)
-
+#
+# def facebook_get_page_stories(access_token, id):
+#     debug_print("EXEC facebook_get_page_stories method :")
+#     base_url = 'https://graph.facebook.com/'+id+"/insights/page_stories"
+#     fields = 'period=month'
+#     url = '%s?%s&access_token=%s' % (base_url.strip(), fields, access_token)
+#     #print url
+#     # Interpret the response as JSON and convert back
+#     # to Python data structures
+#     content = None
+#     try:
+#         content = requests.get(url).json()
+#         #if content["name"]:
+#             #pass
+#     #if the content is not a page
+#     except KeyError, e:
+#         pass
+#     else:
+#         #return content
+#         print json.dumps(content,indent=1)

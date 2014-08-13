@@ -1,28 +1,34 @@
 from functools import partial
-import networkx as nx
-from config import *
 
+import networkx as nx
+import json
+from config import *
 from CrawlingModule.Twitter.authorization import twitter_authorize
-from CrawlingModule.Twitter.user import twitter_get_followers,twitter_get_friends_followers_ids,twitter_user_timeline
+from CrawlingModule.Twitter.user import twitter_get_followers, twitter_user_timeline
 from CrawlingModule.Twitter.tweets import twitter_search, twitter_save_time_series_data, twitter_stream_api,twitter_trends
 from CrawlingModule.Twitter.list import twitter_get_list_members, twitter_get_list_members_tweets
-
 from CrawlingModule.Facebook.authorization import facebook_authorize
-from CrawlingModule.Facebook.pages import facebook_save_posts, facebook_get_page_data, facebook_get_page_posts, \
-                                          facebook_sort_pages, facebook_read_pages_from_excel, facebook_print_page_data
+from CrawlingModule.Facebook.pages import facebook_get_page_data, facebook_get_page_posts,facebook_sort_pages, \
+                                        facebook_read_pages_from_excel,facebook_print_page_data
 
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
+from DatabaseModule.FacebookWrapper.database_manipulation import facebook_save_to_mongo
 
-from AnalysisModule.tweets import get_common_tweet_entities,extract_tweet_entities,print_prettytable, \
-                                    get_popular_tweet_entities_list,get_popular_hashtags,get_users_for_hashtag_list,\
+from AnalysisModule.Twitter.tweets import get_common_tweet_entities,extract_tweet_entities,print_prettytable, \
+    get_popular_hashtags, get_users_for_hashtag_list,\
                                     find_popular_tweets
-from AnalysisModule.graph import create_keyplayers_graph,export_graph_to_gml
-
-
-
+from AnalysisModule.Twitter.graph import create_keyplayers_graph,export_graph_to_gml
+from AnalysisModule.Facebook.pages import facebook_get_likes_count,facebook_get_talkingabout_count, facebook_get_posts
 
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
+
+
+
+
+
+
+
 
 
 def facebook_menu():
@@ -32,8 +38,11 @@ def facebook_menu():
             print "Type the number of the action you want to be executed: "
             print "0. Save posts for each facebook page read from excel file"
             print "1. Print sorted pages by number of likes and talking about parameter "
-            #print "2. "
-            #print "3. "
+            print "2. Save data for each page from list "
+            print "3. Get likes per page"
+            print "4. Get talking about count per page"
+            print "5. Get facebook posts sorted"
+            print "6. Save posts for one page"
 
             action = raw_input('Enter the number of the action: ').strip()
     if action == '0' or action == '1':
@@ -41,11 +50,44 @@ def facebook_menu():
         if action == '0':
             for i in range(0, len(pages)):
                 results = facebook_get_page_posts(access_token, pages[i]["id"]) #send id of page and access token to get posts
-                facebook_save_posts(pages[i]['name'], results)
+                facebook_save_to_mongo(mongo_db="facebook", mongo_db_coll=pages[i]['name'], data=results)
 
         if action == '1':
             sorted_pages = facebook_sort_pages(pages, "DESC")
             facebook_print_page_data(sorted_pages)
+    elif action == '2':
+        pages = facebook_read_pages_from_excel(access_token)
+        print len(pages)
+        for page in pages:
+            data = facebook_get_page_data(access_token, page)
+            if data:
+                facebook_save_to_mongo(mongo_db="facebook", mongo_db_coll="pages_info", data=data)
+
+    elif action == '3':
+        page = "Connel Community Council"  #sample page
+        print page, facebook_get_likes_count(page)
+
+    elif action == '4':
+        page = "Connel Community Council" #sample page
+        print page, facebook_get_talkingabout_count(page)
+    elif action == '5':
+        posts = facebook_get_posts(from_user="Connel Community Council", page_name="Connel Community Council")
+        for post in posts:
+            print post
+            print "\n  \n _________________________________________________________________________ \n"
+            #break
+    elif action == '6':
+        page = "187281984718895"  # sample id
+        data = facebook_get_page_posts(access_token, page, limit=500)
+        debug_print("posts from api  :%i" % len(data))
+        for post in data:
+            facebook_save_to_mongo(mongo_db="facebook", mongo_db_coll="Connel Community Council", data=post)
+
+
+
+
+
+
 
 
 
@@ -197,6 +239,17 @@ def twitter_menu():
             print "WRONG ACTION!!!"
     else:
         print "You are not authorized!!!"
+
+
+
+
+
+
+
+
+
+
+
 
 
 def main():

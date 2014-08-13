@@ -193,7 +193,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
 
 
 
-def twitter_save_time_series_data(api_func, secs_per_interval=60 ,max_intervals=15, **mongo_conn_kw):
+def twitter_call_function_on_interval(api_func, secs_per_interval=60 ,max_intervals=15, **mongo_conn_kw):
     """
     Executes an api function on a given time-interval if no immediate results are needed.
     Usually needed for checking trending topics.
@@ -204,7 +204,7 @@ def twitter_save_time_series_data(api_func, secs_per_interval=60 ,max_intervals=
     :param max_intervals
     :param mongo_conn_kw
     """
-    debug_print('EXEC twitter_save_time_series_data method : ')
+    debug_print('EXEC twitter_call_function_on_interval method : ')
     # Default settings of 15 intervals and 1 API call per interval ensure that
     # you will not exceed the TwitterWrapper rate limit.
     interval = 0

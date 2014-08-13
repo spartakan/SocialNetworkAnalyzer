@@ -5,7 +5,7 @@ import json
 from config import *
 from CrawlingModule.Twitter.authorization import twitter_authorize
 from CrawlingModule.Twitter.user import twitter_get_followers, twitter_user_timeline
-from CrawlingModule.Twitter.tweets import twitter_search, twitter_save_time_series_data, twitter_stream_api,twitter_trends
+from CrawlingModule.Twitter.tweets import twitter_search, twitter_call_function_on_interval, twitter_stream_api,twitter_trends
 from CrawlingModule.Twitter.list import twitter_get_list_members, twitter_get_list_members_tweets
 from CrawlingModule.Facebook.authorization import facebook_authorize
 from CrawlingModule.Facebook.pages import facebook_get_page_data, facebook_get_page_posts,facebook_sort_pages, \
@@ -169,10 +169,10 @@ def twitter_menu():
                     print "trend: ", w['name']
 
         elif action == '5':  # find trending topics on a time interval
-            #making a partial class from twitter_search to later add it as an argument in twitter_save_time_series_data
+            #making a partial class from twitter_search to later add it as an argument in twitter_call_function_on_interval
             tweets_from_list_members = partial(twitter_get_list_members_tweets, api)
             #get and save the trending topics on time intervals
-            twitter_save_time_series_data(tweets_from_list_members)
+            twitter_call_function_on_interval(tweets_from_list_members)
 
         elif action == '6':  # get members of a list
             twitter_get_list_members(api)
@@ -185,7 +185,7 @@ def twitter_menu():
                 q = raw_input('Enter a query:').strip()
             if action == '7':  # Fetch tweets from the search/rest api
                 debug_print("Searching tweets for the query:" + q)
-                #twitter_save_time_series_data(search_tweets, 'twitter', q)
+                #twitter_call_function_on_interval(search_tweets, 'twitter', q)
                 results = twitter_search(api, q, 1000)
                 debug_print("Tweets saved into database")
 

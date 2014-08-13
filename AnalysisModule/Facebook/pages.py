@@ -24,16 +24,16 @@ def facebook_get_talkingabout_count(page_name):
         return result[0]["talking_about_count"]
 
 
-def facebook_get_posts(date=None, from_user=None, page_name=None):  # get posts for certain period for certain users/or not
+def facebook_get_posts_from_database(date=None, from_user=None, page_name=None, limit=5):  # get posts for certain period for certain users/or not
 
-    debug_print("EXEC facebook_get_posts method :")
+    debug_print("EXEC facebook_get_posts_from_database method :")
     if from_user is not None:
         criteria = {"from.name": "%s" % from_user}
 
         #must create a list of sets with [('field',value),('field2',value2)] for multiple sorting parameters
         sort_params = [("created_time", -1)] # sort by DESC order , from latest to older
 
-        result = load_from_mongo_sorted(mongo_db="facebook", mongo_db_coll=page_name, sort_params=sort_params)
+        result = load_from_mongo_sorted(mongo_db="facebook", mongo_db_coll=page_name, sort_params=sort_params, limit=limit)
         return result
 
 

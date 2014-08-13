@@ -119,6 +119,7 @@ def facebook_read_pages_from_excel(access_token, file=facebook_path_to_PAGES_FIL
     return pages
 
 
+
 def facebook_print_page_data(pages=None):
     debug_print("EXEC facebook_print_page_data method :")
     if pages is not None:
@@ -127,23 +128,23 @@ def facebook_print_page_data(pages=None):
         for i in range(0, len(pages)):
             print '{0:10}     {1:10}     {2:20} '.format(pages[i]['likes'], pages[i]['talking_about_count'], pages[i]['name'])
 
-#
-# def facebook_get_page_stories(access_token, id):
-#     debug_print("EXEC facebook_get_page_stories method :")
-#     base_url = 'https://graph.facebook.com/'+id+"/insights/page_stories"
-#     fields = 'period=month'
-#     url = '%s?%s&access_token=%s' % (base_url.strip(), fields, access_token)
-#     #print url
-#     # Interpret the response as JSON and convert back
-#     # to Python data structures
-#     content = None
-#     try:
-#         content = requests.get(url).json()
-#         #if content["name"]:
-#             #pass
-#     #if the content is not a page
-#     except KeyError, e:
-#         pass
-#     else:
-#         #return content
-#         print json.dumps(content,indent=1)
+
+def facebook_get_page_stories(access_token, id):
+    debug_print("EXEC facebook_get_page_stories method :")
+    base_url = "https://graph.facebook.com/"+id+"/insights/page_stories"
+    fields = "period=month"
+    url = '%s?access_token=%s' % (base_url.strip(), access_token)
+    #print url
+    # Interpret the response as JSON and convert back
+    # to Python data structures
+    content = None
+    try:
+        content = requests.get(url).json()
+        #if content["name"]:
+            #pass
+    #if the content is not a page
+    except KeyError, e:
+        pass
+    else:
+        #return content
+        print json.dumps(content, indent=1)

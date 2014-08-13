@@ -125,7 +125,7 @@ def load_from_mongo_sorted(mongo_db, mongo_db_coll, return_cursor=False, criteri
     client = pymongo.MongoClient(**mongo_conn_kw)
     db = client[mongo_db]
     coll = db[mongo_db_coll]
-    print(sort_params)
+
     if criteria is None:  # set criteria
         criteria = {}
 

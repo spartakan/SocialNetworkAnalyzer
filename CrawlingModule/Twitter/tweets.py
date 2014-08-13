@@ -128,14 +128,14 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
              #find the highest since_id from database to continue if a rate limitation is reached
             since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
             if since_id:
-                debug_print(" since_id: "+ str(since_id))
+                debug_print(" since_id: %i" % since_id)
                 kw = {'since_id': since_id}
             else:
                 debug_print("  No since_id")
-            debug_print("  Rate limit reached. Start:" + str(time.ctime()) + " . Retrying in 15 min ...zZz...")
+            debug_print("  Rate limit reached. Start: %s . Retrying in 15 min ...zZz..." % str(time.ctime()))
             sys.stderr.flush()
             time.sleep(60*15 + 10)
-            debug_print("  Woke up ... End: " + str(time.ctime()))
+            debug_print("  Woke up ... End: %s " % str(time.ctime()))
             twitter_search(twitter_api, q, **kw)
 
     except SocketError, se:
@@ -150,7 +150,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
         twitter_search(twitter_api, q, **kw)
 
     statuses = search_results['statuses']
-    debug_print("  number of statuses: " + str(len(statuses)) + " max_limit: " + str(max_results))
+    debug_print("  number of statuses: %i max_limit: %i"  % (len(statuses), max_results))
 
     # reach the desired number of results, keeping in mind that OAuth users
     # can "only" make 180 search queries per 15-minute interval. See
@@ -193,7 +193,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
 
 
 
-def twitter_save_time_series_data(api_func, mongo_db_name, mongo_db_coll, secs_per_interval=60, max_intervals=15, **mongo_conn_kw):
+def twitter_save_time_series_data(api_func, secs_per_interval=60 ,max_intervals=15, **mongo_conn_kw):
     """
     Executes an api function on a given time-interval if no immediate results are needed.
     Usually needed for checking trending topics.
@@ -209,18 +209,16 @@ def twitter_save_time_series_data(api_func, mongo_db_name, mongo_db_coll, secs_p
     # you will not exceed the TwitterWrapper rate limit.
     interval = 0
     while True:
-        # A timestamp of the form "2013-06-14 12:52:07"
-        now = str(datetime.datetime.now()).split(".")[0]
-        ids = twitter_save_to_mongo(api_func(), mongo_db_name, mongo_db_coll)
-        print >> sys.stderr, "Writing {0} trends to database ".format(len(ids))
-        print >> sys.stderr, "wait for 15 seconds ... "
-        print >> sys.stderr.flush()
-
-        time.sleep(secs_per_interval)  # seconds
-        interval += 1
-        print "interval", interval
-        if interval >= 15:
-            break
+        try:
+            api_func()
+        except Exception, e:
+            logger.error(e)
+            debug_print("  " + e.message)
+        finally:
+            debug_print("  Start: %s . Retrying in %i min/intervals ...zZz..." % (str(time.ctime()), max_intervals))
+            time.sleep(secs_per_interval*max_intervals + 10)
+            debug_print("  Woke up ... End: " + str(time.ctime()))
+            sys.stderr.flush()
 
 def twitter_stream_api(twitter_api, q):
 

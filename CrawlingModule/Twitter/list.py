@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 
 
-def twitter_get_list_members_tweets(twitter_api, max_results=1000, owner_screen_name = "@spartakan", slug="community-councils"):
+def twitter_get_list_members_tweets(twitter_api, max_results=1000, owner_screen_name="@spartakan", slug="community-councils"):
     debug_print("EXEC twitter_get_list_members method :")
 
     #get id of last tweet from mongo
@@ -41,13 +41,13 @@ def twitter_get_list_members_tweets(twitter_api, max_results=1000, owner_screen_
         kw['max_id'] = min([tweet['id'] for tweet in response]) - 1
         response = twitter_api.lists.statuses(owner_screen_name=owner_screen_name, slug=slug, **kw)
         results += response
-        debug_print("  All results len : "+str(len(results)) + " |  New response len : "+str(len(response)))
+        #debug_print("  All results len : "+str(len(results)) + " |  New response len : "+str(len(response)))
         page_num += 1
 
     #Saving all results to database
     for tweet in results:
-        save_to_mongo(tweet, "twitter", "FollowLater-Macedonia1")
-    debug_print(" All Results are saved in database")
+        save_to_mongo(tweet, "twitter", slug)
+    #debug_print(" All Results are saved in database")
 
 
 def twitter_get_list_members(twitter_api, owner_screen_name="spartakan", slug="community-councils"):

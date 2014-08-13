@@ -170,9 +170,9 @@ def twitter_menu():
 
         elif action == '5':  # find trending topics on a time interval
             #making a partial class from twitter_search to later add it as an argument in twitter_save_time_series_data
-            trending_topics = partial(twitter_trends, api, WORLD_WOE_ID)
+            tweets_from_list_members = partial(twitter_get_list_members_tweets, api)
             #get and save the trending topics on time intervals
-            twitter_save_time_series_data(trending_topics, 'twitter', '#trends')
+            twitter_save_time_series_data(tweets_from_list_members)
 
         elif action == '6':  # get members of a list
             twitter_get_list_members(api)

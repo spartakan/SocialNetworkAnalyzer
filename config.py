@@ -17,30 +17,40 @@ elif platform.system() == 'Linux':
   #Check on which operating system the script is running and get the file from that path
 
 
-#Consumer key & secret for facebook
+#Consumer key & secret for facebook authorization
 facebook_CONSUMER_ID = "784369068293517"
 facebook_CONSUMER_SECRET = "d309eff5bcd6a6d02cc8602b2ba9e438"
-facebook_path_to_PAGES_FILE=""
-facebook_path_to_EXPORT_FILE=""
 
-if platform.system()=="Windows":
+
+
+#determine path for files based on the computer you're using
+facebook_path_to_PAGES_FILE = ""
+facebook_path_to_EXPORT_FILE = ""
+
+if platform.system() == "Windows":
     if os.path.exists("H:/twitterAnalyzer/CrawlingModule/Resources/CC Social media (1).xlsx"):
         facebook_path_to_PAGES_FILE="H:/twitterAnalyzer/CrawlingModule/Resources/CC Social media (1).xlsx"
         facebook_path_to_EXPORT_FILE="H:/twitterAnalyzer/CrawlingModule/Resources/Facebook_analysis.xls"
         debug_print("  Path exists: %s"%facebook_path_to_PAGES_FILE)
 
     elif os.path.exists("C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/CC Social media.xlsx"):
-        facebook_path_to_PAGES_FILE="C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/CC Social media.xlsx"
-        facebook_path_to_EXPORT_FILE="C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/Facebook_analysis.xlsx"
-        debug_print("  Path exists: %s"%facebook_path_to_PAGES_FILE)
+        facebook_path_to_PAGES_FILE = "C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/CC Social media.xlsx"
+        facebook_path_to_EXPORT_FILE = "C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/Facebook_analysis.xls"
+        debug_print("  Path exists: %s" % facebook_path_to_PAGES_FILE)
 
     else:
         debug_print("  Path Not Found!")
+elif platform.system() == 'Linux':
+    facebook_path_to_PAGES_FILE = "/home/sd/twitterAnalyzer/CrawlingModule/Resources/Facebook_analysis.xlsx"
+    facebook_path_to_EXPORT_FILE = "/home/sd/twitterAnalyzer/CrawlingModule/Resources/Facebook_analysis.xls"
 
 
 
+#ONLY FOR WINDOWS on work
 #Consumer key & secret from https://apps.twitter.com/ for twitter authorization
 path_to_graph_file = "c:/data/graph_community-councils.gml" #where to export the .gml file
+
+
 twitter_CONSUMER_KEY = 'hiXJndRNsYmzrpI9CWmeCJ3r5'
 twitter_CONSUMER_SECRET = 'pEs9mzbqeYwl2Ax9OtYPtFowgK6DdTgraZqTPG8Sc2nbID0PIk'
 twitter_OAUTH_FILE = ''

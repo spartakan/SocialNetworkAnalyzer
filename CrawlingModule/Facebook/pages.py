@@ -3,10 +3,11 @@ import json
 import xlrd  # pip install xlrd
 from config import *
 from CrawlingModule.Facebook.authorization import facebook_authorize
+from AnalysisModule.Facebook.pages import facebook_sort_pages
 from DatabaseModule.FacebookWrapper.database_manipulation import facebook_save_to_mongo
 
 
-def facebook_get_page_posts(ACCESS_TOKEN, page_id=None, limit=200):
+def facebook_get_page_posts(ACCESS_TOKEN, page_id=None, limit=1000):
 
     debug_print("EXEC facebook_get_page_posts method :")
     if page_id:
@@ -26,7 +27,6 @@ def facebook_get_page_posts(ACCESS_TOKEN, page_id=None, limit=200):
 
             try:
                 next = content["paging"]["next"]
-                #print("next: ", next)
                 content = requests.get(next).json()
                 result += content["data"]
 
@@ -62,32 +62,7 @@ def facebook_get_page_data(access_token, name):
 
 
 
-def facebook_sort_pages(pages, order="DESC"):
-    """ Sorts the list of pages first by number of likes then by number of people talking about it
-    :parameter pages - list of pages to sort
-    :parameter order - order in which the list should be sorted. values: ASC and DESC
-    :returns pages - sorted ist of pages
-    """
-    #debug_print("EXEC facebook_sort_pages method :")
-    #print pages
-    #sort statuses by likes, then by num of people talking about it
-    if order == "DESC":
-        for i in range(0, len(pages)):
-            for j in range(i, len(pages)):
-                if int(pages[i]['likes']) < int(pages[j]['likes']):
-                    pages[i], pages[j] = pages[j], pages[i]
-                elif int(pages[i]['likes']) == int(pages[j]['likes']):
-                    if int(pages[i]['talking_about_count']) < int(pages[j]['talking_about_count']):
-                        pages[i], pages[j] = pages[j], pages[i]
-    elif order == "ASC":
-         for i in range(0, len(pages)):
-            for j in range(i, len(pages)):
-                if int(pages[i]['likes']) > int(pages[j]['likes']):
-                    pages[i], pages[j] = pages[j], pages[i]
-                elif int(pages[i]['likes']) == int(pages[j]['likes']):
-                    if int(pages[i]['talking_about_count']) > int(pages[j]['talking_about_count']):
-                        pages[i], pages[j] = pages[j], pages[i]
-    return pages
+
 
 
 def facebook_read_pages_from_excel(access_token, file=facebook_path_to_PAGES_FILE):
@@ -110,12 +85,12 @@ def facebook_read_pages_from_excel(access_token, file=facebook_path_to_PAGES_FIL
 
         base = parts[0]  # get the base of the url if it contains parameters after a ?
         url_parts = base.split("/")
+        page_name_or_id = None
         page_name_or_id = url_parts[len(url_parts)-1]  # get the name or id whichever one is last
 
-        if page_name_or_id is not None:
-            debug_print("  page name or id: %s"%page_name_or_id)
+        if len(page_name_or_id) > 1:
+            debug_print("  page name or id: %s" % page_name_or_id)
             pages.append(page_name_or_id)  # add to dictionary of pages and their facebook data in json format
-
     return pages
 
 
@@ -129,9 +104,9 @@ def facebook_print_page_data(pages=None):
             print '{0:10}     {1:10}     {2:20} '.format(pages[i]['likes'], pages[i]['talking_about_count'], pages[i]['name'])
 
 
-def facebook_get_page_stories(access_token, id):
+def facebook_print_page_insights(access_token, id):
     debug_print("EXEC facebook_get_page_stories method :")
-    base_url = "https://graph.facebook.com/"+id+"/insights/page_stories"
+    base_url = "https://graph.facebook.com/"+id+"/insights"
     fields = "period=month"
     url = '%s?access_token=%s' % (base_url.strip(), access_token)
     #print url
@@ -148,3 +123,4 @@ def facebook_get_page_stories(access_token, id):
     else:
         #return content
         print json.dumps(content, indent=1)
+

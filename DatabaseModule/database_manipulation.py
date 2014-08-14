@@ -106,7 +106,7 @@ def load_from_mongo_with_mapreduce(mongo_db, mongo_db_coll, map,reduce, newDatab
 
     return result.find().sort("value", order).limit(limit)
 
-def load_from_mongo_sorted(mongo_db, mongo_db_coll, return_cursor=False, criteria=None, projection=None, sort_params=None, limit=5, **mongo_conn_kw):
+def load_from_mongo_sorted(mongo_db, mongo_db_coll, return_cursor=False, criteria=None, projection=None, sort_params=None, limit=None, **mongo_conn_kw):
     """
     Loads data from the specific database and the specific collection by the chosen criteria
     :param mongo_db
@@ -132,9 +132,12 @@ def load_from_mongo_sorted(mongo_db, mongo_db_coll, return_cursor=False, criteri
     if criteria is not None and projection is not None and sort_params is not None:
         cursor = coll.find(criteria, projection).sort(sort_params)
         debug_print("  All criteria set")
-    elif projection is None:
-        debug_print("  No projection")
+    elif projection is None and limit is not None:
+        debug_print("  No projection, has limit")
         cursor = coll.find(criteria).sort(sort_params).limit(limit)
+    elif projection is None and limit is None:
+        debug_print("  No projection, no limit")
+        cursor = coll.find(criteria).sort(sort_params)
     else:
         cursor = coll.find(criteria)
         debug_print("  Not sorted")

@@ -9,26 +9,22 @@ from CrawlingModule.Twitter.user import twitter_get_followers, twitter_user_time
 from CrawlingModule.Twitter.tweets import twitter_search, twitter_call_function_on_interval, twitter_stream_api,twitter_trends
 from CrawlingModule.Twitter.list import twitter_get_list_members, twitter_get_list_members_tweets
 from CrawlingModule.Facebook.authorization import facebook_authorize
-from CrawlingModule.Facebook.pages import facebook_get_page_data, facebook_get_page_posts,facebook_sort_pages, \
-                                        facebook_read_pages_from_excel,facebook_print_page_data, facebook_get_page_stories
+from CrawlingModule.Facebook.pages import facebook_get_page_data, facebook_get_page_posts, \
+                                        facebook_read_pages_from_excel,facebook_print_page_data, facebook_print_page_insights
+
 
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
 from DatabaseModule.FacebookWrapper.database_manipulation import facebook_save_to_mongo
 
 from AnalysisModule.Twitter.tweets import get_common_tweet_entities,extract_tweet_entities,print_prettytable, \
-    get_popular_hashtags, get_users_for_hashtag_list,\
-                                    find_popular_tweets
+                                          get_popular_hashtags, get_users_for_hashtag_list,\
+                                          find_popular_tweets
 from AnalysisModule.Twitter.graph import create_keyplayers_graph,export_graph_to_gml
-from AnalysisModule.Facebook.pages import facebook_get_likes_count,facebook_get_talkingabout_count, facebook_get_posts_from_database
+from AnalysisModule.Facebook.pages import facebook_get_likes_count,facebook_get_talkingabout_count, \
+                                          facebook_get_posts_from_database, facebook_get_posts_for_month,facebook_sort_pages
 
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
-
-
-
-
-
-
 
 
 
@@ -46,18 +42,31 @@ def facebook_menu():
             print "6. Save posts for one page"
             print "7. Get date from most recent post of a page"
             print "8. Get number of stories for page"
+            print "9. Print Facebook insights for a page"
+            print "10.Get number of posts for July "
 
             action = raw_input('Enter the number of the action: ').strip()
-    if action == '0' or action == '1':
+
+    if action == '0' or action == '1' :
         pages = facebook_read_pages_from_excel(access_token)  # get pages and basic data for pages
         if action == '0':
-            for i in range(0, len(pages)):
-                results = facebook_get_page_posts(access_token, pages[i]["id"]) #send id of page and access token to get posts
-                facebook_save_to_mongo(mongo_db="facebook", mongo_db_coll=pages[i]['name'], data=results)
+            for page in pages:
+                page_data = facebook_get_page_data(access_token, page)
+                if page_data:
+                    results = facebook_get_page_posts(access_token, page_data["id"]) #send id of page and access token to get posts
+                    facebook_save_to_mongo(mongo_db="facebook", mongo_db_coll=page_data['name'], data=results)
 
         if action == '1':
             sorted_pages = facebook_sort_pages(pages, "DESC")
             facebook_print_page_data(sorted_pages)
+
+        # if action == '10':
+        #     for page in pages:
+        #         page_data = facebook_get_page_data(access_token, page)
+        #         if page_data:
+        #             results = facebook_get_page_posts(access_token, page_data["id"]) #send id of page and access token to get posts
+        #             facebook_save_to_mongo(mongo_db="facebook", mongo_db_coll=page_data['name'], data=results)
+
     elif action == '2':
         pages = facebook_read_pages_from_excel(access_token)
         print len(pages)
@@ -73,12 +82,14 @@ def facebook_menu():
     elif action == '4':
         page = "Connel Community Council" #sample page
         print page, facebook_get_talkingabout_count(page)
+
     elif action == '5':
         posts = facebook_get_posts_from_database(from_user="Connel Community Council", page_name="Connel Community Council")
         for post in posts:
             print post
             print "\n  \n _________________________________________________________________________ \n"
             #break
+
     elif action == '6':
         page = "187281984718895"  # sample id
         data = facebook_get_page_posts(access_token, page, limit=500)
@@ -93,39 +104,62 @@ def facebook_menu():
 
     elif action == '8':
         #print(facebook_path_to_EXPORT_FILE)
-        workbook = xlwt.Workbook(encoding="utf-8")
+        workbook = xlwt.Workbook(encoding="utf-8")  # XLWT - ONLY EXPORTS .XLS files
         sheet = workbook.add_sheet("sheet1")
 
         sheet.write(0, 0, 'CC Name')
         sheet.write(0, 1, 'Count Likes')
         sheet.write(0, 2, 'Count Talking about')
-        sheet.write(0, 3, 'Count Stories')
-        sheet.write(0, 4, 'Date Most recent post')
-        sheet.write(0, 5, 'Date 5th Most recent post')
+        sheet.write(0, 3, 'Count Posts for July')
+        sheet.write(0, 4, 'Count Posts TOTAL')
+        sheet.write(0, 5, 'Date Most recent post')
+        sheet.write(0, 6, 'Date 5th Most recent post')
 
-
-        pages_data = load_from_mongo(mongo_db="facebook", mongo_db_coll="pages_info")
-        i=1
+        pages_data = load_from_mongo(mongo_db="facebook", mongo_db_coll="pages_info")  # collection where all
+                                                                                       # the data for each page is stored
+        pages_data = facebook_sort_pages(pages_data, "DESC")
+        i = 1  # index for rows in sheet
         for page in pages_data:
             id = page['id']
-            #print  page['likes']
             sheet.write(i, 0, page['name'])
             sheet.write(i, 1, page['likes'])
             sheet.write(i, 2, page['talking_about_count'])
-            #stories = facebook_get_page_stories(access_token, id)
-            sheet.write(i, 3, '-1')
-            result = facebook_get_posts_from_database(from_user="Connel Community Council", page_name="Connel Community Council", limit=5)
-            most_recent_post = result[0]['created_time']
-            sheet.write(i, 4, most_recent_post)
 
-            fifth_most_recent_post = result[4]['created_time']
+            most_recent_post = 0
+            fifth_most_recent_post = 0
+            result = facebook_get_posts_from_database(from_user=page['name'], page_name=page['name'], limit=5)
+            if result:
+                most_recent_post = result[0]['created_time']
+                fifth_most_recent_post = result[len(result)-1]['created_time'] # some pages have less than 5 posts
             sheet.write(i, 5, most_recent_post)
+            sheet.write(i, 6, fifth_most_recent_post)
+
+            monthly_posts = len(facebook_get_posts_for_month(page['name'], month="07"))
+            if monthly_posts is None:
+                monthly_posts = 0
+            sheet.write(i, 3, monthly_posts)
+
+            total_posts = 0
+            result = facebook_get_posts_from_database(from_user=page['name'], page_name=page['name'])
+            if result:
+                total_posts = len(result)
+            sheet.write(i, 4, total_posts)
+
             i += 1
         workbook.save(facebook_path_to_EXPORT_FILE)
 
+    elif action == '9':
+        page_id = "173685876111989"  # sample id
+        facebook_print_page_insights(access_token, page_id)
 
-
-
+    elif action == '10':
+        page_id = "173685876111989"
+        page_data = facebook_get_page_data(access_token, page_id)
+        if page_data:
+            monthly_posts = facebook_get_posts_for_month(page_data['name'], month="07")
+            print page_data['name'], " : ", len(monthly_posts)
+            for post in monthly_posts:
+                print post
 
 
 

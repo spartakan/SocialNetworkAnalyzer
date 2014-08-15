@@ -228,3 +228,11 @@ def get_users_for_hashtag_list(hashtags):
         #print len(unique_users)
         users_per_hashtag.update({hashtag:unique_users})
     return users_per_hashtag
+
+
+def twitter_get_hashtags_from_tweets(tweets):
+
+    screen_names, hashtags, urls, media, symbols = extract_tweet_entities(tweets)
+    #remove duplicates
+    hashtags = set(hashtags)
+    return hashtags

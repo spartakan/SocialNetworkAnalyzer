@@ -4,6 +4,7 @@ from config import *
 from twitter.api import TwitterHTTPError
 from sys import maxint
 from CrawlingModule.Twitter.tweets import twitter_make_robust_request
+from DatabaseModule.TwitterWrapper.database_manipulation import twitter_save_to_mongo
 #create a logger for this module , set it up, and use it to write errors to file
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
@@ -28,20 +29,25 @@ def twitter_get_followers(twitter_api, screen_name=None, followers_limit=None):
                 break
             try:
                 # get the first page with results
-                response = twitter_api.followers.list(count=5000, screen_name=screen_name, cursor=cursor)
+                response = twitter_api.followers.list(count=200, screen_name=screen_name, cursor=cursor)
                 if response is not None:
                     cursor = response['next_cursor']
                     followers += response['users']
                     debug_print("  users (last response): %d " % (len(response['users'])))
                     debug_print("  total followers: %d" % len(followers))
+
             except TwitterHTTPError, e:
                 debug_print(e)
                 sys.stderr.flush()
                 logger.error(e)
-                if e.e.code == 88:   # rate limit is reached
+                debug_print("error_code:%i"%e.e.code)
+                if e.e.code == 429:   # rate limit is reached
                     debug_print("  Rate limit reached. Start: %s . Retrying in 15 min ...zZz..." % (str(time.ctime())))
                     time.sleep(60*15 + 10)
                     debug_print("  Woke up ... End: %s" % (str(time.ctime())))
+                if e.e.code == 401: # not authorized to see user
+                    pass
+
     return followers
 
 
@@ -111,7 +117,7 @@ def twitter_get_friends_followers_ids(twitter_api, screen_name=None, user_id=Non
 
 
 
-def twitter_user_timeline(twitter_api, screen_name=None, user_id=None, max_results=1000):
+def twitter_user_timeline(twitter_api, screen_name=None, user_id=None, max_results=2000):
     """
     Harvest all of user's most recent tweets. Number of retrieved tweets can grow to 3,200
     so a robust API wrapper is added
@@ -134,24 +140,48 @@ def twitter_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
     results = []
     tweets = twitter_make_robust_request(twitter_api.statuses.user_timeline, **kw)
 
-    if tweets is None:# 401 (Not Authorized) - Need to bail out on loop entry
+    if tweets is None:  # 401 (Not Authorized) - Need to bail out on loop entry
         tweets = []
 
     results += tweets
     debug_print('  Fetched %i tweets' % len(tweets))
     page_num = 1
 
-    if max_results == kw['count']:
+    if max_results and max_results == kw['count']:
         page_num = max_pages # Prevent loop entry
 
     while page_num < max_pages and len(tweets) > 0 and len(results) < max_results:
         # Necessary for traversing the timeline in TwitterWrapper's v1.1 API:
         # get the next query's max-id parameter to pass in.
         # See https://dev.twitter.com/docs/working-with-timelines.
+
         kw['max_id'] = min([tweet['id'] for tweet in tweets]) - 1
         tweets = twitter_make_robust_request(twitter_api.statuses.user_timeline, **kw)
         results += tweets
         debug_print('  Fetched %i tweets' % (len(tweets)))
         page_num += 1
     debug_print('  Done fetching tweets')
+
+    indexes = ["hashtags.text"]
+    twitter_save_to_mongo(data=tweets, mongo_db="twitter", mongo_db_coll=screen_name, indexes=indexes)
+
     return results[:max_results]
+
+
+def twitter_get_user_info(twitter_api , screen_name=None , user_id=None):
+    """ Function that retrieves twitter data for a given user
+    :parameter twitter_api
+    :parameter user_id_or_screenname
+
+    :returns user - json object with all information about user"""
+    debug_print('EXEC twitter_get_user_info method : ')
+
+    user = None
+
+    if screen_name and not user_id:
+        user = twitter_api.users.show(screen_name=screen_name)
+    elif user_id and not screen_name:
+        user = twitter_api.users.show(user_id=user_id)
+
+    if user:
+        return  user

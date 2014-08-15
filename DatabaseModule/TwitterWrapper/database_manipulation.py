@@ -1,4 +1,4 @@
-from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
+from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo,load_from_mongo_sorted
 from debugging_setup import  *
 import datetime
 import pymongo
@@ -7,7 +7,8 @@ from pymongo.errors import DuplicateKeyError
 import logging
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
-
+DESC = -1
+ASC = 1
 
 def twitter_save_to_mongo(data, mongo_db, mongo_db_coll, indexes=None, **mongo_conn_kw):
     """
@@ -27,24 +28,34 @@ def twitter_save_to_mongo(data, mongo_db, mongo_db_coll, indexes=None, **mongo_c
     # Reference a particular collection in the database
     coll = db[mongo_db_coll]
     #oll.create_index("recent_retweets")
-    try:
-        coll.ensure_index([("id", 1)], unique=True)
-        date = data['created_at']
-        date = datetime.datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
-        #debug_print("DATE : " + str(date))
-        data["DATE"] = unicode(date)
-        #debug_print(json.dumps(d, indent=1))
-        #break
-        coll.ensure_index("DATE")
-        #ensure all other indexes
-        if indexes is not None:
-            for idx in indexes:
-                coll.ensure_index(idx)
-        status = coll.insert(data)
+    for document in data:
+        try:
+            coll.ensure_index([("id", 1)], unique=True)
+            date = document['created_at']
+            date = datetime.datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
+            #debug_print("DATE : " + str(date))
+            document["DATE"] = unicode(date)
+            #debug_print(json.dumps(d, indent=1))
+            #break
+            coll.ensure_index("DATE")
+            #ensure all other indexes
+            if indexes is not None:
+                for idx in indexes:
+                    coll.ensure_index([(idx, 1)])
+            status = coll.insert(document)
 
-    except (Exception, DuplicateKeyError), e:
-        debug_print("  Exception: %s" % e.message)
-        logger.error(e)
-        pass
+        except (Exception, DuplicateKeyError), e:
+            debug_print("  Exception: %s" % e.message)
+            logger.error(e)
+            pass
 
+
+def twitter_load_from_mongo_sorted(screen_name, limit=None):
+    """
+    Returns all tweets
+    :param screen_name:
+    :return:
+    """
+    sort_params = [("DATE", DESC)]
+    return load_from_mongo_sorted(mongo_db="twitter", mongo_db_coll=screen_name, limit=limit, sort_params=sort_params)
 

@@ -73,5 +73,7 @@ def twitter_get_list_members(twitter_api, owner_screen_name="spartakan", slug="c
             time.sleep(15*60 + 10)
             debug_print("  Woke up ... End: " + str(time.ctime()))
             debug_print("  cursor after waking up: "+str(cursor))
+    db_coll_name = "%s_%s" % (slug, "members")
+    save_to_mongo(members, mongo_db="twitter", mongo_db_coll=db_coll_name)
     return members
 

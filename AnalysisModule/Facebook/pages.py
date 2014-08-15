@@ -1,6 +1,7 @@
 from config import *
 from DatabaseModule.database_manipulation import load_from_mongo, load_from_mongo_sorted
-
+DESC = -1
+ASC = 1
 
 def facebook_get_likes_count(page_name):
 
@@ -52,7 +53,7 @@ def facebook_get_posts_for_month(page_name, month="07"):
 
 
 
-def facebook_sort_pages(pages, order="DESC"):
+def facebook_sort_pages(pages, order=DESC):
     """ Sorts the list of pages first by number of likes then by number of people talking about it
     :parameter pages - list of pages to sort
     :parameter order - order in which the list should be sorted. values: ASC and DESC
@@ -61,7 +62,7 @@ def facebook_sort_pages(pages, order="DESC"):
     #debug_print("EXEC facebook_sort_pages method :")
     #print pages
     #sort statuses by likes, then by num of people talking about it
-    if order == "DESC":
+    if order == DESC:
         for i in range(0, len(pages)):
             for j in range(i, len(pages)):
                 if int(pages[i]['likes']) < int(pages[j]['likes']):
@@ -69,7 +70,7 @@ def facebook_sort_pages(pages, order="DESC"):
                 elif int(pages[i]['likes']) == int(pages[j]['likes']):
                     if int(pages[i]['talking_about_count']) < int(pages[j]['talking_about_count']):
                         pages[i], pages[j] = pages[j], pages[i]
-    elif order == "ASC":
+    elif order == ASC:
          for i in range(0, len(pages)):
             for j in range(i, len(pages)):
                 if int(pages[i]['likes']) > int(pages[j]['likes']):

@@ -287,7 +287,7 @@ def twitter_menu():
             print "MULTIGRAPH"
             slug = "community-councils"
             mdG = create_multi_graph_of_list_memebers_and_followers(api,slug)
-            export_graph_to_gml(mdG, "C:/Users/zz2005/Desktop/gephi_exports")
+            export_graph_to_gml(mdG, "C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/twitter_multigraph1.gml")
 
 
         elif action == '13':  # find popular tweets from list of tweets

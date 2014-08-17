@@ -120,11 +120,12 @@ def create_multi_graph_of_list_memebers_and_followers(api, list):
     mdG = nx.MultiDiGraph()
     db_coll_name = "%s_%s" % (list, "members")
     members = load_from_mongo(mongo_db="twitter", mongo_db_coll=db_coll_name)
-    for member in members:
+    for member in members[:10]:
         followers = twitter_get_followers(api, screen_name=member['screen_name'],followers_limit=400)
+        print member['screen_name'],len(followers)
         #create network of following
-        for follower in followers:
-                    mdG = create_keyplayers_graph(graph=mdG, user=member, followers=followers, weight=1)
+        #for follower in followers:
+        mdG = create_keyplayers_graph(graph=mdG, user=member, followers=followers, weight=1)
 
     #create network of conversation/replying
     i = 0

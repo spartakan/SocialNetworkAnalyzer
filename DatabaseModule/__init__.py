@@ -3,6 +3,6 @@ import platform
 import sys
 
 if platform.system() == 'Windows':
-    sys.path.append(os.path.abspath("H:/twitterAnalyzer/DatabaseModule"))
+    sys.path.append(os.path.abspath("H:/SocialNetworkAnalyzer/DatabaseModule"))
 elif platform.system() == 'Linux':
-    sys.path.append(os.path.abspath("~/twitterAnalyzer/DatabaseModule"))
+    sys.path.append(os.path.abspath("~/SocialNetworkAnalyzer/DatabaseModule"))

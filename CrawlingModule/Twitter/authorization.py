@@ -63,6 +63,7 @@ def twitter_authorize():
                 #get authorization with the new access token
                 oauth = twitter.oauth.OAuth(ACCESS_KEY, ACCESS_SECRET, twitter_CONSUMER_KEY, twitter_CONSUMER_SECRET)
                 twitter_api = twitter.Twitter(auth=oauth)
+                print "API: ",twitter_api
                 return twitter_api
     return False
 

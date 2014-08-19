@@ -6,14 +6,14 @@ from debugging_setup import setup_logging, debug_print
 
 #set system path
 if platform.system() == 'Windows':
-    if os.path.exists("H:/twitterAnalyzer"):
-        sys.path.append(os.path.abspath("H:/twitterAnalyzer"))
-    elif os.path.exists("C:/Users/Windows/Desktop/twitterAnalyzer"):
-        sys.path.append(os.path.abspath("C:/Users/Windows/Desktop/twitterAnalyzer"))
+    if os.path.exists("H:/SocialNetworkAnalyzer"):
+        sys.path.append(os.path.abspath("H:/SocialNetworkAnalyzer"))
+    elif os.path.exists("C:/Users/Windows/Desktop/SocialNetworkAnalyzer"):
+        sys.path.append(os.path.abspath("C:/Users/Windows/Desktop/SocialNetworkAnalyzer"))
 elif platform.system() == 'Linux':
-    sys.path.insert(0,os.path.abspath("/home/sd/twitterAnalyzer"))
+    sys.path.insert(0,os.path.abspath("/home/sd/SocialNetworkAnalyzer"))
     print "SYS PATH : ",sys.path
-    #sys.path.append(os.path.abspath("~/twitterAnalyzer"))
+    #sys.path.append(os.path.abspath("~/SocialNetworkAnalyzer"))
   #Check on which operating system the script is running and get the file from that path
 
 
@@ -24,29 +24,29 @@ facebook_CONSUMER_SECRET = "d309eff5bcd6a6d02cc8602b2ba9e438"
 
 
 #determine path for files based on the computer you're using
-facebook_path_to_PAGES_FILE = ""
+facebook_path_to_PAGES_FILE = ""  #list with pages for community councils
 facebook_path_to_EXPORT_FILE = ""
 
 if platform.system() == "Windows":
-    if os.path.exists("H:/twitterAnalyzer/CrawlingModule/Resources/CC Social media (1).xlsx"):
-        facebook_path_to_PAGES_FILE="H:/twitterAnalyzer/CrawlingModule/Resources/CC Social media (1).xlsx"
-        facebook_path_to_EXPORT_FILE="H:/twitterAnalyzer/CrawlingModule/Resources/Facebook_analysis.xls"
+    if os.path.exists("H:/SocialNetworkAnalyzer/Resources/CC Social media (1).xlsx"):
+        facebook_path_to_PAGES_FILE="H:/SocialNetworkAnalyzer/Resources/CC Social media (1).xlsx"
+        facebook_path_to_EXPORT_FILE="H:/SocialNetworkAnalyzer/Resources/Facebook_analysis.xls"
         debug_print("  Path exists: %s"%facebook_path_to_PAGES_FILE)
 
-    elif os.path.exists("C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/CC Social media.xlsx"):
-        facebook_path_to_PAGES_FILE = "C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/CC Social media.xlsx"
-        facebook_path_to_EXPORT_FILE = "C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/Facebook_analysis.xls"
+    elif os.path.exists("C:/Users/Windows/Desktop/SocialNetworkAnalyzer/Resources/CC Social media.xlsx"):
+        facebook_path_to_PAGES_FILE = "C:/Users/Windows/Desktop/SocialNetworkAnalyzer/Resources/CC Social media.xlsx"
+        facebook_path_to_EXPORT_FILE = "C:/Users/Windows/Desktop/SocialNetworkAnalyzer/Resources/Facebook_analysis.xls"
         debug_print("  Path exists: %s" % facebook_path_to_PAGES_FILE)
 
     else:
         debug_print("  Path Not Found!")
 elif platform.system() == 'Linux':
-    facebook_path_to_PAGES_FILE = "/home/sd/twitterAnalyzer/CrawlingModule/Resources/Facebook_analysis.xlsx"
-    facebook_path_to_EXPORT_FILE = "/home/sd/twitterAnalyzer/CrawlingModule/Resources/Facebook_analysis.xls"
+    facebook_path_to_PAGES_FILE = "/home/sd/SocialNetworkAnalyzer/Resources/Facebook_analysis.xlsx"
+    facebook_path_to_EXPORT_FILE = "/home/sd/SocialNetworkAnalyzer/Resources/Facebook_analysis.xls"
 
 
 
-#ONLY FOR WINDOWS on work
+#ONLY FOR WINDOWS
 #Consumer key & secret from https://apps.twitter.com/ for twitter authorization
 path_to_graph_file = "c:/data/graph_community-councils.gml" #where to export the .gml file
 
@@ -55,10 +55,10 @@ twitter_CONSUMER_KEY = 'hiXJndRNsYmzrpI9CWmeCJ3r5'
 twitter_CONSUMER_SECRET = 'pEs9mzbqeYwl2Ax9OtYPtFowgK6DdTgraZqTPG8Sc2nbID0PIk'
 twitter_OAUTH_FILE = ''
 if platform.system() == 'Windows':
-    if os.path.exists("H:/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt"):
-        twitter_OAUTH_FILE = os.path.expanduser("H:/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt").replace("\\", "/")
-    if os.path.exists("C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt"):
-        twitter_OAUTH_FILE = os.path.expanduser("C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt").replace("\\", "/")
+    if os.path.exists("H:/SocialNetworkAnalyzer/CrawlingModule/Resources/twitter_oauth.txt"):
+        twitter_OAUTH_FILE = os.path.expanduser("H:/SocialNetworkAnalyzer/Resources/twitter_oauth.txt").replace("\\", "/")
+    if os.path.exists("C:/Users/Windows/Desktop/SocialNetworkAnalyzer/Resources/twitter_oauth.txt"):
+        twitter_OAUTH_FILE = os.path.expanduser("C:/Users/Windows/Desktop/SocialNetworkAnalyzer/Resources/twitter_oauth.txt").replace("\\", "/")
 elif platform.system() == 'Linux':
-    twitter_OAUTH_FILE = os.path.abspath(os.path.expanduser("~/twitterAnalyzer/CrawlingModule/Resources/twitter_oauth.txt"))
+    twitter_OAUTH_FILE = os.path.abspath(os.path.expanduser("~/SocialNetworkAnalyzer/Resources/twitter_oauth.txt"))
 

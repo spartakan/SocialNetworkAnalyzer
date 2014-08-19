@@ -119,8 +119,12 @@ def twitter_get_friends_followers_ids(twitter_api, screen_name=None, user_id=Non
 
 def twitter_user_timeline(twitter_api, screen_name=None, user_id=None, max_results=2000):
     """
-    Harvest all of user's most recent tweets. Number of retrieved tweets can grow to 3,200
+    Harvest all of user's most recent tweets and save into database. Number of retrieved tweets can grow to 3,200
     so a robust API wrapper is added
+    :parameter: screen_name - owner of timeline
+    :parameter: user_id - id of owner of timeline
+    :parameter: max_results
+    :returns results - tweets from  user'r timeline
     """
     debug_print('EXEC twitter_user_timeline method : ')
     assert (screen_name != None) != (user_id != None), \
@@ -156,6 +160,7 @@ def twitter_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
         # See https://dev.twitter.com/docs/working-with-timelines.
 
         kw['max_id'] = min([tweet['id'] for tweet in tweets]) - 1
+        #if there are more tweets make a request for them with max id included
         tweets = twitter_make_robust_request(twitter_api.statuses.user_timeline, **kw)
         results += tweets
         debug_print('  Fetched %i tweets' % (len(tweets)))
@@ -169,9 +174,9 @@ def twitter_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
 
 
 def twitter_get_user_info(twitter_api , screen_name=None , user_id=None):
-    """ Function that retrieves twitter data for a given user
+    """ Function that retrieves information for a given user
     :parameter twitter_api
-    :parameter user_id_or_screenname
+    :parameter user_id or screen_name
 
     :returns user - json object with all information about user"""
     debug_print('EXEC twitter_get_user_info method : ')

@@ -63,6 +63,13 @@ def import_graph_from_gml(path):
     return  graph
 
 def create_directed_graph_of_list_members(list):
+    """Creates a directed graph where nodes are all members of a given list and edges are
+     added if a member has replied to another one on twitter
+     :parameter list
+     :return dG - directed graph
+     """
+    debug_print("EXEC - create_directed_graph_of_list_members method :")
+
     criteria = {"in_reply_to_user_id": {"$ne": None}, "$where": "this.user.id != this.in_reply_to_user_id"}
     projection = {"id": 1, "user.screen_name": 1, "in_reply_to_screen_name": 1, "in_reply_to_user_id": 1, "text": 1}
     # tweets that aren't a reply to the same user's tweets
@@ -86,32 +93,41 @@ def create_directed_graph_of_list_members(list):
             dG.add_edge(result['id'], result['in_reply_to_user_id'])
     return dG
 
-def create_directed_graph_of_list_members_and_followers(list):
+def create_directed_graph_of_list_members_and_followers(api, list):
+    """Creates a directed graph where nodes are all members of a given list and edges are
+     added if a member who follows another one on twitter.
+     :parameter api
+     :parameter list
+     :return dG - directed graph
+     """
+    debug_print("EXEC - create_directed_graph_of_list_members_and_followers method :")
     criteria = {"in_reply_to_user_id": {"$ne": None}, "$where": "this.user.id != this.in_reply_to_user_id"}
     projection = {"id": 1, "user.screen_name": 1, "in_reply_to_screen_name": 1, "in_reply_to_user_id": 1, "text": 1}
-    # tweets that aren't a reply to the same user's tweets
-    results = load_from_mongo(mongo_db="twitter", mongo_db_coll=list, criteria=criteria, projection=projection)
+    tweets = load_from_mongo(mongo_db="twitter", mongo_db_coll=list, criteria=criteria, projection=projection)
 
-    debug_print("  num of edges/results: %d" % len(results))
+    #create a multi directed graph - one directions for reply / one for following
     dG = nx.DiGraph()
     db_coll_name = "%s_%s" % (list, "members")
     members = load_from_mongo(mongo_db="twitter", mongo_db_coll=db_coll_name)
-    debug_print("  num of members: %d" % len(members))
     for member in members:
-        dG.add_node(member['id'], screen_name=member['screen_name'], location=member['location'],
-           followers_count=member['followers_count'], statuses_count=member['followers_count'],
-           friends_count=member['friends_count'], created_at=member['created_at'])
-    i = 0
-    for result in results:
+        followers = twitter_get_followers(api, screen_name=member['screen_name'],followers_limit=400)
+        #print member['screen_name'],len(followers)
 
-        if dG.has_node(result['id']) and dG.has_node(result['in_reply_to_user_id']):
-            debug_print("%d) user: %s \n          in reply to: %s \n          text: %s" % (i,result['user']['screen_name'],result['in_reply_to_screen_name'],result['text']))
-            i += 1
-            dG.add_edge(result['id'], result['in_reply_to_user_id'])
+        #create network of following
+        dG = create_keyplayers_graph(graph=dG, user=member, followers=followers, weight=1)
     return dG
 
 
 def create_multi_graph_of_list_memebers_and_followers(api, list):
+    """Creates a multi directed graph where nodes are all members of a given list and their followers and edges(weight 1) are
+    added if a user follows another one on twitter.
+    Edges (weight 2) are added if one user replied to another one on twitter.
+    :parameter api
+    :parameter list
+    :return mDG - multi directed graph
+    """
+    debug_print("EXEC - create_multi_graph_of_list_memebers_and_followers method :")
+
     criteria = {"in_reply_to_user_id": {"$ne": None}, "$where": "this.user.id != this.in_reply_to_user_id"}
     projection = {"id": 1, "user.screen_name": 1, "in_reply_to_screen_name": 1, "in_reply_to_user_id": 1, "text": 1}
     tweets = load_from_mongo(mongo_db="twitter", mongo_db_coll=list, criteria=criteria, projection=projection)
@@ -120,11 +136,10 @@ def create_multi_graph_of_list_memebers_and_followers(api, list):
     mdG = nx.MultiDiGraph()
     db_coll_name = "%s_%s" % (list, "members")
     members = load_from_mongo(mongo_db="twitter", mongo_db_coll=db_coll_name)
-    for member in members[:10]:
+    for member in members:   # for member in members[:10]: can be used for testing
         followers = twitter_get_followers(api, screen_name=member['screen_name'],followers_limit=400)
         print member['screen_name'],len(followers)
         #create network of following
-        #for follower in followers:
         mdG = create_keyplayers_graph(graph=mdG, user=member, followers=followers, weight=1)
 
     #create network of conversation/replying

@@ -14,7 +14,6 @@ from CrawlingModule.Facebook.pages import facebook_get_page_data, facebook_get_p
 
 from DatabaseModule.TwitterWrapper.database_manipulation import twitter_load_from_mongo_sorted,twitter_save_to_mongo
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo,getCollections
-from DatabaseModule.FacebookWrapper.database_manipulation import facebook_save_to_mongo
 
 from AnalysisModule.Twitter.tweets import get_common_tweet_entities,extract_tweet_entities,print_prettytable, \
                                           get_popular_hashtags, get_users_for_hashtag_list,\
@@ -60,7 +59,7 @@ def facebook_menu():
                 if page_data:
                  if page_data['name'] not in pages_in_database: #store posts only for new pages
                     results = facebook_get_page_posts(access_token, page_data["id"]) #send id of page and access token to get posts
-                    facebook_save_to_mongo(mongo_db="facebook", mongo_db_coll=page_data['name'], data=results)
+                    save_to_mongo(mongo_db="facebook", mongo_db_coll=page_data['name'], data=results)
 
         if action == '1':
             sorted_pages = facebook_sort_pages(pages, "DESC")
@@ -83,7 +82,7 @@ def facebook_menu():
         for page in pages:
             data = facebook_get_page_data(access_token, page)
             if data and data['name'] not in pages_data_in_database: # check if page is in database
-                facebook_save_to_mongo(mongo_db="facebook", mongo_db_coll="pages_info", data=data)
+                save_to_mongo(mongo_db="facebook", mongo_db_coll="pages_info", data=data)
 
     elif action == '3':
         page = "Connel Community Council"  #sample page
@@ -104,7 +103,7 @@ def facebook_menu():
         page = "187281984718895"  # sample id
         data = facebook_get_page_posts(access_token, page, limit=500)
         debug_print("posts from api  :%i" % len(data))
-        facebook_save_to_mongo(mongo_db="facebook", mongo_db_coll="Connel Community Council", data=data)
+        save_to_mongo(mongo_db="facebook", mongo_db_coll="Connel Community Council", data=data)
 
     elif action == '7':
         page = "187281984718895"  # sample id
@@ -209,7 +208,7 @@ def twitter_menu():
         WORLD_WOE_ID = 1  # for searching trends
 
         if action == '0':  # find users who have tweeted a hashtag , for a list of popular hashtags
-            hashtags_dict = get_popular_hashtags()
+            hashtags_dict = get_popular_hashtags(slug="community-councils")
             hashtags = hashtags_dict.keys()
             for hashtag in hashtags:
                 print hashtag
@@ -228,7 +227,7 @@ def twitter_menu():
             #create directed graph of members of a list and their followers
             #save list of followers for each member into a separate collection named after the slug ending with  _member
             slug="community-councils"
-            graph = create_directed_graph_of_list_members_and_followers(slug)
+            graph = create_directed_graph_of_list_members_and_followers(api, slug)
             export_graph_to_gml(graph,path_to_graph_file)
 
 
@@ -249,14 +248,14 @@ def twitter_menu():
 
         elif action == '5':  # find trending topics on a time interval
             #making a partial class from twitter_search to later add it as an argument in twitter_call_function_on_interval
-            tweets_from_list_members = partial(twitter_get_list_members_tweets, api)
+            tweets_from_list_members = partial(twitter_get_list_members_tweets, api, owner_screen_name="spartakan", slug="community-councils")
 
             #get and save the trending topics on time intervals
             twitter_call_function_on_interval(tweets_from_list_members)
 
 
         elif action == '6':  # get members of a list
-            twitter_get_list_members(api)
+            twitter_get_list_members(api,owner_screen_name="spartakan", slug="community-councils")
 
 
         elif action == '7' or action == '8':
@@ -290,13 +289,13 @@ def twitter_menu():
                 print_prettytable(common_entities)
 
         elif action == '11':  # get list members
-            twitter_get_list_members(api)
+            twitter_get_list_members(api,owner_screen_name="spartakan", slug="community-councils")
 
         elif action == '12':
             print "MULTIGRAPH"
             slug = "community-councils"
             mdG = create_multi_graph_of_list_memebers_and_followers(api,slug)
-            export_graph_to_gml(mdG, "C:/Users/Windows/Desktop/twitterAnalyzer/CrawlingModule/Resources/twitter_multigraph1.gml")
+            export_graph_to_gml(mdG, "C:/Users/Windows/Desktop/SocialNetworkAnalyzer/CrawlingModule/Resources/twitter_multigraph1.gml")
 
 
         elif action == '13':  # find popular tweets from list of tweets

@@ -2,9 +2,8 @@ import requests  # pip install requests
 import json
 import xlrd  # pip install xlrd
 from config import *
-from CrawlingModule.Facebook.authorization import facebook_authorize
 from AnalysisModule.Facebook.pages import facebook_sort_pages
-from DatabaseModule.FacebookWrapper.database_manipulation import facebook_save_to_mongo
+from DatabaseModule.database_manipulation import save_to_mongo
 
 
 def facebook_get_page_posts(ACCESS_TOKEN, page_id=None, limit=1000):
@@ -68,8 +67,8 @@ def facebook_get_page_data(access_token, name):
 def facebook_read_pages_from_excel(access_token, file=facebook_path_to_PAGES_FILE):
 
     """ This function is custom made for a specific excel file, modify it for further use
-    :param file
-    :returns pages - aray of pages' names or ids
+    :param file - path to file
+    :returns pages - array of pages' names or ids
     """
     debug_print("EXEC facebook_read_pages_from_excel method :")
     workbook = xlrd.open_workbook(filename=file)  # get all facebook links from excel file
@@ -78,7 +77,7 @@ def facebook_read_pages_from_excel(access_token, file=facebook_path_to_PAGES_FIL
     debug_print("  Reading pages' names from file. Might take few minutes...")
 
     for cell in sheet.col_values(colx=3):  # read column number 3
-        parts = cell.split("?")   # split URLs that look like
+        parts = cell.split("?")   # split URLs that look like:
                                                             # https://www.facebook.com/RoseheartyCommunityCouncil     or
                                                         # https://www.facebook.com/pages/RoseheartyCommunityCouncil   or
                                                 # https://www.facebook.com/pages/Alloa-Community-Council/514111341975813
@@ -99,6 +98,10 @@ def facebook_read_pages_from_excel(access_token, file=facebook_path_to_PAGES_FIL
 
 
 def facebook_print_page_data(pages=None):
+    """
+    Pretty print some data for list of pages
+    :param pages: list
+    """
     debug_print("EXEC facebook_print_page_data method :")
     if pages is not None:
         pages = facebook_sort_pages(pages)
@@ -108,6 +111,13 @@ def facebook_print_page_data(pages=None):
 
 
 def facebook_print_page_insights(access_token, id):
+    """ DA SE BRISHE
+    Print insights for a page
+    :param access_token:
+    :param id:
+    :return:
+    """
+
     debug_print("EXEC facebook_get_page_stories method :")
     base_url = "https://graph.facebook.com/"+id+"/insights"
     fields = "period=month"

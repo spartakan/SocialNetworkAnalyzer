@@ -7,7 +7,13 @@ logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 
 
-def twitter_get_list_members_tweets(twitter_api, max_results=1000, owner_screen_name="@spartakan", slug="community-councils"):
+def twitter_get_list_members_tweets(twitter_api, max_results=1000, owner_screen_name="", slug=""):
+    """Gets all tweets from twitter api posted by list members and stores them into database
+    :parameter: twitter_api
+    :parameter: max_results
+    :parameter: owner_screen_name - name of the creator of the list
+    :parameter: slug - the name of the list
+    """
     debug_print("EXEC twitter_get_list_members method :")
 
     #get id of last tweet from mongo
@@ -50,7 +56,12 @@ def twitter_get_list_members_tweets(twitter_api, max_results=1000, owner_screen_
     #debug_print(" All Results are saved in database")
 
 
-def twitter_get_list_members(twitter_api, owner_screen_name="spartakan", slug="community-councils"):
+def twitter_get_list_members(twitter_api, owner_screen_name="", slug=""):
+    """ Gets information about all the members in a list from twitter api and stores them into database
+    :parameter: twitter_api
+    :parameter: owner_screen_name - name of the person who created the list
+    :parameter: slug - name of the list
+    """
     debug_print("EXEC twitter_get_list_members method :")
     members = []
     cursor = -1
@@ -73,7 +84,7 @@ def twitter_get_list_members(twitter_api, owner_screen_name="spartakan", slug="c
             time.sleep(15*60 + 10)
             debug_print("  Woke up ... End: " + str(time.ctime()))
             debug_print("  cursor after waking up: "+str(cursor))
-    db_coll_name = "%s_%s" % (slug, "members")
+    db_coll_name = "%s_%s" % (slug, "members") #create database name for members  format = > slug_members
     save_to_mongo(members, mongo_db="twitter", mongo_db_coll=db_coll_name)
     return members
 

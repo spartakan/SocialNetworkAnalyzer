@@ -7,12 +7,14 @@ from config import *
 #create a logger for this module , set it up, and use it to write errors to file
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
-
+#sorting order
+DESC =- 1
+ASC = 1
 
 def extract_tweet_entities(statuses):
     """ Extracts all entities from a list of given statuses.
-    :parameter statuses  - list of statuses from which the entities should be extracted
-    :returns screen_names, hashtags, urls, media, symbols - lists of entities
+    :parameter: statuses  - list of statuses from which the entities should be extracted
+    :returns:  screen_names, hashtags, urls, media, symbols - lists of entities
     """
     debug_print("EXEC extract_tweet_entities method :")
 
@@ -46,13 +48,13 @@ def extract_tweet_entities(statuses):
 
 def get_popular_tweet_entities_list(statuses=None, entity_threshold=3):
     """ Returns lists of most popular entities whose appearance exceeds the threshold.
-    :parameter statuses - list of statuses from which the entities should be extracted
-    :parameter entity_entity_threshold - the smallest number of appearances that needs to be excited for a status to be considered popular
-    :returns screen_names, hashtags, urls, media, symbols - dictionaries where the entity is a key and the number of appearances is a value
+    :parameter: statuses - list of statuses from which the entities should be extracted
+    :parameter: entity_entity_threshold - the smallest number of appearances that needs to be excited for a status to be considered popular
+    :returns: screen_names, hashtags, urls, media, symbols - dictionaries where the entity is a key and the number of appearances is a value
     """
     debug_print("EXEC get_common_tweet_entities method :")
     screen_names, hashtags, urls, media, symbols = [],[],[],[],[]
-    if statuses: # find most popular hashtags ina given list
+    if statuses: # find most popular hashtags in a given list
 
         screen_names, hashtags, urls, media, symbols = extract_tweet_entities(statuses)
         screen_names_counter = Counter(screen_names).most_common()
@@ -84,7 +86,7 @@ def get_popular_tweet_entities_list(statuses=None, entity_threshold=3):
     # and http://cookbook.mongodb.org/patterns/count_tags/
 
     #count the number of occurrences for each hashtag in the hashtags array, across the entire collection
-    #via mongo
+    #via mongo using map reduce
 
     # map = Code(" function() {"
     #            "if (!this.entities.hashtags) {"
@@ -112,9 +114,9 @@ def get_popular_tweet_entities_list(statuses=None, entity_threshold=3):
 
 def get_common_tweet_entities(statuses, entity_threshold=3):
     """ Returns a list most common entities in a list of statuses whose appearance exceeds the threshold.
-    :parameter statuses - list of statuses from which the entities should be extracted
-    :parameter entity_entity_threshold - the smallest number of appearances that needs to be excited for a status to be considered popular
-    :returns (k,v) - dictionary where the entity is a key and the number of appearances is a value
+    :parameter: statuses - list of statuses from which the entities should be extracted
+    :parameter: entity_entity_threshold - the smallest number of appearances that needs to be excited for a status to be considered popular
+    :returns: (k,v) - dictionary where the entity is a key and the number of appearances is a value
     """
     debug_print("EXEC get_common_tweet_entities method :")
     # Create a flat list of all tweet entities
@@ -148,8 +150,8 @@ def print_prettytable(common_entities):
 
 def find_popular_tweets(statuses, retweet_threshold=3):
     """ Displays popular statuses that exceed the given threshold for retweets
-    :parameter statuses - list of statuses
-    :parameter retweet_threshold - least amount of retweets
+    :parameter: statuses - list of statuses
+    :parameter: retweet_threshold - least amount of retweets
     """
     debug_print("EXEC find_popular_tweets method :")
     #sort the statuses in DESCENDING order
@@ -163,16 +165,16 @@ def find_popular_tweets(statuses, retweet_threshold=3):
 
 
 
-def sort_tweets(statuses, order="DESC"):
+def sort_tweets(statuses, order=DESC):
     """ Sorts the list of statuses first by number of retweets then by number of favorites
-    :parameter statuses - list of statuses to sort
-    :parameter order - order in which the list should be sorted. values: ASC and DESC
-    :returns statuses - sorted ist of statuses
+    :parameter: statuses - list of statuses to sort
+    :parameter: order - order in which the list should be sorted. values: ASC and DESC
+    :returns: statuses - sorted ist of statuses
     """
     debug_print("EXEC sort_tweets method :")
 
     # sort statuses by retweets, then by favourites
-    if order == "DESC":
+    if order == DESC:
         for i in range(0, len(statuses)):
             for j in range(i, len(statuses)):
                 if statuses[i]['retweet_count'] < statuses[j]['retweet_count']:
@@ -180,7 +182,7 @@ def sort_tweets(statuses, order="DESC"):
                 elif statuses[i]['retweet_count'] == statuses[j]['retweet_count']:
                     if statuses[i]['favorite_count'] < statuses[j]['favorite_count']:
                         statuses[i], statuses[j] = statuses[j], statuses[i]
-    elif order == "ASC":
+    elif order == ASC:
          for i in range(0, len(statuses)):
             for j in range(i, len(statuses)):
                 if statuses[i]['retweet_count'] > statuses[j]['retweet_count']:
@@ -190,12 +192,15 @@ def sort_tweets(statuses, order="DESC"):
                         statuses[i], statuses[j] = statuses[j], statuses[i]
     return statuses
 
-def get_popular_hashtags(mongo_db="twitter", mongo_db_coll="community-councils"):
+def get_popular_hashtags(slug):
     """
-
-    :returns dict hashtags
+    Returns popular hastags for a certain list of users
+    :parameter: slug - slug for the list from twitter
+    :returns: hashtags - dictionary where key is the hashtag and value number of occurrences
     """
     debug_print("EXEC get_popular_hashtags method :")
+    mongo_db = "twitter"
+    mongo_db_coll = slug
     results = load_from_mongo(mongo_db=mongo_db, mongo_db_coll=mongo_db_coll)
     screen_names, hashtags, urls, media, symbols = get_popular_tweet_entities_list(results,25)
     #hashtags = get_popular_tweet_entities_list(entity_threshold= 25)
@@ -208,8 +213,9 @@ def get_popular_hashtags(mongo_db="twitter", mongo_db_coll="community-councils")
 
 def get_users_for_hashtag_list(hashtags):
     """
-    :param hashtags:
-    :return: users_per_hashtag dictionary
+    Counts the number of users that used the hashtags from the list in their posts
+    :param hashtags - list of hashtags
+    :return: users_per_hashtag - dict where key the hastag and value number of users that have included it in their posts
     """
     debug_print("EXEC get_users_for_hashtag_list method :")
     users_per_hashtag = {}
@@ -231,7 +237,10 @@ def get_users_for_hashtag_list(hashtags):
 
 
 def twitter_get_hashtags_from_tweets(tweets):
-
+    """ Get hashtags used in a list of tweets
+    :parameter: tweets:  list
+    :return: hashtags - set of unique hashtags used in the tweets list
+    """
     screen_names, hashtags, urls, media, symbols = extract_tweet_entities(tweets)
     #remove duplicates
     hashtags = set(hashtags)

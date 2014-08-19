@@ -84,6 +84,7 @@ def facebook_read_pages_from_excel(access_token, file=facebook_path_to_PAGES_FIL
                                                 # https://www.facebook.com/pages/Alloa-Community-Council/514111341975813
 
         base = parts[0]  # get the base of the url if it contains parameters after a ?
+        base = base.replace("/info","") # remove any /info parts from the urls
         url_parts = base.split("/")
         page_name_or_id = None
         page_name_or_id = url_parts[len(url_parts)-1]  # get the name or id whichever one is last

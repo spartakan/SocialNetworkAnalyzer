@@ -39,6 +39,14 @@ def save_to_mongo(data, mongo_db, mongo_db_coll, coll=None, **mongo_conn_kw):
         pass
 
 
+def getCollections(mongo_db, **mongo_conn_kw):
+    client = pymongo.MongoClient(**mongo_conn_kw)
+
+    # Get a reference to a particular database
+    db = client[mongo_db]
+
+    return db.collection_names(include_system_collections=False)
+
 
 def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None, projection=None, find_since_id=False, **mongo_conn_kw):
     """

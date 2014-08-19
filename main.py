@@ -13,7 +13,7 @@ from CrawlingModule.Facebook.pages import facebook_get_page_data, facebook_get_p
                                         facebook_read_pages_from_excel,facebook_print_page_data, facebook_print_page_insights
 
 from DatabaseModule.TwitterWrapper.database_manipulation import twitter_load_from_mongo_sorted,twitter_save_to_mongo
-from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
+from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo,getCollections
 from DatabaseModule.FacebookWrapper.database_manipulation import facebook_save_to_mongo
 
 from AnalysisModule.Twitter.tweets import get_common_tweet_entities,extract_tweet_entities,print_prettytable, \
@@ -42,7 +42,7 @@ def facebook_menu():
             print "5. Get facebook posts sorted"
             print "6. Save posts for one page"
             print "7. Get date from most recent post of a page"
-            print "8. Get number of stories for page"
+            print "8. Create excel file with statistcs for facebook pages"
             print "9. Print Facebook insights for a page"
             print "10.Get number of posts for July "
 
@@ -50,10 +50,15 @@ def facebook_menu():
 
     if action == '0' or action == '1' :
         pages = facebook_read_pages_from_excel(access_token)  # get pages and basic data for pages
+        pages_in_database = getCollections("facebook")
+
         if action == '0':
             for page in pages:
+             # check if page info has already been saved in database
                 page_data = facebook_get_page_data(access_token, page)
+
                 if page_data:
+                 if page_data['name'] not in pages_in_database: #store posts only for new pages
                     results = facebook_get_page_posts(access_token, page_data["id"]) #send id of page and access token to get posts
                     facebook_save_to_mongo(mongo_db="facebook", mongo_db_coll=page_data['name'], data=results)
 
@@ -70,10 +75,14 @@ def facebook_menu():
 
     elif action == '2':
         pages = facebook_read_pages_from_excel(access_token)
-        print len(pages)
+        #get all pages from database
+        pages_data_in_database = load_from_mongo(mongo_db="facebook", mongo_db_coll="pages_info",projection={"_id":0,'name':1})
+        print "database: ",len(pages_data_in_database)
+        print pages_data_in_database[0]
+        i=0
         for page in pages:
             data = facebook_get_page_data(access_token, page)
-            if data:
+            if data and data['name'] not in pages_data_in_database: # check if page is in database
                 facebook_save_to_mongo(mongo_db="facebook", mongo_db_coll="pages_info", data=data)
 
     elif action == '3':

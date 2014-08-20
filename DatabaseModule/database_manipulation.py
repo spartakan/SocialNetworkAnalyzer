@@ -8,12 +8,11 @@ logger = setup_logging(logger)
 
 def save_to_mongo(data, mongo_db, mongo_db_coll, coll=None, **mongo_conn_kw):
     """
-    Saves only one entity at a time. The iteration part should be implemented in the method calling
-    this one
-    :parameter data should contain json file with only one object/entity
-    :parameter mongo_db contains the name of the database
-    :parameter mongo_db_coll contains the name of the collection
-    :parameter indexes contains a list of all the indexes you want to ensure besides the default: id=id; DATE=created_at;
+    Saves data into mongo ensures id as a index
+    :parameter: data - should contain json file with only one object/entity
+    :parameter: mongo_db - contains the name of the database
+    :parameter: mongo_db_coll - contains the name of the collection
+    :parameter: indexes - contains a list of all the indexes you want to ensure besides the default: id=id; DATE=created_at;
     """
     debug_print("EXEC save_to_mongo method :")
 
@@ -91,6 +90,7 @@ def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None,
 def load_from_mongo_with_mapreduce(mongo_db, mongo_db_coll, map,reduce, newDatabase="default_map_reduce", limit=5, order=pymongo.DESCENDING, **mongo_conn_kw):
     """
     Loads data from the specific database and the specific collection by the chosen criteria
+    with the map - reduce technique http://docs.mongodb.org/manual/core/map-reduce/
     :param mongo_db
     :param mongo_db_coll
     :param map

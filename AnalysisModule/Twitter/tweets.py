@@ -1,6 +1,5 @@
-import logging, os, sys, platform, re
-from DatabaseModule.database_manipulation import load_from_mongo,load_from_mongo_with_mapreduce
-from bson.code import Code
+
+from DatabaseModule.database_manipulation import load_from_mongo
 from collections import Counter
 from prettytable import PrettyTable
 from config import *

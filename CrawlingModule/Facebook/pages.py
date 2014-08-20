@@ -1,13 +1,18 @@
 import requests  # pip install requests
 import json
-import xlrd  # pip install xlrd
+import xlrd  # pip install xlrd  exports files into xls format
 from config import *
 from AnalysisModule.Facebook.pages import facebook_sort_pages
 from DatabaseModule.database_manipulation import save_to_mongo
 
 
 def facebook_get_page_posts(ACCESS_TOKEN, page_id=None, limit=1000):
+    """
+     Getting facebook posts from facebook api for a given page id
+     :parameter: ACCESS_TOKEN
+     :parameter: page_id
 
+    """
     debug_print("EXEC facebook_get_page_posts method :")
     if page_id:
         base_url = 'https://graph.facebook.com/'+page_id+"/posts"
@@ -25,9 +30,9 @@ def facebook_get_page_posts(ACCESS_TOKEN, page_id=None, limit=1000):
         while True:
 
             try:
-                next = content["paging"]["next"]
+                next = content["paging"]["next"] #if the json file contains paging and next inside paging go to next results
                 content = requests.get(next).json()
-                result += content["data"]
+                result += content["data"] # if there are results save the data
 
             except Exception, e: # no next result
                 print e.message
@@ -111,10 +116,10 @@ def facebook_print_page_data(pages=None):
 
 
 def facebook_print_page_insights(access_token, id):
-    """ DA SE BRISHE
+    """
     Print insights for a page
     :param access_token:
-    :param id:
+    :param id: id of page
     :return:
     """
 

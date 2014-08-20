@@ -102,6 +102,7 @@ def twitter_get_friends_followers_ids(twitter_api, screen_name=None, user_id=Non
                 debug_print("  Woke up ... End: " + str(time.ctime()))
                 debug_print("  cursor after waking up: "+str(cursor))
 
+
             else:  # collect the ids from this response and set the cursor to the next page
                 if response is not None:
                     ids += response['ids']

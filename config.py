@@ -3,6 +3,7 @@ import platform
 import sys
 import logging
 from debugging_setup import setup_logging, debug_print
+#This file is included in every module/script
 
 #set system path
 if platform.system() == 'Windows':
@@ -18,8 +19,8 @@ elif platform.system() == 'Linux':
 
 
 #Consumer key & secret for facebook authorization
-facebook_CONSUMER_ID = "784369068293517"
-facebook_CONSUMER_SECRET = "d309eff5bcd6a6d02cc8602b2ba9e438"
+facebook_CONSUMER_ID = "<your facebook consumer id here>"
+facebook_CONSUMER_SECRET = "<your facebook consumer secret here>"
 
 
 
@@ -51,8 +52,8 @@ elif platform.system() == 'Linux':
 path_to_graph_file = "c:/data/graph_community-councils.gml" #where to export the .gml file
 
 
-twitter_CONSUMER_KEY = 'hiXJndRNsYmzrpI9CWmeCJ3r5'
-twitter_CONSUMER_SECRET = 'pEs9mzbqeYwl2Ax9OtYPtFowgK6DdTgraZqTPG8Sc2nbID0PIk'
+twitter_CONSUMER_KEY = '<your twitter consumer hey here>'
+twitter_CONSUMER_SECRET = '<your twitter consumer secret here>'
 twitter_OAUTH_FILE = ''
 if platform.system() == 'Windows':
     if os.path.exists("H:/SocialNetworkAnalyzer/CrawlingModule/Resources/twitter_oauth.txt"):

@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 
 
-
+#menu with functions and options for facebook
 def facebook_menu():
     access_token = facebook_authorize()
     action = None
@@ -114,24 +114,24 @@ def facebook_menu():
         #print(facebook_path_to_EXPORT_FILE)
         workbook = xlwt.Workbook(encoding="utf-8")  # XLWT - ONLY EXPORTS .XLS files
         sheet = workbook.add_sheet("sheet1")
-
-        sheet.write(0, 0, 'CC Name')
-        sheet.write(0, 1, 'Count Likes')
-        sheet.write(0, 2, 'Count Talking about')
-        sheet.write(0, 3, 'Count Posts for July')
-        sheet.write(0, 4, 'Count Posts TOTAL')
-        sheet.write(0, 5, 'Date Most recent post')
-        sheet.write(0, 6, 'Date 5th Most recent post')
+        sheet.write(0, 0, 'FB Page ID ')
+        sheet.write(0, 1, 'CC Name')
+        sheet.write(0, 2, 'Count Likes')
+        sheet.write(0, 3, 'Count Talking about')
+        sheet.write(0, 4, 'Count Posts for July')
+        sheet.write(0, 5, 'Count Posts TOTAL')
+        sheet.write(0, 6, 'Date Most recent post')
+        sheet.write(0, 7, 'Date 5th Most recent post')
 
         pages_data = load_from_mongo(mongo_db="facebook", mongo_db_coll="pages_info")  # collection where all
                                                                                        # the data for each page is stored
         pages_data = facebook_sort_pages(pages_data, "DESC")
         i = 1  # index for rows in sheet
         for page in pages_data:
-            id = page['id']
-            sheet.write(i, 0, page['name'])
-            sheet.write(i, 1, page['likes'])
-            sheet.write(i, 2, page['talking_about_count'])
+            sheet.write(i, 0, page['id'])
+            sheet.write(i, 1, page['name'])
+            sheet.write(i, 2, page['likes'])
+            sheet.write(i, 3, page['talking_about_count'])
 
             most_recent_post = 0
             fifth_most_recent_post = 0
@@ -139,19 +139,19 @@ def facebook_menu():
             if result:
                 most_recent_post = result[0]['created_time']
                 fifth_most_recent_post = result[len(result)-1]['created_time'] # some pages have less than 5 posts
-            sheet.write(i, 5, most_recent_post)
-            sheet.write(i, 6, fifth_most_recent_post)
+            sheet.write(i, 6, most_recent_post)
+            sheet.write(i, 7, fifth_most_recent_post)
 
             monthly_posts = len(facebook_get_posts_for_month(page['name'], month="07"))
             if monthly_posts is None:
                 monthly_posts = 0
-            sheet.write(i, 3, monthly_posts)
+            sheet.write(i, 4, monthly_posts)
 
             total_posts = 0
             result = facebook_get_posts_from_database(from_user=page['name'], page_name=page['name'])
             if result:
                 total_posts = len(result)
-            sheet.write(i, 4, total_posts)
+            sheet.write(i, 5, total_posts)
 
             i += 1
         workbook.save(facebook_path_to_EXPORT_FILE)
@@ -177,7 +177,7 @@ def facebook_menu():
 
 
 
-
+#menu with functions and options for twitter
 def twitter_menu():
     api = twitter_authorize()
     if api:
@@ -325,9 +325,9 @@ def twitter_menu():
 
 
 
-
+#main menu
 def main():
-
+    #choose which menu is needed Facebook/Twitter
     action = None
     while not action:
         action = raw_input('For Twitter type in T | Facebook type in F : ').strip()

@@ -77,7 +77,7 @@ def create_directed_graph_of_list_members(list):
 
     debug_print("  num of edges/results: %d" % len(results))
     dG = nx.DiGraph()
-    db_coll_name = "%s_%s" % (list, "members")
+    db_coll_name = "%s_%s" % (list, "members") #name of collection for members of list
     members = load_from_mongo(mongo_db="twitter", mongo_db_coll=db_coll_name)
     debug_print("  num of members: %d" % len(members))
     for member in members:

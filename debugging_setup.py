@@ -2,9 +2,9 @@ import sys
 import os
 import platform
 import logging
-
+debug=False
 logger = logging.getLogger(__name__)
-def debug_print(message, debug=True):
+def debug_print(message):
     """
     Prints messages if the debug variable is set to true
     :param message: message to be printed

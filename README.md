@@ -2,5 +2,5 @@
 Documentation
 -----------------------
 
-Check the documentation.docx file
+Check the SocialNetworkAnalyzer_documentation.docx file
 

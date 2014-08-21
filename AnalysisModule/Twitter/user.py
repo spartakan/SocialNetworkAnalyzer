@@ -29,7 +29,7 @@ def twitter_date_of_fifth_tweet(owner_screen_name,slug):
     idx = len(result)-1
     if len(result) > 0: #check if there are any posts in database for this screen_name
         fifth_tweet = result[idx]
-        return fifth_tweet["created_at"]
+        return fifth_tweet["DATE"]
     else:  # no tweets saved in database
         return 0
 

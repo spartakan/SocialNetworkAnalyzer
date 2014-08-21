@@ -27,16 +27,19 @@ facebook_CONSUMER_SECRET = "<your facebook consumer secret here>"
 #determine path for files based on the computer you're using
 facebook_path_to_PAGES_FILE = ""  #list with pages for community councils
 facebook_path_to_EXPORT_FILE = ""
+twitter_path_to_EXPORT_FILE = ""
 
 if platform.system() == "Windows":
     if os.path.exists("H:/SocialNetworkAnalyzer/Resources/CC Social media (1).xlsx"):
         facebook_path_to_PAGES_FILE="H:/SocialNetworkAnalyzer/Resources/CC Social media (1).xlsx"
         facebook_path_to_EXPORT_FILE="H:/SocialNetworkAnalyzer/Resources/Facebook_analysis.xls"
+        twitter_path_to_EXPORT_FILE="H:/SocialNetworkAnalyzer/Resources/Twitter_analysis.xls"
         debug_print("  Path exists: %s"%facebook_path_to_PAGES_FILE)
 
     elif os.path.exists("C:/Users/Windows/Desktop/SocialNetworkAnalyzer/Resources/CC Social media.xlsx"):
         facebook_path_to_PAGES_FILE = "C:/Users/Windows/Desktop/SocialNetworkAnalyzer/Resources/CC Social media.xlsx"
         facebook_path_to_EXPORT_FILE = "C:/Users/Windows/Desktop/SocialNetworkAnalyzer/Resources/Facebook_analysis.xls"
+        twitter_path_to_EXPORT_FILE = "C:/Users/Windows/Desktop/SocialNetworkAnalyzer/Resources/Twitter_analysis.xls"
         debug_print("  Path exists: %s" % facebook_path_to_PAGES_FILE)
 
     else:
@@ -44,12 +47,15 @@ if platform.system() == "Windows":
 elif platform.system() == 'Linux':
     facebook_path_to_PAGES_FILE = "/home/sd/SocialNetworkAnalyzer/Resources/Facebook_analysis.xlsx"
     facebook_path_to_EXPORT_FILE = "/home/sd/SocialNetworkAnalyzer/Resources/Facebook_analysis.xls"
+    twitter_path_to_EXPORT_FILE = "/home/sd/SocialNetworkAnalyzer/Resources/Twitter_analysis.xls"
 
 
 
 #ONLY FOR WINDOWS
 #Consumer key & secret from https://apps.twitter.com/ for twitter authorization
 path_to_graph_file = "c:/data/graph_community-councils.gml" #where to export the .gml file
+
+
 
 
 twitter_CONSUMER_KEY = '<your twitter consumer hey here>'

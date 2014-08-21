@@ -244,3 +244,4 @@ def twitter_get_hashtags_from_tweets(tweets):
     #remove duplicates
     hashtags = set(hashtags)
     return hashtags
+

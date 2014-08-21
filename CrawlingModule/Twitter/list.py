@@ -1,6 +1,7 @@
 import json, time
 from config import *
-from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo
+from DatabaseModule.TwitterWrapper.database_manipulation import twitter_save_to_mongo
+from DatabaseModule.database_manipulation import load_from_mongo,save_to_mongo
 from debugging_setup import setup_logging, debug_print
 from twitter.api import TwitterHTTPError
 logger = logging.getLogger(__name__)
@@ -28,8 +29,7 @@ def twitter_get_list_members_tweets(twitter_api, max_results=1000, owner_screen_
         'include_rts': False
     }
     #get all statuses from list members
-    response = twitter_api.lists.statuses(owner_screen_name=owner_screen_name, slug=slug,
-                                          **kw)
+    response = twitter_api.lists.statuses(owner_screen_name=owner_screen_name, slug=slug,**kw)
     #401 (Not Authorized) - Need to bail out on loop entry
     if response is None:
         response = []
@@ -51,8 +51,8 @@ def twitter_get_list_members_tweets(twitter_api, max_results=1000, owner_screen_
         page_num += 1
 
     #Saving all results to database
-    for tweet in results:
-        save_to_mongo(tweet, "twitter", slug)
+
+    twitter_save_to_mongo(results, "twitter", slug)
     #debug_print(" All Results are saved in database")
 
 

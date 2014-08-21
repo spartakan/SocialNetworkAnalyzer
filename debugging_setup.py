@@ -2,7 +2,7 @@ import sys
 import os
 import platform
 import logging
-debug=False
+debug=True
 logger = logging.getLogger(__name__)
 def debug_print(message):
     """

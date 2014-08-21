@@ -202,6 +202,7 @@ def twitter_menu():
             print "14. Get twitter info about a specific user"
             print "15. Get date for last tweet"
             print "16. Get date for fifth tweet"
+            print "17. Create excel file with statistcs for members of twitter list"
 
             action = raw_input('Enter the number of the action: ').strip()
 
@@ -314,7 +315,37 @@ def twitter_menu():
         elif action == '16':
            screen_name = "spartakan"
            print twitter_date_of_fifth_tweet(screen_name)
+        elif action == '17':
+            #print(facebook_path_to_EXPORT_FILE)
+            workbook = xlwt.Workbook(encoding="utf-8")  # XLWT - ONLY EXPORTS .XLS files
+            sheet = workbook.add_sheet("sheet1")
+            sheet.write(0, 0, 'ID ')
+            sheet.write(0, 1, 'CC screen_name')
+            sheet.write(0, 2, 'Count Followers')
+            sheet.write(0, 3, 'Count Friends')
+            sheet.write(0, 4, 'Count Posts TOTAL')
+            sheet.write(0, 5, 'Date Most recent post')
+            sheet.write(0, 6, 'Date 5th Most recent post')
 
+            members = load_from_mongo(mongo_db="twitter", mongo_db_coll="community-councils_members")  # collection where all
+                                                                                           # the data for each page is stored
+            pages_data = facebook_sort_pages(members, "DESC")
+            i = 1  # index for rows in sheet
+            for member in members:
+                sheet.write(i, 0, member['id'])
+                sheet.write(i, 1, member['screen_name'])
+                sheet.write(i, 2, member['followers_count'])
+                sheet.write(i, 3, member['friends_count'])
+
+                most_recent_post = twitter_date_of_last_tweet(member['screen_name'],"community-councils")
+                fifth_most_recent_post = twitter_date_of_fifth_tweet(member['screen_name'],"community-councils")
+                sheet.write(i, 5, most_recent_post)
+                sheet.write(i, 6, fifth_most_recent_post)
+                #total
+                sheet.write(i, 4, member["statuses_count"])
+
+                i += 1
+            workbook.save(twitter_path_to_EXPORT_FILE)
         else:
             print "WRONG ACTION!!!"
     else:

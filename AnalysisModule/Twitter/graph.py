@@ -25,7 +25,7 @@ def create_keyplayers_graph(graph, user, followers, weight):
                    friends_count=user['friends_count'], created_at=user['created_at'])
 
     #add the followers as nodes
-    for follower in followers:
+    for follower in followers[:5]:
         graph.add_node(follower['id'], screen_name=follower['screen_name'], location=follower['location'],
                        followers_count=follower['followers_count'], statuses_count=follower['followers_count'],
                        friends_count=follower['friends_count'], created_at=follower['created_at'])
@@ -136,7 +136,7 @@ def create_multi_graph_of_list_memebers_and_followers(api, list):
     mdG = nx.MultiDiGraph()
     db_coll_name = "%s_%s" % (list, "members")
     members = load_from_mongo(mongo_db="twitter", mongo_db_coll=db_coll_name)
-    for member in members:   # for member in members[:10]: can be used for testing
+    for member in members[:5]:   # for member in members[:10]: can be used for testing
         followers = twitter_get_followers(api, screen_name=member['screen_name'],followers_limit=400)
         print member['screen_name'],len(followers)
         #create network of following

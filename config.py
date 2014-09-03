@@ -53,13 +53,11 @@ elif platform.system() == 'Linux':
 
 #ONLY FOR WINDOWS
 #Consumer key & secret from https://apps.twitter.com/ for twitter authorization
-path_to_graph_file = "c:/data/graph_community-councils.gml" #where to export the .gml file
+path_to_graph_file= os.path.abspath(os.path.expanduser("~/SocialNetworkAnalyzer/Resources/"))
+#path_to_graph_file = "c:/data/graph_community-councils.gml" #where to export the .gml file for windows
 
-
-
-
-twitter_CONSUMER_KEY = '<your twitter consumer hey here>'
-twitter_CONSUMER_SECRET = '<your twitter consumer secret here>'
+twitter_CONSUMER_KEY = 'hiXJndRNsYmzrpI9CWmeCJ3r5'
+twitter_CONSUMER_SECRET = 'pEs9mzbqeYwl2Ax9OtYPtFowgK6DdTgraZqTPG8Sc2nbID0PIk'
 twitter_OAUTH_FILE = ''
 if platform.system() == 'Windows':
     if os.path.exists("H:/SocialNetworkAnalyzer/CrawlingModule/Resources/twitter_oauth.txt"):

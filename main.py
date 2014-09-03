@@ -172,11 +172,6 @@ def facebook_menu():
 
 
 
-
-
-
-
-
 #menu with functions and options for twitter
 def twitter_menu():
     api = twitter_authorize()
@@ -296,7 +291,8 @@ def twitter_menu():
             print "MULTIGRAPH"
             slug = "community-councils"
             mdG = create_multi_graph_of_list_memebers_and_followers(api,slug)
-            export_graph_to_gml(mdG, "C:/Users/Windows/Desktop/SocialNetworkAnalyzer/CrawlingModule/Resources/twitter_multigraph1.gml")
+            name_of_file = "twitter_multigraph.gml"
+            export_graph_to_gml(mdG, path_to_graph_file + name_of_file)
 
 
         elif action == '13':  # find popular tweets from list of tweets

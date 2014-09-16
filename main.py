@@ -186,7 +186,7 @@ def twitter_menu():
             print "3. Get statuses of list members"
             print "4. Find the trending topics in the world"
             print "5. Call function for saving tweets from list members on interval( predefined for community-council)"
-            print "6. Get list members"
+            print "6. Get info about list members from api (json)"
             print "7. Search & save tweets for a specific query"
             print "8. Search & save tweets from the streaming api"
             print "9. Get all tweets from a user's timeline"

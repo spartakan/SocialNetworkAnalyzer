@@ -36,7 +36,6 @@ coverage.xml
 *.mo
 
 #pycharm idea
-**/.idea/workspace.xml
-**/.idea/tasks.xml
+idea
 
 Resources

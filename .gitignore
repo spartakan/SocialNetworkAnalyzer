@@ -6,6 +6,8 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+*.py
+*.pyc
 bin/
 build/
 develop-eggs/
@@ -24,7 +26,7 @@ var/
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
-
+config.py
 # Unit test / coverage reports
 .tox/
 .coverage
@@ -37,5 +39,4 @@ coverage.xml
 
 #pycharm idea
 idea
-config.py
 Resources

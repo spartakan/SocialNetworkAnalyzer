@@ -67,3 +67,8 @@ if platform.system() == 'Windows':
 elif platform.system() == 'Linux':
     twitter_OAUTH_FILE = os.path.abspath(os.path.expanduser("~/SocialNetworkAnalyzer/Resources/twitter_oauth.txt"))
 
+
+
+
+
+SNEZE

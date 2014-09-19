@@ -5,9 +5,13 @@ __pycache__/
 # C extensions
 *.so
 
+
+#config files
+config.py
+config.pyc
+
 # Distribution / packaging
-./*.py
-./*.pyc
+
 bin/
 build/
 develop-eggs/
@@ -26,7 +30,6 @@ var/
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
-config.py
 # Unit test / coverage reports
 .tox/
 .coverage

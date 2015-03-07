@@ -1,11 +1,12 @@
+# Sensitive application settings
+SETTINGS.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 
 # C extensions
 *.so
-*.py
-*.pyc
 
 # Distribution / packaging
 

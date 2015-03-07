@@ -10,7 +10,7 @@ from SETTINGS import *
 
 #set system path
 if platform.system() == 'Windows':
-    if os.path.exists("~/SocialNetworkAnalyzer"):
+    if os.path.exists(HOME_PATH):
         #sys.path.append(os.path.abspath("~/SocialNetworkAnalyzer"))
         sys.path.append(os.path.abspath(HOME_PATH))
    
@@ -42,9 +42,9 @@ elif platform.system() == 'Linux':
 #Create a Resources folder and save the oauth file there!!!
 
 if platform.system() == 'Windows':
-    if os.path.exists("~/SocialNetworkAnalyzer/CrawlingModule/Resources/twitter_oauth.txt"):
-        twitter_OAUTH_FILE = os.path.expanduser("~/SocialNetworkAnalyzer/Resources/twitter_oauth.txt").replace("\\", "/")
+    if os.path.exists(HOME_PATH+"/CrawlingModule/Resources/twitter_oauth.txt"):
+        twitter_OAUTH_FILE = os.path.expanduser(HOME_PATH+"/Resources/twitter_oauth.txt").replace("\\", "/")
   
 elif platform.system() == 'Linux':
-    twitter_OAUTH_FILE = os.path.abspath(os.path.expanduser("~/SocialNetworkAnalyzer/Resources/twitter_oauth.txt"))
+    twitter_OAUTH_FILE = os.path.abspath(os.path.expanduser(HOME_PATH+"/Resources/twitter_oauth.txt"))
 

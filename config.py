@@ -41,10 +41,10 @@ elif platform.system() == 'Linux':
 
 #Create a Resources folder and save the oauth file there!!!
 
-if platform.system() == 'Windows':
-    if os.path.exists(HOME_PATH+"/CrawlingModule/Resources/twitter_oauth.txt"):
-        twitter_OAUTH_FILE = os.path.expanduser(HOME_PATH+"/Resources/twitter_oauth.txt").replace("\\", "/")
-  
-elif platform.system() == 'Linux':
-    twitter_OAUTH_FILE = os.path.abspath(os.path.expanduser(HOME_PATH+"/Resources/twitter_oauth.txt"))
+#if platform.system() == 'Windows':
+#    if os.path.exists(HOME_PATH+"/CrawlingModule/Resources/twitter_oauth.txt"):
+#        twitter_OAUTH_FILE = os.path.expanduser(HOME_PATH+"/Resources/twitter_oauth.txt").replace("\\", "/")
+#  
+#elif platform.system() == 'Linux':
+#    twitter_OAUTH_FILE = os.path.abspath(os.path.expanduser(HOME_PATH+"/Resources/twitter_oauth.txt"))
 

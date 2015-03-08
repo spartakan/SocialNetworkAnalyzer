@@ -1,4 +1,6 @@
+#!/usr/bin/python
 from functools import partial
+
 
 import networkx as nx
 import json,xlrd,xlwt

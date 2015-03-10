@@ -1,11 +1,14 @@
 #!/usr/bin/python
 from functools import partial
-
-
-import networkx as nx
-import json,xlrd,xlwt
-
+import sys
 from config import *
+
+import json      # Used for debug only
+import xlrd,xlwt # Spreadsheet manip
+import networkx as nx
+
+
+#TODO: Tidy up this lot
 from CrawlingModule.Twitter.authorization import twitter_authorize
 from CrawlingModule.Twitter.user import twitter_get_followers, twitter_user_timeline,twitter_get_user_info
 from CrawlingModule.Twitter.tweets import twitter_search, twitter_call_function_on_interval, twitter_stream_api,twitter_trends
@@ -24,43 +27,47 @@ logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 
 
+def help():
+    print "These are your options: "
+    print "0. Find users who have tweeted a hashtag , for a list of popular hashtags"
+    print "1. Get only hashtags from results"
+    print "2. Create & export graph of members of twitter list and their followers"
+    print "3 <get-list-tweets>. Get statuses of list members"
+    print "4. Find the trending topics in the world (BUGGY))"
+    print "5 <get-list-tweets> Call function for saving tweets from list members on interval( predefined for community-council)"
+    print "6. Get info about list members from api (json)"
+    print "7. Search & save tweets for a specific query"
+    print "8. Search & save tweets from the streaming api"
+    print "9. Get all tweets from a user's timeline"
+    print "10. Print common entities"
+    print "11. Get list members"
+    print "12. MULTIGRAPH"
+    print "13. find  popular tweets from list of tweets"
+    print "14. Get twitter info about a specific user"
+    print "15. Get date for last tweet"
+    print "16. Get date for fifth tweet"
+    print "17. Create excel file with statistcs for members of twitter list"
+
 #menu with functions and options for twitter
 def main():
     api = twitter_authorize()
-    if api:
+    if not(api):
+        print "Twitter authorisation fail"
+    else:
         debug_print("Successfully authenticated and authorized")
-        action = None
-        while not action:
-            print "Type the number of the action you want to be executed: "
-            print "0. Find users who have tweeted a hashtag , for a list of popular hashtags"
-            print "1. Get only hashtags from results"
-            print "2. Create & export graph of members of twitter list and their followers"
-            print "3. Get statuses of list members"
-            print "4. Find the trending topics in the world"
-            print "5. Call function for saving tweets from list members on interval( predefined for community-council)"
-            print "6. Get info about list members from api (json)"
-            print "7. Search & save tweets for a specific query"
-            print "8. Search & save tweets from the streaming api"
-            print "9. Get all tweets from a user's timeline"
-            print "10. Print common entities"
-            print "11. Get list members"
-            print "12. MULTIGRAPH"
-            print "13. find  popular tweets from list of tweets"
-            print "14. Get twitter info about a specific user"
-            print "15. Get date for last tweet"
-            print "16. Get date for fifth tweet"
-            print "17. Create excel file with statistcs for members of twitter list"
-
-            action = raw_input('Enter the number of the action: ').strip()
-
-        WORLD_WOE_ID = 1  # for searching trends
+        if len(sys.argv) <= 1:
+            action = None
+        else:
+            action = sys.argv[1]
+            debug_print(("Action=%s")%action)
 
         if action == '0':  # find users who have tweeted a hashtag , for a list of popular hashtags
             hashtags_dict = get_popular_hashtags(slug="community-councils")
-            hashtags = hashtags_dict.keys()
+            hashtags = hashtags_dict.keys() #.sort()
+            debug_print(hashtags_dict)
             for hashtag in hashtags:
                 print hashtag
-            dict = get_users_for_hashtag_list(hashtags_dict.keys())
+            #dict = get_users_for_hashtag_list(hashtags_dict.keys())
 
 
         elif action == '1': #  get only hashtags from results
@@ -78,14 +85,13 @@ def main():
             graph = create_directed_graph_of_list_members_and_followers(api, slug)
             export_graph_to_gml(graph,path_to_graph_file)
 
-
-
-        elif action == '3':  # get statuses of list members
+        elif action in [3,'3', 'get-list-tweets']:  # get statuses of list members
             twitter_get_list_members_tweets(api, owner_screen_name="spartakan", slug="community-councils")
 
 
         elif action == '4':  # Get trending topics
             print "INFO: Getting World Trends ..."
+            WORLD_WOE_ID = 1  # for searching trends
             world_trends = twitter_trends(api, WORLD_WOE_ID)
             #for checking the structure of uncomment : #print json.dumps(world_trends[0]['trends'], indent=1)
             if world_trends:
@@ -94,17 +100,15 @@ def main():
                     print "trend: ", w['name']
 
 
-        elif action == '5':  # find trending topics on a time interval
+        elif action in ['5','get-list-tweets']:  # find trending topics on a time interval
             #making a partial class from twitter_search to later add it as an argument in twitter_call_function_on_interval
             tweets_from_list_members = partial(twitter_get_list_members_tweets, api, owner_screen_name="spartakan", slug="community-councils")
 
             #get and save the trending topics on time intervals
             twitter_call_function_on_interval(tweets_from_list_members)
 
-
         elif action == '6':  # get members of a list
             twitter_get_list_members(api,owner_screen_name="spartakan", slug="community-councils")
-
 
         elif action == '7' or action == '8':
             q = None
@@ -164,7 +168,15 @@ def main():
            screen_name = "spartakan"
            print twitter_date_of_fifth_tweet(screen_name)
         elif action == '17':
+            #TODO Rewrite as a method elsewhere
             #print(facebook_path_to_EXPORT_FILE)
+            
+            # Load data 
+            members = load_from_mongo(mongo_db="twitter", mongo_db_coll="community-councils_members")  # collection where all
+                                                                                           # the data for each page is stored
+            pages_data = facebook_sort_pages(members, "DESC")
+            
+            # Prepare to output
             workbook = xlwt.Workbook(encoding="utf-8")  # XLWT - ONLY EXPORTS .XLS files
             sheet = workbook.add_sheet("sheet1")
             sheet.write(0, 0, 'ID ')
@@ -174,10 +186,7 @@ def main():
             sheet.write(0, 4, 'Count Posts TOTAL')
             sheet.write(0, 5, 'Date Most recent post')
             sheet.write(0, 6, 'Date 5th Most recent post')
-
-            members = load_from_mongo(mongo_db="twitter", mongo_db_coll="community-councils_members")  # collection where all
-                                                                                           # the data for each page is stored
-            pages_data = facebook_sort_pages(members, "DESC")
+            
             i = 1  # index for rows in sheet
             for member in members:
                 sheet.write(i, 0, member['id'])
@@ -195,10 +204,7 @@ def main():
                 i += 1
             workbook.save(twitter_path_to_EXPORT_FILE)
         else:
-            print "WRONG ACTION!!!"
-    else:
-        print "You are not authorized!!!"
-
+            help()
 
 
 if __name__ == '__main__':

@@ -3,16 +3,25 @@ from functools import partial
 import sys
 from config import *
 
+#Defaults (to move to config file)
+DEFAULT_MONGO_COLLECTION = "twitter"
+DEFAULT_TWITTER_USER = "spartakan"
+DEFAULT_TWITTER_LIST = "community-councils"
+
 import json      # Used for debug only
 import xlrd,xlwt # Spreadsheet manip
 import networkx as nx
 
+import CrawlingModule.Twitter.authorization as cta
+import CrawlingModule.Twitter.user as ctu
+import CrawlingModule.Twitter.tweets as ctt
+import CrawlingModule.Twitter.list as ctl
 
 #TODO: Tidy up this lot
-from CrawlingModule.Twitter.authorization import twitter_authorize
-from CrawlingModule.Twitter.user import twitter_get_followers, twitter_user_timeline,twitter_get_user_info
-from CrawlingModule.Twitter.tweets import twitter_search, twitter_call_function_on_interval, twitter_stream_api,twitter_trends
-from CrawlingModule.Twitter.list import twitter_get_list_members, twitter_get_list_members_tweets
+#from CrawlingModule.Twitter.authorization import twitter_authorize
+#from CrawlingModule.Twitter.user import twitter_get_followers, twitter_user_timeline, twitter_get_user_info
+#from CrawlingModule.Twitter.tweets import twitter_search, twitter_call_function_on_interval, twitter_stream_api,twitter_trends
+#from CrawlingModule.Twitter.list import twitter_get_list_members, twitter_get_list_members_tweets
 
 from DatabaseModule.TwitterWrapper.database_manipulation import twitter_load_from_mongo_sorted,twitter_save_to_mongo
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo,getCollections
@@ -50,7 +59,7 @@ def help():
 
 #menu with functions and options for twitter
 def main():
-    api = twitter_authorize()
+    api = cta.twitter_authorize()
     if not(api):
         print "Twitter authorisation fail"
     else:
@@ -60,6 +69,12 @@ def main():
         else:
             action = sys.argv[1]
             debug_print(("Action=%s")%action)
+            param1 = None
+            param2 = None
+            if len(sys.argv) >= 3:
+                param1 = sys.argv[2]
+                if len(sys.argv) >= 4:
+                    param2 = sys.argv[3]
 
         if action == '0':  # find users who have tweeted a hashtag , for a list of popular hashtags
             hashtags_dict = get_popular_hashtags(slug="community-councils")
@@ -85,14 +100,17 @@ def main():
             graph = create_directed_graph_of_list_members_and_followers(api, slug)
             export_graph_to_gml(graph,path_to_graph_file)
 
+
         elif action in [3,'3', 'get-list-tweets']:  # get statuses of list members
-            twitter_get_list_members_tweets(api, owner_screen_name="spartakan", slug="community-councils")
+            twUser = param1 if param1 else DEFAULT_TWITTER_USER
+            twList = param2 if param2 else DEFAULT_TWITTER_LIST
+            ctl.twitter_get_list_members_tweets(api, owner_screen_name=twUser, slug=twList)
 
 
         elif action == '4':  # Get trending topics
             print "INFO: Getting World Trends ..."
             WORLD_WOE_ID = 1  # for searching trends
-            world_trends = twitter_trends(api, WORLD_WOE_ID)
+            world_trends = ctt.twitter_trends(api, WORLD_WOE_ID)
             #for checking the structure of uncomment : #print json.dumps(world_trends[0]['trends'], indent=1)
             if world_trends:
                 world_trends = world_trends[0]['trends']
@@ -102,37 +120,40 @@ def main():
 
         elif action in ['5','get-list-tweets']:  # find trending topics on a time interval
             #making a partial class from twitter_search to later add it as an argument in twitter_call_function_on_interval
-            tweets_from_list_members = partial(twitter_get_list_members_tweets, api, owner_screen_name="spartakan", slug="community-councils")
+            ctl.tweets_from_list_members = partial(ctl.twitter_get_list_members_tweets, api, owner_screen_name=DEFAULT_TWITTER_USER, slug="community-councils")
 
             #get and save the trending topics on time intervals
-            twitter_call_function_on_interval(tweets_from_list_members)
+            ctt.twitter_call_function_on_interval(tweets_from_list_members)
 
         elif action == '6':  # get members of a list
-            twitter_get_list_members(api,owner_screen_name="spartakan", slug="community-councils")
+            twUser = param1 if param1 else DEFAULT_TWITTER_USER
+            twList = param2 if param2 else DEFAULT_TWITTER_LIST
 
-        elif action == '7' or action == '8':
-            q = None
-            print "Read How to build a query first ! ( https://dev.twitter.com/docs/using-search )  "
-            q = raw_input('Enter a query: ').strip()
-            while not q:
-                q = raw_input('Enter a query:').strip()
-            if action == '7':  # Fetch tweets from the search/rest api
-                debug_print("Searching tweets for the query:" + q)
-                #twitter_call_function_on_interval(search_tweets, 'twitter', q)
-                results = twitter_search(api, q, 1000)
-                debug_print("Tweets saved into database")
+            ctl.twitter_get_list_members(api,owner_screen_name=twUser, slug=twList)
 
-            if action == '8':  # Fetch tweets from streaming api
-                debug_print("Searching and saving tweets from the streaming api for query: " +q+ "...")
-                twitter_stream_api(api, q)
+        elif action in ['7','8','search']:
+            q = param1
+            #~ q = None
+            #~ print "Read How to build a query first ! ( https://dev.twitter.com/docs/using-search )  "
+            #~ q = raw_input('Enter a query: ').strip()
+            #~ while not q:
+                #~ q = raw_input('Enter a query:').strip()
+            if q:
+                if action == '7':  # Fetch tweets from the search/rest api
+                    debug_print("Searching tweets for the query:" + q)
+                    #twitter_call_function_on_interval(search_tweets, 'twitter', q)
+                    results = ctt.twitter_search(api, q, 1000)
+                    debug_print("Tweets saved into database")
+
+                if action == '8':  # Fetch tweets from streaming api
+                    debug_print("Searching and saving tweets from the streaming api for query: " +q+ "...")
+                    ctt.twitter_stream_api(api, q)
+            else:
+                print "Query missing"
 
         elif action == '9':  # Get all tweets from a user's timeline
-                # screen_name = raw_input('Enter the screen name: ').strip()
-                # while not screen_name:
-                #     screen_name = raw_input('Enter a query:').strip()
-                # debug_print("Getting tweets from user: " + screen_name + " ... ")
-                screen_name = "spartakan"
-                tweets = twitter_user_timeline(api, screen_name=screen_name)
+                screen_name = param1 if param1 else DEFAULT_TWITTER_USER
+                tweets = ctu.twitter_user_timeline(api, screen_name=screen_name)
 
 
         elif action == '10':
@@ -141,41 +162,44 @@ def main():
                 print_prettytable(common_entities)
 
         elif action == '11':  # get list members
-            twitter_get_list_members(api,owner_screen_name="spartakan", slug="community-councils")
+            twUser = param1 if param1 else DEFAULT_TWITTER_USER
+            twList = param2 if param2 else DEFAULT_TWITTER_LIST
+            ctl.twitter_get_list_members(api,owner_screen_name=twUser, slug=twList)
 
         elif action == '12':
             print "MULTIGRAPH"
-            slug = "community-councils"
-            mdG = create_multi_graph_of_list_memebers_and_followers(api,slug)
+            twList = param1 if param1 else DEFAULT_TWITTER_LIST
+            mdG = create_multi_graph_of_list_memebers_and_followers(api,twList)
             name_of_file = "twitter_multigraph.gml"
             export_graph_to_gml(mdG, path_to_graph_file + name_of_file)
 
 
         elif action == '13':  # find popular tweets from list of tweets
-            statuses = load_from_mongo("twitter", "community-councils")
+            twList = param1 if param1 else DEFAULT_TWITTER_LIST
+            statuses = load_from_mongo(DEFAULT_MONGO_COLLECTION, twList)
             find_popular_tweets(statuses=statuses)
 
         elif action == '14':  # get info for user
-            screen_name = "spartakan"
-            user = twitter_get_user_info(api, screen_name)
+            screen_name = param1 if param1 else DEFAULT_TWITTER_USER
+            user = ctu.twitter_get_user_info(api, screen_name)
             debug_print(json.dumps(user, indent=1))
 
         elif action == '15':
-            screen_name = "spartakan"
+            screen_name = param1 if param1 else DEFAULT_TWITTER_USER
             print twitter_date_of_last_tweet(screen_name)
 
         elif action == '16':
-           screen_name = "spartakan"
-           print twitter_date_of_fifth_tweet(screen_name)
+            screen_name = param1 if param1 else DEFAULT_TWITTER_USER
+            print twitter_date_of_fifth_tweet(screen_name)
         elif action == '17':
             #TODO Rewrite as a method elsewhere
             #print(facebook_path_to_EXPORT_FILE)
-            
-            # Load data 
+
+            # Load data
             members = load_from_mongo(mongo_db="twitter", mongo_db_coll="community-councils_members")  # collection where all
                                                                                            # the data for each page is stored
             pages_data = facebook_sort_pages(members, "DESC")
-            
+
             # Prepare to output
             workbook = xlwt.Workbook(encoding="utf-8")  # XLWT - ONLY EXPORTS .XLS files
             sheet = workbook.add_sheet("sheet1")
@@ -186,7 +210,7 @@ def main():
             sheet.write(0, 4, 'Count Posts TOTAL')
             sheet.write(0, 5, 'Date Most recent post')
             sheet.write(0, 6, 'Date 5th Most recent post')
-            
+
             i = 1  # index for rows in sheet
             for member in members:
                 sheet.write(i, 0, member['id'])

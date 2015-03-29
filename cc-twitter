@@ -42,8 +42,8 @@ def help():
     print "4. Find the trending topics in the world (BUGGY))"
     print "5 <get-list-tweets> Call function for saving tweets from list members on interval( predefined for community-council)"
     print "6. Get info about list members from api (json)"
-    print "7. Search & save tweets for a specific query"
-    print "8. Search & save tweets from the streaming api"
+    print "7 <search>. Search & save tweets for a specific query"
+    print "8 <ssearch>. Search & save tweets from the streaming api"
     print "9. Get all tweets from a user's timeline"
     print "10. Print common entities"
     print "11. Get list members"
@@ -73,7 +73,36 @@ def main():
                 if len(sys.argv) >= 4:
                     param2 = sys.argv[3]
 
-        if action == '0':  # find users who have tweeted a hashtag , for a list of popular hashtags
+        if not action:
+            help()
+
+        elif action == 'get-list-tweets':  # get statuses of list members
+            twUser = param1 if param1 else DEFAULT_TWITTER_USER
+            twList = param2 if param2 else DEFAULT_TWITTER_LIST
+            ctl.twitter_get_list_members_tweets(api, owner_screen_name=twUser, slug=twList)
+
+        elif action == 'search':
+            #~ Syntax guide: https://dev.twitter.com/docs/using-search )  "
+            q = param1
+
+            if q:
+                debug_print("Searching tweets for the query:" + q)
+                #twitter_call_function_on_interval(search_tweets, 'twitter', q)
+                results = ctt.twitter_search(api, q, 1000)
+                debug_print("Tweets saved into database")
+
+            else:
+                print "Query missing"
+
+        elif action == 'ssearch':
+            q = param1
+            if q:
+                debug_print("Searching and saving tweets from the streaming api for query: " +q+ "...")
+                ctt.twitter_stream_api(api, q)
+            else:
+                print "Query missing"
+
+        elif action == '0':  # find users who have tweeted a hashtag , for a list of popular hashtags
             hashtags_dict = get_popular_hashtags(slug="community-councils")
             hashtags = hashtags_dict.keys() #.sort()
             debug_print(hashtags_dict)
@@ -98,12 +127,6 @@ def main():
             export_graph_to_gml(graph,path_to_graph_file)
 
 
-        elif action in [3,'3', 'get-list-tweets']:  # get statuses of list members
-            twUser = param1 if param1 else DEFAULT_TWITTER_USER
-            twList = param2 if param2 else DEFAULT_TWITTER_LIST
-            ctl.twitter_get_list_members_tweets(api, owner_screen_name=twUser, slug=twList)
-
-
         elif action == '4':  # Get trending topics
             print "INFO: Getting World Trends ..."
             WORLD_WOE_ID = 1  # for searching trends
@@ -115,12 +138,12 @@ def main():
                     print "trend: ", w['name']
 
 
-        elif action in ['5','get-list-tweets']:  # find trending topics on a time interval
+        elif action == '5':  # find trending topics on a time interval
             #making a partial class from twitter_search to later add it as an argument in twitter_call_function_on_interval
             ctl.tweets_from_list_members = partial(ctl.twitter_get_list_members_tweets, api, owner_screen_name=DEFAULT_TWITTER_USER, slug="community-councils")
-
             #get and save the trending topics on time intervals
             ctt.twitter_call_function_on_interval(tweets_from_list_members)
+
 
         elif action == '6':  # get members of a list
             twUser = param1 if param1 else DEFAULT_TWITTER_USER
@@ -128,22 +151,6 @@ def main():
 
             ctl.twitter_get_list_members(api,owner_screen_name=twUser, slug=twList)
 
-        elif action in ['7','8','search']:
-            #~ Syntax guide: https://dev.twitter.com/docs/using-search )  "
-            q = param1 if param1 else DEFAULT_TWITTER_USER
-
-            if q:
-                if action == '7':  # Fetch tweets from the search/rest api
-                    debug_print("Searching tweets for the query:" + q)
-                    #twitter_call_function_on_interval(search_tweets, 'twitter', q)
-                    results = ctt.twitter_search(api, q, 1000)
-                    debug_print("Tweets saved into database")
-
-                if action == '8':  # Fetch tweets from streaming api
-                    debug_print("Searching and saving tweets from the streaming api for query: " +q+ "...")
-                    ctt.twitter_stream_api(api, q)
-            else:
-                print "Query missing"
 
         elif action == '9':  # Get all tweets from a user's timeline
                 screen_name = param1 if param1 else DEFAULT_TWITTER_USER
@@ -185,6 +192,8 @@ def main():
         elif action == '16':
             screen_name = param1 if param1 else DEFAULT_TWITTER_USER
             print twitter_date_of_fifth_tweet(screen_name)
+
+
         elif action == '17':
             #TODO Rewrite as a method elsewhere
             #print(facebook_path_to_EXPORT_FILE)

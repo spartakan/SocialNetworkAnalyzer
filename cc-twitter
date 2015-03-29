@@ -44,7 +44,7 @@ def help():
     print "1. Get only hashtags from results"
     print "2. Create & export graph of members of twitter list and their followers"
     print "4. Find the trending topics in the world (BUGGY))"
-    print "5 <follow-list> Call function for saving tweets from list members on interval( predefined for community-council)"
+    print "5  Call function for saving tweets from list members on interval( predefined for community-council)"
     print "6. Get info about list members from api (json)"
     print "9. Get all tweets from a user's timeline"
     print "10. Print common entities"
@@ -87,7 +87,7 @@ def main():
                 twUser = param1 if param1 else DEFAULT_TWITTER_USER
                 twList = param2 if param2 else DEFAULT_TWITTER_LIST
                 #making a partial class from twitter_search to later add it as an argument in twitter_call_function_on_interval
-                ctl.tweets_from_list_members = partial(ctl.twitter_get_list_members_tweets, api, owner_screen_name=twUser, slug=twList)
+                tweets_from_list_members = partial(ctl.twitter_get_list_members_tweets, api, owner_screen_name=twUser, slug=twList)
                 #get and save the trending topics on time intervals
                 ctt.twitter_call_function_on_interval(tweets_from_list_members)
 

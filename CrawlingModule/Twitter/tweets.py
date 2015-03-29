@@ -1,8 +1,8 @@
+"""TODO: Check which module imports are necessary"""
 import datetime,json,time,twitter
 import urllib2
 from httplib import BadStatusLine
 from functools import partial
-from config import *
 
 # Errors
 from urllib2 import URLError
@@ -10,10 +10,9 @@ from socket import error as SocketError
 from twitter.api import TwitterHTTPError
 
 # SNA Modules
+from config import *
 import DatabaseModule.TwitterWrapper.database_manipulation as dtd
 import DatabaseModule.database_manipulation as dd
-#from DatabaseModule.TwitterWrapper.database_manipulation import twitter_save_to_mongo
-#from DatabaseModule.database_manipulation import load_from_mongo
 
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
@@ -129,7 +128,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
 
      """
 
-    debug_print('EXEC twitter_search method : ')
+    debug_print(('EXEC twitter_search method : %s')%(q,))
     #Get a collection of relevant Tweets matching a specified query
 
     try:
@@ -184,7 +183,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
             logger.error('Failed to find attribute ', exc_info=True)
             debug_print("  BREAK: next_results: " + str(len(search_results['statuses'])))
             break
-        debug_print("results: " + next_results)
+        #~ debug_print("results: " + next_results)
         kwargs = dict([kv.split('=') for kv in next_results[1:].split("&")])
         kwargs['result_type'] = "recent"
         debug_print("kwargs: "+str(kwargs))
@@ -193,19 +192,12 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
         debug_print("  number of statuses: " + str(len(search_results['statuses'])))
         statuses += search_results['statuses']
         #print json.dumps(search_results,indent=1)
-        #break
         if len(statuses) > max_results:
            debug_print("  BREAK: statuses: " +  str(len(statuses)))
            break
     if statuses:
-        debug_print(('  Saving %d statsus')%len(statuses))
-    dtd.twitter_save_to_mongo(statuses, DEFAULT_MONGO_DB, q)
-    #~ for tweet in statuses:
-        #~ #print json.dumps(tweet, indent=1)
-        #~ debug_print("  SAVING: " +  str(tweet))
-        #~ dtd.twitter_save_to_mongo(tweet, DEFAULT_MONGO_DB, q)
-
-
+        #~ debug_print(('  Saving %d statsus')%len(statuses))
+        dtd.twitter_save_to_mongo(statuses, DEFAULT_MONGO_DB, 'search-%s'%(q,))
 
 
 

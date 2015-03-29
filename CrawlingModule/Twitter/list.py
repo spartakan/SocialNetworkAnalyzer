@@ -1,9 +1,13 @@
 import json, time
+
+from twitter.api import TwitterHTTPError
+
+# SNA imports
 from config import *
 from DatabaseModule.TwitterWrapper.database_manipulation import twitter_save_to_mongo
 from DatabaseModule.database_manipulation import load_from_mongo,save_to_mongo
+
 from debugging_setup import setup_logging, debug_print
-from twitter.api import TwitterHTTPError
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 
@@ -18,7 +22,7 @@ def twitter_get_list_members_tweets(twitter_api, max_results=1000, owner_screen_
     debug_print("EXEC twitter_get_list_members method :")
 
     #get id of last tweet from mongo
-    since_id = load_from_mongo(mongo_db="twitter", mongo_db_coll=slug, find_since_id=True)
+    since_id = load_from_mongo(mongo_db=DEFAULT_MONGO_DB, mongo_db_coll=slug, find_since_id=True)
     if since_id is None:
         since_id = 1
 
@@ -52,7 +56,7 @@ def twitter_get_list_members_tweets(twitter_api, max_results=1000, owner_screen_
 
     #Saving all results to database
 
-    twitter_save_to_mongo(results, "twitter", slug)
+    twitter_save_to_mongo(results, DEFAULT_MONGO_DB, slug)
     #debug_print(" All Results are saved in database")
 
 
@@ -85,6 +89,6 @@ def twitter_get_list_members(twitter_api, owner_screen_name="", slug=""):
             debug_print("  Woke up ... End: " + str(time.ctime()))
             debug_print("  cursor after waking up: "+str(cursor))
     db_coll_name = "%s_%s" % (slug, "members") #create database name for members  format = > slug_members
-    save_to_mongo(members, mongo_db="twitter", mongo_db_coll=db_coll_name)
+    save_to_mongo(members, mongo_db=DEFAULT_MONGO_DB, mongo_db_coll=db_coll_name)
     return members
 

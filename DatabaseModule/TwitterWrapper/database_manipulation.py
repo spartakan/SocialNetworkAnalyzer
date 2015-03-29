@@ -3,17 +3,23 @@ Loading and saving tweets
 TODO: Change this so it extends DatabaseModule.database_manipulation
 """
 
-from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo,load_from_mongo_sorted
-from debugging_setup import  *
 import datetime
 import pymongo
-from config import *
+import json
+
 from pymongo.errors import DuplicateKeyError
+
 import logging
+from debugging_setup import  *
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 DESC = -1
 ASC = 1
+
+# SNA Imports
+from config import *
+from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo,load_from_mongo_sorted
+
 
 def twitter_save_to_mongo(data, mongo_db, mongo_db_coll, indexes=None, **mongo_conn_kw):
     """
@@ -35,7 +41,8 @@ def twitter_save_to_mongo(data, mongo_db, mongo_db_coll, indexes=None, **mongo_c
     #oll.create_index("recent_retweets")
 
     for document in data:
-        debug_print(('Saving %s')%str(document))
+        #~ debug_print(('Saving %s')%str(document['text']))
+        #debug_print(json.dumps(d, indent=1))
 
         try:
 
@@ -44,8 +51,6 @@ def twitter_save_to_mongo(data, mongo_db, mongo_db_coll, indexes=None, **mongo_c
             date = datetime.datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
             #print(" DATE : " + str(date))
             document['DATE'] = unicode(date)
-            #debug_print(json.dumps(d, indent=1))
-            #break
             coll.ensure_index('DATE')
             #ensure all other indexes
             if indexes is not None:
@@ -53,9 +58,12 @@ def twitter_save_to_mongo(data, mongo_db, mongo_db_coll, indexes=None, **mongo_c
                     debug_print('IDX='+idx)
                     coll.ensure_index([(idx, 1)])
             status = coll.insert(document)
+            debug_print(('Saved %s')%json.dumps(document['text']))
 
         except (Exception, DuplicateKeyError), e:
-            debug_print("  Exception: %s" % e)
+            # This is not a problem - it simply means that this tweet has already been stored in this collection
+            # (Question is why it's being stored again, but that's not a problem to be solved here)
+            #debug_print("  Exception: %s" % e)
             logger.error(e)
             pass
 

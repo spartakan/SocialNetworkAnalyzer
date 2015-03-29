@@ -4,9 +4,6 @@ import sys
 from config import *
 
 #Defaults (to move to config file)
-DEFAULT_MONGO_COLLECTION = "twitter"
-DEFAULT_TWITTER_USER = "spartakan"
-DEFAULT_TWITTER_LIST = "community-councils"
 
 import json      # Used for debug only
 import xlrd,xlwt # Spreadsheet manip
@@ -132,12 +129,9 @@ def main():
             ctl.twitter_get_list_members(api,owner_screen_name=twUser, slug=twList)
 
         elif action in ['7','8','search']:
-            q = param1
-            #~ q = None
-            #~ print "Read How to build a query first ! ( https://dev.twitter.com/docs/using-search )  "
-            #~ q = raw_input('Enter a query: ').strip()
-            #~ while not q:
-                #~ q = raw_input('Enter a query:').strip()
+            #~ Syntax guide: https://dev.twitter.com/docs/using-search )  "
+            q = param1 if param1 else DEFAULT_TWITTER_USER
+
             if q:
                 if action == '7':  # Fetch tweets from the search/rest api
                     debug_print("Searching tweets for the query:" + q)

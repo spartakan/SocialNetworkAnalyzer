@@ -1,13 +1,19 @@
 import datetime,json,time,twitter
 import urllib2
-from urllib2 import URLError
 from httplib import BadStatusLine
 from functools import partial
 from config import *
-from DatabaseModule.TwitterWrapper.database_manipulation import twitter_save_to_mongo
-from DatabaseModule.database_manipulation import load_from_mongo
+
+# Errors
+from urllib2 import URLError
 from socket import error as SocketError
 from twitter.api import TwitterHTTPError
+
+# SNA Modules
+import DatabaseModule.TwitterWrapper.database_manipulation as dtd
+import DatabaseModule.database_manipulation as dd
+#from DatabaseModule.TwitterWrapper.database_manipulation import twitter_save_to_mongo
+#from DatabaseModule.database_manipulation import load_from_mongo
 
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
@@ -134,7 +140,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
     except urllib2.HTTPError, e:
         if e.e.code == 429 : #rate limit reached TODO: handle this error  inside methods
              #find the highest since_id from database to continue if a rate limitation is reached
-            since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
+            since_id = dd.load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
             if since_id:
                 debug_print(" since_id: %i" % since_id)
                 kw = {'since_id': since_id}
@@ -149,7 +155,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
     except SocketError, se:
         logger.error(se)
         debug_print("  " + se.message)
-        since_id = load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
+        since_id = dd.load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
         debug_print("  SocketError occurred. Start:" + str(time.ctime()) + " . Retrying in 0.05 sec ...zZz...")
         time.sleep(0.05)
         debug_print("  Woke up ... End: " + str(time.ctime()))
@@ -193,9 +199,11 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
            break
     if statuses:
         debug_print(('  Saving %d statsus')%len(statuses))
-    for tweet in statuses:
-        #print json.dumps(tweet, indent=1)
-        twitter_save_to_mongo(tweet, "twitter", q)
+    dtd.twitter_save_to_mongo(statuses, DEFAULT_MONGO_DB, q)
+    #~ for tweet in statuses:
+        #~ #print json.dumps(tweet, indent=1)
+        #~ debug_print("  SAVING: " +  str(tweet))
+        #~ dtd.twitter_save_to_mongo(tweet, DEFAULT_MONGO_DB, q)
 
 
 
@@ -267,4 +275,4 @@ def twitter_stream_api(twitter_api, query):
         if stream:
             for tweet in stream:
                 #print json.dumps(tweet, indent=1)
-                twitter_save_to_mongo(tweet, "twitter", query)
+                dtd.twitter_save_to_mongo(tweet, DEFAULT_MONGO_DB, query)

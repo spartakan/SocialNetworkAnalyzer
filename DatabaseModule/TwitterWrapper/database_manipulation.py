@@ -1,3 +1,8 @@
+"""
+Loading and saving tweets
+TODO: Change this so it extends DatabaseModule.database_manipulation
+"""
+
 from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo,load_from_mongo_sorted
 from debugging_setup import  *
 import datetime
@@ -30,6 +35,7 @@ def twitter_save_to_mongo(data, mongo_db, mongo_db_coll, indexes=None, **mongo_c
     #oll.create_index("recent_retweets")
 
     for document in data:
+        debug_print(('Saving %s')%str(document))
 
         try:
 
@@ -44,6 +50,7 @@ def twitter_save_to_mongo(data, mongo_db, mongo_db_coll, indexes=None, **mongo_c
             #ensure all other indexes
             if indexes is not None:
                 for idx in indexes:
+                    debug_print('IDX='+idx)
                     coll.ensure_index([(idx, 1)])
             status = coll.insert(document)
 

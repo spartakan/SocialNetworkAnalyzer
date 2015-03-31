@@ -2,7 +2,7 @@ import networkx as nx
 
 from config import *
 
-from Common.DB import load_from_mongo
+from DB.common import load_from_mongo
 from Twitter.user import twitter_get_followers
 
 #create a logger for this module , set it up, and use it to write errors to file

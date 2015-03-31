@@ -20,8 +20,9 @@ import Twitter.Get.list as ctl
 #from CrawlingModule.Twitter.tweets import twitter_search, twitter_call_function_on_interval, twitter_stream_api,twitter_trends
 #from CrawlingModule.Twitter.list import twitter_get_list_members, twitter_get_list_members_tweets
 
-from Common.DB  import save_to_mongo, load_from_mongo, getCollections
-from Twitter.DB import twitter_load_from_mongo_sorted,twitter_save_to_mongo
+#from DB.common  import save_to_mongo, load_from_mongo, getCollections
+from DB.twitter import twitter_load_from_mongo_sorted,twitter_save_to_mongo, \
+                        save_to_mongo, load_from_mongo, getCollections
 
 #~ from DatabaseModule.TwitterWrapper.database_manipulation import twitter_load_from_mongo_sorted,twitter_save_to_mongo
 #~ from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo,getCollections

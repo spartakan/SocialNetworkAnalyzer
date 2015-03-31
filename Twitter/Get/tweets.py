@@ -11,8 +11,8 @@ from twitter.api import TwitterHTTPError
 
 # SNA Modules
 from config import *
-import Twitter.DB as dtd
-import Common.DB as dd
+import DB.twitter as dtd
+import DB.common as dd
 
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)

@@ -4,8 +4,9 @@ from twitter.api import TwitterHTTPError
 
 # SNA imports
 from config import *
-from Twitter.DB import twitter_save_to_mongo
-from Common.DB import load_from_mongo,save_to_mongo
+from DB.twitter import twitter_save_to_mongo, \
+                        load_from_mongo,save_to_mongo
+#~ from Common.DB import load_from_mongo,save_to_mongo
 
 from debugging_setup import setup_logging, debug_print
 logger = logging.getLogger(__name__)

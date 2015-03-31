@@ -9,10 +9,10 @@ import json      # Used for debug only
 import xlrd,xlwt # Spreadsheet manip
 import networkx as nx
 
-import CrawlingModule.Twitter.authorization as cta
-import CrawlingModule.Twitter.user as ctu
-import CrawlingModule.Twitter.tweets as ctt
-import CrawlingModule.Twitter.list as ctl
+import Twitter.Get.authorization as cta
+import Twitter.user as ctu
+import Twitter.Get.tweets as ctt
+import Twitter.Get.list as ctl
 
 #TODO: Tidy up this lot
 #from CrawlingModule.Twitter.authorization import twitter_authorize
@@ -20,14 +20,17 @@ import CrawlingModule.Twitter.list as ctl
 #from CrawlingModule.Twitter.tweets import twitter_search, twitter_call_function_on_interval, twitter_stream_api,twitter_trends
 #from CrawlingModule.Twitter.list import twitter_get_list_members, twitter_get_list_members_tweets
 
-from DatabaseModule.TwitterWrapper.database_manipulation import twitter_load_from_mongo_sorted,twitter_save_to_mongo
-from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo,getCollections
+from DB import save_to_mongo, load_from_mongo, getCollections
+from Twitter.DB import twitter_load_from_mongo_sorted,twitter_save_to_mongo
+
+#~ from DatabaseModule.TwitterWrapper.database_manipulation import twitter_load_from_mongo_sorted,twitter_save_to_mongo
+#~ from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo,getCollections
 
 from AnalysisModule.Twitter.tweets import get_common_tweet_entities,extract_tweet_entities,print_prettytable, \
                                           get_popular_hashtags, get_users_for_hashtag_list,\
                                           find_popular_tweets,twitter_get_hashtags_from_tweets
 from AnalysisModule.Twitter.graph import create_keyplayers_graph,export_graph_to_gml,create_directed_graph_of_list_members_and_followers,create_multi_graph_of_list_memebers_and_followers
-from AnalysisModule.Twitter.user import twitter_date_of_fifth_tweet,twitter_date_of_last_tweet
+from Twitter.User import twitter_date_of_fifth_tweet,twitter_date_of_last_tweet
 
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)

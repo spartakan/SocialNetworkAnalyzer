@@ -9,10 +9,10 @@ import json      # Used for debug only
 import xlrd,xlwt # Spreadsheet manip
 import networkx as nx
 
-import Twitter.Get.authorization as cta
+import Twitter.authorization as cta
 import Twitter.user as ctu
-import Twitter.Get.tweets as ctt
-import Twitter.Get.list as ctl
+import Twitter.tweets as ctt
+import Twitter.list as ctl
 
 #TODO: Tidy up this lot
 #from CrawlingModule.Twitter.authorization import twitter_authorize

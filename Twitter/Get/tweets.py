@@ -11,91 +11,13 @@ from twitter.api import TwitterHTTPError
 
 # SNA Modules
 from config import *
-import DatabaseModule.TwitterWrapper.database_manipulation as dtd
-import DatabaseModule.database_manipulation as dd
+import Twitter.DB as dtd
+import Common.DB as dd
 
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 
-
-
-def twitter_make_robust_request(twitter_api_func, max_errors=10, *args, **kw):
-    """ A nested helper function that handles common HTTPErrors. Return an updated
-    value for wait_period if the problem is a 500 level error. Block until the
-    rate limit is reset if it's a rate limiting issue (429 error). Returns None
-    for 401 and 404 errors, which requires special handling by the caller.
-    USED in: all functions that make a call to the twitter api
-
-    :parameter: twitter_api_func - function that need to be executed
-    :parameter: max_errors
-    """
-    debug_print('EXEC twitter_make_robust_request method : ')
-
-    def handle_twitter_http_error(e, wait_period=2, sleep_when_rate_limited=True):
-        if wait_period > 3600: # Seconds
-            print >> sys.stderr, 'Too many retries. Quitting.'
-            logger.error(e.message)
-            raise e
-        # See https://dev.twitter.com/docs/error-codes-responses for common codes
-        if e.e.code == 401:
-            print >> sys.stderr, 'Encountered 401 Error (Not Authorized)'
-            logger.error(e.message)
-            return None
-        elif e.e.code == 404:
-            print >> sys.stderr, 'Encountered 404 Error (Not Found)'
-            logger.error(e.message)
-            return None
-        elif e.e.code == 420:
-            print  'Encountered 420 Error (Rate Limit Exceeded)'
-            logger.error(e)
-            if sleep_when_rate_limited:
-                debug_print("  Rate limit reached. Start:" + str(time.ctime()) + " . Retrying in 15 min ...zZz...")
-                logger.error(e.message)
-                sys.stderr.flush()
-                time.sleep(60*15 + 5)
-                debug_print("  Woke up ... End: " + str(time.ctime()))
-                logger.error(e.message)
-                return 2
-            else:
-                raise e # Caller must handle the rate limiting issue
-        elif e.e.code in (500, 502, 503, 504, 104):  #104 is for socket error : connection reset by peer
-            print >> sys.stderr, 'Encountered %i Error. Retrying in %i seconds' % (e.e.code, wait_period)
-            logger.error(e.message)
-            time.sleep(wait_period)
-            wait_period *= 1.5
-            return wait_period
-        else:
-            print " -- else : ", e.message
-            raise e
-
-    # End of nested helper function
-    wait_period = 2
-    error_count = 0
-    while True:
-        try:
-            return twitter_api_func(*args, **kw)
-        except TwitterHTTPError, e:
-            logger.error(e.message)
-            error_count = 0
-            wait_period = handle_twitter_http_error(e, wait_period)
-            if wait_period is None:
-                return
-        except URLError, e:
-            logger.error(e.message)
-            error_count += 1
-            print >> sys.stderr, "URLError encountered. Continuing."
-            if error_count > max_errors:
-                print >> sys.stderr, "Too many consecutive errors...bailing out."
-                raise
-        except BadStatusLine, e:
-            logger.error(e.message)
-            error_count += 1
-            print >> sys.stderr, "BadStatusLine encountered. Continuing."
-            if error_count > max_errors:
-                print >> sys.stderr, "Too many consecutive errors...bailing out."
-                raise
-
-
+### HIGH LEVEL FUNCTIONS
 
 
 def twitter_trends(twitter_api, woe_id):
@@ -198,6 +120,87 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
     if statuses:
         #~ debug_print(('  Saving %d statsus')%len(statuses))
         dtd.twitter_save_to_mongo(statuses, DEFAULT_MONGO_DB, 'search-%s'%(q,))
+
+
+### LOW LEVEL FUNCTIONS
+
+def twitter_make_robust_request(twitter_api_func, max_errors=10, *args, **kw):
+    """ A nested helper function that handles common HTTPErrors. Return an updated
+    value for wait_period if the problem is a 500 level error. Block until the
+    rate limit is reset if it's a rate limiting issue (429 error). Returns None
+    for 401 and 404 errors, which requires special handling by the caller.
+    USED in: all functions that make a call to the twitter api
+
+    :parameter: twitter_api_func - function that need to be executed
+    :parameter: max_errors
+    """
+    debug_print('EXEC twitter_make_robust_request method : ')
+
+    def handle_twitter_http_error(e, wait_period=2, sleep_when_rate_limited=True):
+        if wait_period > 3600: # Seconds
+            print >> sys.stderr, 'Too many retries. Quitting.'
+            logger.error(e.message)
+            raise e
+        # See https://dev.twitter.com/docs/error-codes-responses for common codes
+        if e.e.code == 401:
+            print >> sys.stderr, 'Encountered 401 Error (Not Authorized)'
+            logger.error(e.message)
+            return None
+        elif e.e.code == 404:
+            print >> sys.stderr, 'Encountered 404 Error (Not Found)'
+            logger.error(e.message)
+            return None
+        elif e.e.code == 420:
+            print  'Encountered 420 Error (Rate Limit Exceeded)'
+            logger.error(e)
+            if sleep_when_rate_limited:
+                debug_print("  Rate limit reached. Start:" + str(time.ctime()) + " . Retrying in 15 min ...zZz...")
+                logger.error(e.message)
+                sys.stderr.flush()
+                time.sleep(60*15 + 5)
+                debug_print("  Woke up ... End: " + str(time.ctime()))
+                logger.error(e.message)
+                return 2
+            else:
+                raise e # Caller must handle the rate limiting issue
+        elif e.e.code in (500, 502, 503, 504, 104):  #104 is for socket error : connection reset by peer
+            print >> sys.stderr, 'Encountered %i Error. Retrying in %i seconds' % (e.e.code, wait_period)
+            logger.error(e.message)
+            time.sleep(wait_period)
+            wait_period *= 1.5
+            return wait_period
+        else:
+            print " -- else : ", e.message
+            raise e
+
+    # End of nested helper function
+    wait_period = 2
+    error_count = 0
+    while True:
+        try:
+            return twitter_api_func(*args, **kw)
+        except TwitterHTTPError, e:
+            logger.error(e.message)
+            error_count = 0
+            wait_period = handle_twitter_http_error(e, wait_period)
+            if wait_period is None:
+                return
+        except URLError, e:
+            logger.error(e.message)
+            error_count += 1
+            print >> sys.stderr, "URLError encountered. Continuing."
+            if error_count > max_errors:
+                print >> sys.stderr, "Too many consecutive errors...bailing out."
+                raise
+        except BadStatusLine, e:
+            logger.error(e.message)
+            error_count += 1
+            print >> sys.stderr, "BadStatusLine encountered. Continuing."
+            if error_count > max_errors:
+                print >> sys.stderr, "Too many consecutive errors...bailing out."
+                raise
+
+
 
 
 

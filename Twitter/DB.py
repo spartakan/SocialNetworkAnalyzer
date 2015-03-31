@@ -9,16 +9,18 @@ import json
 
 from pymongo.errors import DuplicateKeyError
 
+# SNA Imports
+from config import *
+from Common.DB import save_to_mongo, load_from_mongo,load_from_mongo_sorted
+
+
 import logging
 from debugging_setup import  *
+
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 DESC = -1
 ASC = 1
-
-# SNA Imports
-from config import *
-from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo,load_from_mongo_sorted
 
 
 def twitter_save_to_mongo(data, mongo_db, mongo_db_coll, indexes=None, **mongo_conn_kw):

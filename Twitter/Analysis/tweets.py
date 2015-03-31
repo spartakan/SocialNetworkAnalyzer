@@ -4,7 +4,7 @@ from prettytable import PrettyTable
 
 from config import *
 
-from DatabaseModule.database_manipulation import load_from_mongo
+from Common.DB import load_from_mongo
 
 #create a logger for this module , set it up, and use it to write errors to file
 logger = logging.getLogger(__name__)

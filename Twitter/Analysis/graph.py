@@ -1,7 +1,10 @@
-from DatabaseModule.database_manipulation import load_from_mongo
 import networkx as nx
+
 from config import *
-from CrawlingModule.Twitter.user import twitter_get_followers
+
+from Common.DB import load_from_mongo
+from Twitter.user import twitter_get_followers
+
 #create a logger for this module , set it up, and use it to write errors to file
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)

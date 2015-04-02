@@ -92,7 +92,8 @@ def main():
 
 
             elif action == 'get-list-references':
-                # Cycle through all list members and for each, find all referencestl
+                # Cycle through all list members and for each, find all references
+                # TODO: Turn into a function (somewhere) and handle API limits (use call_function_on_interval())
                 twUser = param1 if param1 else DEFAULT_TWITTER_USER
                 twList = param2 if param2 else DEFAULT_TWITTER_LIST
                 members = tl.fetch_list_members(slug=twList)
@@ -102,8 +103,6 @@ def main():
                     results = tt.search(api, q, 50, "%s_%s"%(twList,"references"))
                     debug_print("Tweets saved into database %s_%s"%(twList,"references"))
                     # db.getCollection("community-councils_references").find({},{_id:0,"user.screen_name":1,"entities.user_mentions.screen_name":1,"text":1})
-
-
 
             elif action == 'get-list-tweets':  # get statuses of list members
                 twUser = param1 if param1 else DEFAULT_TWITTER_USER

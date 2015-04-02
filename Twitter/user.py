@@ -7,10 +7,7 @@ from config import *
 
 import DB.twitter as DB
 
-from Twitter.tweets import twitter_make_robust_request
-#~ from Twitter.DB import twitter_save_to_mongo
-#~ from Twitter.DB import twitter_load_from_mongo_sorted
-
+import Twitter.tweets as tt
 
 #create a logger for this module , set it up, and use it to write errors to file
 logger = logging.getLogger(__name__)
@@ -152,7 +149,7 @@ def twitter_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
         kw['user_id'] = user_id
     max_pages = 16
     results = []
-    tweets = twitter_make_robust_request(twitter_api.statuses.user_timeline, **kw)
+    tweets = tt.make_robust_request(twitter_api.statuses.user_timeline, **kw)
 
     if tweets is None:  # 401 (Not Authorized) - Need to bail out on loop entry
         tweets = []
@@ -171,7 +168,7 @@ def twitter_user_timeline(twitter_api, screen_name=None, user_id=None, max_resul
 
         kw['max_id'] = min([tweet['id'] for tweet in tweets]) - 1
         #if there are more tweets make a request for them with max id included
-        tweets = twitter_make_robust_request(twitter_api.statuses.user_timeline, **kw)
+        tweets = tt.make_robust_request(twitter_api.statuses.user_timeline, **kw)
         results += tweets
         debug_print('  Fetched %i tweets' % (len(tweets)))
         page_num += 1

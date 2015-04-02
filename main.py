@@ -11,21 +11,11 @@ import networkx as nx
 
 import Twitter.authorization as cta
 import Twitter.user as ctu
-import Twitter.tweets as ctt
-import Twitter.list as ctl
+import Twitter.tweets as tt
+import Twitter.list as tl
 
-#TODO: Tidy up this lot
-#from CrawlingModule.Twitter.authorization import twitter_authorize
-#from CrawlingModule.Twitter.user import twitter_get_followers, twitter_user_timeline, twitter_get_user_info
-#from CrawlingModule.Twitter.tweets import twitter_search, twitter_call_function_on_interval, twitter_stream_api,twitter_trends
-#from CrawlingModule.Twitter.list import twitter_get_list_members, twitter_get_list_members_tweets
-
-#from DB.common  import save_to_mongo, load_from_mongo, getCollections
 from DB.twitter import twitter_load_from_mongo_sorted,twitter_save_to_mongo, \
                         save_to_mongo, load_from_mongo, getCollections
-
-#~ from DatabaseModule.TwitterWrapper.database_manipulation import twitter_load_from_mongo_sorted,twitter_save_to_mongo
-#~ from DatabaseModule.database_manipulation import save_to_mongo, load_from_mongo,getCollections
 
 from Twitter.Analysis.tweets import get_common_tweet_entities,extract_tweet_entities,print_prettytable, \
                                           get_popular_hashtags, get_users_for_hashtag_list,\
@@ -40,6 +30,8 @@ logger = setup_logging(logger)
 def help():
     print "These are your options: "
     print "follow-list  <user> <list> Set up loop to save tweets from list members on interval"
+    print "get-list <user> <list>. Save a list of list members"
+    print "get-list-references <user> <list>. Get references to list members"
     print "get-list-tweets <user> <list>. Get statuses of list members"
     print "search <query>. Search & save tweets for a specific query"
     print "ssearch <query>. Search & save tweets from the streaming api"
@@ -82,18 +74,41 @@ def main():
         else:
             debug_print("Successfully authenticated and authorized")
 
-            if action == 'get-list-tweets':  # get statuses of list members
-                twUser = param1 if param1 else DEFAULT_TWITTER_USER
-                twList = param2 if param2 else DEFAULT_TWITTER_LIST
-                ctl.twitter_get_list_members_tweets(api, owner_screen_name=twUser, slug=twList)
+            if False:
+                None
 
             elif action in ['5', 'follow-list']:  # find trending topics on a time interval
                 twUser = param1 if param1 else DEFAULT_TWITTER_USER
                 twList = param2 if param2 else DEFAULT_TWITTER_LIST
                 #making a partial class from twitter_search to later add it as an argument in twitter_call_function_on_interval
-                tweets_from_list_members = partial(ctl.twitter_get_list_members_tweets, api, owner_screen_name=twUser, slug=twList)
+                tweets_from_list_members = partial(tl.save_list_members_tweets, api, owner_screen_name=twUser, slug=twList)
                 #get and save the trending topics on time intervals
-                ctt.twitter_call_function_on_interval(tweets_from_list_members)
+                tt.call_function_on_interval(tweets_from_list_members)
+
+            elif action in ['6', 'get-list']:  # find trending topics on a time interval
+                twUser = param1 if param1 else DEFAULT_TWITTER_USER
+                twList = param2 if param2 else DEFAULT_TWITTER_LIST
+                tl.save_list_members(api,owner_screen_name=twUser, slug=twList)
+
+
+            elif action == 'get-list-references':
+                # Cycle through all list members and for each, find all referencestl
+                twUser = param1 if param1 else DEFAULT_TWITTER_USER
+                twList = param2 if param2 else DEFAULT_TWITTER_LIST
+                members = tl.fetch_list_members(slug=twList)
+                for m in members:
+                    q = "@%s"%(m["screen_name"])
+                    debug_print("Searching tweets for the query:" + q)
+                    results = tt.search(api, q, 50, "%s_%s"%(twList,"references"))
+                    debug_print("Tweets saved into database %s_%s"%(twList,"references"))
+                    # db.getCollection("community-councils_references").find({},{_id:0,"user.screen_name":1,"entities.user_mentions.screen_name":1,"text":1})
+
+
+
+            elif action == 'get-list-tweets':  # get statuses of list members
+                twUser = param1 if param1 else DEFAULT_TWITTER_USER
+                twList = param2 if param2 else DEFAULT_TWITTER_LIST
+                tl.save_list_members_tweets(api, owner_screen_name=twUser, slug=twList)
 
             elif action == 'search':
                 #~ Syntax guide: https://dev.twitter.com/docs/using-search )  "
@@ -102,7 +117,7 @@ def main():
                 if q:
                     debug_print("Searching tweets for the query:" + q)
                     #twitter_call_function_on_interval(search_tweets, 'twitter', q)
-                    results = ctt.twitter_search(api, q, 1000)
+                    results = tt.search(api, q, 1000)
                     debug_print("Tweets saved into database")
 
                 else:
@@ -113,9 +128,10 @@ def main():
                 q = param1
                 if q:
                     debug_print("Searching and saving tweets from the streaming api for query: " +q+ "...")
-                    ctt.twitter_stream_api(api, q)
+                    tt.stream_api(api, q)
                 else:
                     print "Query missing"
+
 
 
             # Untested and flaky features below
@@ -147,19 +163,12 @@ def main():
             elif action == '4':  # Get trending topics
                 print "INFO: Getting World Trends ..."
                 WORLD_WOE_ID = 1  # for searching trends
-                world_trends = ctt.twitter_trends(api, WORLD_WOE_ID)
+                world_trends = tt.trends(api, WORLD_WOE_ID)
                 #for checking the structure of uncomment : #print json.dumps(world_trends[0]['trends'], indent=1)
                 if world_trends:
                     world_trends = world_trends[0]['trends']
                     for w in world_trends:
                         print "trend: ", w['name']
-
-
-            elif action == '6':  # get members of a list
-                twUser = param1 if param1 else DEFAULT_TWITTER_USER
-                twList = param2 if param2 else DEFAULT_TWITTER_LIST
-
-                ctl.twitter_get_list_members(api,owner_screen_name=twUser, slug=twList)
 
 
             elif action == '9':  # Get all tweets from a user's timeline
@@ -175,7 +184,7 @@ def main():
             elif action == '11':  # get list members
                 twUser = param1 if param1 else DEFAULT_TWITTER_USER
                 twList = param2 if param2 else DEFAULT_TWITTER_LIST
-                ctl.twitter_get_list_members(api,owner_screen_name=twUser, slug=twList)
+                tl.save_list_members(api,owner_screen_name=twUser, slug=twList)
 
             elif action == '12':
                 print "MULTIGRAPH"

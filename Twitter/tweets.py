@@ -20,42 +20,44 @@ logger = setup_logging(logger)
 ### HIGH LEVEL FUNCTIONS
 
 
-def twitter_trends(twitter_api, woe_id):
+def trends(api, woe_id):
     """
     Returns the top 10 trending topics for a specific WOEID, if trending information is available for it.
     For preventing HTTP errors a robust API wrapper is added
-    :parameter: twitter_api
+    :parameter: api
     :parameter: woe_id - world ID
     :return trending topics
     """
     # Prefix ID with the underscore for query string parameterization.
     # Without the underscore, the twitter package appends the ID value
     # to the URL itself as a special-case keyword argument.
-    debug_print('EXEC twitter_trends method : ')
-    twitter_api_trends = partial(twitter_api.trends.place, _id=woe_id)
-    twitter_make_robust_request(twitter_api_trends)
-    return twitter_make_robust_request(twitter_api_trends)
+    debug_print('EXEC trends method : ')
+    api_trends = partial(api.trends.place, _id=woe_id)
+    make_robust_request(api_trends)
+    return make_robust_request(api_trends)
 
 
 
-def twitter_search(twitter_api, q, max_results=1000, **kw):
+def search(api, q, max_results=1000, slug=None, **kw):
     """
     Retrieves tweets from the api for a given query and saves them into mongo database
     description of parametars: https://dev.twitter.com/docs/api/1.1/get/search/tweets
     Warning: OAuth users can "only" make 180 search queries per 15-minute interval.
     For preventing HTTP errors a robust API wrapper is added
-     :param twitter_api
+     :param api
      :param q
      :param max_results
 
      """
 
-    debug_print(('EXEC twitter_search method : %s')%(q,))
+    debug_print(('EXEC search method : %s')%(q,))
     #Get a collection of relevant Tweets matching a specified query
 
+    mongo_collection = slug if slug else 'search-%s'%(q,)
+
     try:
-        twitter_search_api_tweets = partial(twitter_api.search.tweets, q=q, count=180, **kw)
-        search_results = twitter_make_robust_request(twitter_search_api_tweets)
+        search_api_tweets = partial(api.search.tweets, q=q, count=180, **kw)
+        search_results = make_robust_request(search_api_tweets)
 
     #Handle rate limit
     except urllib2.HTTPError, e:
@@ -71,7 +73,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
             sys.stderr.flush()
             time.sleep(60*15 + 10)
             debug_print("  Woke up ... End: %s " % str(time.ctime()))
-            twitter_search(twitter_api, q, **kw)
+            search(api, q, **kw)
      #handle socket error
     except SocketError, se:
         logger.error(se)
@@ -82,7 +84,7 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
         debug_print("  Woke up ... End: " + str(time.ctime()))
         if since_id:
             kw = {'since_id': since_id} # continue where you left off
-        twitter_search(twitter_api, q, **kw)
+        search(api, q, **kw)
 
     statuses = search_results['statuses']
     debug_print("  number of statuses: %i max_limit: %i"  % (len(statuses), max_results))
@@ -109,8 +111,8 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
         kwargs = dict([kv.split('=') for kv in next_results[1:].split("&")])
         kwargs['result_type'] = "recent"
         debug_print("kwargs: "+str(kwargs))
-        twitter_search_api_tweets = partial(twitter_api.search.tweets, **kwargs)
-        search_results = twitter_make_robust_request(twitter_search_api_tweets)
+        search_api_tweets = partial(api.search.tweets, **kwargs)
+        search_results = make_robust_request(search_api_tweets)
         debug_print("  number of statuses: " + str(len(search_results['statuses'])))
         statuses += search_results['statuses']
         #print json.dumps(search_results,indent=1)
@@ -119,24 +121,24 @@ def twitter_search(twitter_api, q, max_results=1000, **kw):
            break
     if statuses:
         #~ debug_print(('  Saving %d statsus')%len(statuses))
-        dtd.twitter_save_to_mongo(statuses, DEFAULT_MONGO_DB, 'search-%s'%(q,))
+        dtd.save_to_mongo(statuses, DEFAULT_MONGO_DB, mongo_collection)
 
 
 ### LOW LEVEL FUNCTIONS
 
-def twitter_make_robust_request(twitter_api_func, max_errors=10, *args, **kw):
+def make_robust_request(api_func, max_errors=10, *args, **kw):
     """ A nested helper function that handles common HTTPErrors. Return an updated
     value for wait_period if the problem is a 500 level error. Block until the
     rate limit is reset if it's a rate limiting issue (429 error). Returns None
     for 401 and 404 errors, which requires special handling by the caller.
     USED in: all functions that make a call to the twitter api
 
-    :parameter: twitter_api_func - function that need to be executed
+    :parameter: api_func - function that need to be executed
     :parameter: max_errors
     """
-    debug_print('EXEC twitter_make_robust_request method : ')
+    debug_print('EXEC make_robust_request method : ')
 
-    def handle_twitter_http_error(e, wait_period=2, sleep_when_rate_limited=True):
+    def handle_http_error(e, wait_period=2, sleep_when_rate_limited=True):
         if wait_period > 3600: # Seconds
             print >> sys.stderr, 'Too many retries. Quitting.'
             logger.error(e.message)
@@ -178,11 +180,11 @@ def twitter_make_robust_request(twitter_api_func, max_errors=10, *args, **kw):
     error_count = 0
     while True:
         try:
-            return twitter_api_func(*args, **kw)
+            return api_func(*args, **kw)
         except TwitterHTTPError, e:
             logger.error(e.message)
             error_count = 0
-            wait_period = handle_twitter_http_error(e, wait_period)
+            wait_period = handle_http_error(e, wait_period)
             if wait_period is None:
                 return
         except URLError, e:
@@ -204,7 +206,7 @@ def twitter_make_robust_request(twitter_api_func, max_errors=10, *args, **kw):
 
 
 
-def twitter_call_function_on_interval(api_func, secs_per_interval=60 ,max_intervals=30, **mongo_conn_kw):
+def call_function_on_interval(api_func, secs_per_interval=60 ,max_intervals=30, **mongo_conn_kw):
     """
     Executes an api function on a given time-interval if no immediate results are needed.
     Usually needed for checking trending topics.
@@ -215,7 +217,7 @@ def twitter_call_function_on_interval(api_func, secs_per_interval=60 ,max_interv
     :param max_intervals
     :param mongo_conn_kw
     """
-    debug_print('EXEC twitter_call_function_on_interval method : ')
+    debug_print('EXEC call_function_on_interval method : ')
     # Default settings of 15 intervals and 1 API call per interval ensure that
     # you will not exceed the TwitterWrapper rate limit.
     interval = 0
@@ -231,22 +233,22 @@ def twitter_call_function_on_interval(api_func, secs_per_interval=60 ,max_interv
             debug_print("  Woke up ... End: %s" % str(time.ctime()))
             sys.stderr.flush()
 
-def twitter_stream_api(twitter_api, query):
+def stream_api(api, query):
 
     """
     Uses twitter's Streaming API to get samples of the public data flowing through tweeter.
     Establishes a connection to a streaming endpoint they are delivered a feed of Tweets,
     without needing to worry about polling or REST API rate limits.
     For preventing HTTP errors a robust API wrapper is added
-    :parameter: twitter_api
+    :parameter: api
     :parameter: query
     """
-    debug_print('EXEC twitter_stream_api method : ')
-    twitter_stream = partial(twitter.TwitterStream, auth=twitter_api.auth)
+    debug_print('EXEC stream_api method : ')
+    stream = partial(twitter.TwitterStream, auth=api.auth)
 
     try:
-            twitter_stream_res = twitter_make_robust_request(twitter_stream)
-            stream = twitter_stream_res.statuses.filter(track=query)
+            stream_res = make_robust_request(stream)
+            stream = stream_res.statuses.filter(track=query)
     except (urllib2.HTTPError, SocketError, TwitterHTTPError, SocketError), e:
             debug_print("  " + e.message)
             #find the highest since_id from database to continue if a rate limitation is reached
@@ -260,8 +262,8 @@ def twitter_stream_api(twitter_api, query):
             sys.stderr.flush()
             time.sleep(60*15 + 10)
             debug_print("  Woke up ... End: %s" % (str(time.ctime())))
-            twitter_stream_res = twitter_make_robust_request(twitter_stream)
-            stream = twitter_stream_res.statuses.filter(track=query)
+            stream_res = make_robust_request(stream)
+            stream = stream_res.statuses.filter(track=query)
 
     else:
         debug_print("  No exceptions ")
@@ -270,4 +272,4 @@ def twitter_stream_api(twitter_api, query):
         if stream:
             for tweet in stream:
                 #print json.dumps(tweet, indent=1)
-                dtd.twitter_save_to_mongo(tweet, DEFAULT_MONGO_DB, query)
+                dtd.save_to_mongo(tweet, DEFAULT_MONGO_DB, query)

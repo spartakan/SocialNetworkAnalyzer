@@ -5,7 +5,7 @@ from twitter.api import TwitterHTTPError
 # SNA imports
 from config import *
 from DB.twitter import twitter_save_to_mongo, \
-                        load_from_mongo,save_to_mongo
+                        load_from_mongo,save_to_mongo, twitter_load_from_mongo_sorted
 #~ from Common.DB import load_from_mongo,save_to_mongo
 
 from debugging_setup import setup_logging, debug_print
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
 
 
-def twitter_get_list_members_tweets(twitter_api, max_results=1000, owner_screen_name="", slug=""):
+def save_list_members_tweets(twitter_api, max_results=1000, owner_screen_name="", slug=""):
     """Gets all tweets from twitter api posted by list members and stores them into database
     :parameter: twitter_api
     :parameter: max_results
@@ -61,7 +61,7 @@ def twitter_get_list_members_tweets(twitter_api, max_results=1000, owner_screen_
     #debug_print(" All Results are saved in database")
 
 
-def twitter_get_list_members(twitter_api, owner_screen_name="", slug=""):
+def save_list_members(twitter_api, owner_screen_name="", slug=""):
     """ Gets information about all the members in a list from twitter api and stores them into database
     :parameter: twitter_api
     :parameter: owner_screen_name - name of the person who created the list
@@ -91,5 +91,16 @@ def twitter_get_list_members(twitter_api, owner_screen_name="", slug=""):
             debug_print("  cursor after waking up: "+str(cursor))
     db_coll_name = "%s_%s" % (slug, "members") #create database name for members  format = > slug_members
     save_to_mongo(members, mongo_db=DEFAULT_MONGO_DB, mongo_db_coll=db_coll_name)
+    return members
+
+
+def fetch_list_members(slug=""):
+    """Return a list of list members
+    TODO: This should really be an iterator"""
+    mongo_db_coll = "%s_%s" % (slug, "members") #create database name for members  format = > slug_members
+    #~ members = twitter_load_from_mongo_sorted(mongo_db=DEFAULT_MONGO_DB,mongo_db_coll=slug,criteria={"screen_name":1}, limit=5)
+    members = twitter_load_from_mongo_sorted(mongo_db=DEFAULT_MONGO_DB,mongo_db_coll=mongo_db_coll, criteria=None, limit=None)
+    for m in members:
+        print m["screen_name"]
     return members
 

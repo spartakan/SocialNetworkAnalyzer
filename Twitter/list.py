@@ -95,21 +95,23 @@ def save_list_members(twitter_api, owner_screen_name="", slug=""):
 
 
 def save_list_references(twitter_api, owner_screen_name="", owner_list=""):
-    # Cycle through all list members and for each, find all references
+    """ Cycle through all list members and for each, find all references PAC 20150408
+    """
     members = fetch_list_members(slug=owner_list)
     collection_name = "%s_%s"%(owner_list,"references")
     for m in members:
-        q = "@%s"%(m["screen_name"])
+        member_name = "@%s"%(m["screen_name"])
         # Find ID of last tweet referring to this member
         # db.getCollection("community-councils_references").find({"entities.user_mentions.screen_name":"gilmertoninchcc"}, {_id:0,id:1,"user.screen_name":1,"entities.user_mentions.screen_name":1,"text":1})
         #load_from_mongo()
-        since_id = load_from_mongo(mongo_db=DEFAULT_MONGO_DB, mongo_db_coll=owner_list, find_since_id=True)
+        since_id = None
+        #since_id = load_from_mongo(mongo_db=DEFAULT_MONGO_DB, mongo_db_coll=owner_list, find_since_id=True) # TODO Add query to search for member_name
 
         # Ask twitter for tweets since then & save them - or bail out if rate limit reached
         debug_print("since_id %s:"%since_id)
-        debug_print("Searching tweets for the query %s in %s:"%(q,collection_name))
-        results = tt.search(twitter_api, q, 50, collection_name)
-        debug_print("Tweets saved into database %s"%collection_name)
+        debug_print("finding tweets to member %s for %s:"%(member_name,collection_name))
+        results = tt.search(twitter_api, member_name, 50, collection_name) # NB tt.search also saves data...
+        debug_print("Tweets saved into collection %s"%collection_name)
         # db.getCollection("community-councils_references").find({},{_id:0,"user.screen_name":1,"entities.user_mentions.screen_name":1,"text":1})
 
 

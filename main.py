@@ -31,7 +31,7 @@ def help():
     print "These are your options: "
     print "follow-list  <user> <list> Set up loop to save tweets from list members on interval"
     print "get-list <user> <list>. Save a list of list members"
-    print "get-list-references <user> <list>. Get references to list members"
+    print "get-list-references <user> <list>. Get references to list members [IN DEVELOPMENT]"
     print "get-list-tweets <user> <list>. Get statuses of list members"
     print "search <query>. Search & save tweets for a specific query"
     print "ssearch <query>. Search & save tweets from the streaming api"

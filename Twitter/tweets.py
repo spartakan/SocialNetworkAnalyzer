@@ -84,7 +84,7 @@ def search(api, q, max_results=1000, slug=None, **kw):
         debug_print("  Woke up ... End: " + str(time.ctime()))
         if since_id:
             kw = {'since_id': since_id} # continue where you left off
-        search(api, q, **kw)
+        search(api, q, **kw) # PAC 20150408 Is this a recursion?? Isn't resume better?'
 
     statuses = search_results['statuses']
     debug_print("  number of statuses: %i max_limit: %i"  % (len(statuses), max_results))
@@ -97,7 +97,7 @@ def search(api, q, max_results=1000, slug=None, **kw):
     # Enforce a reasonable limit
     max_results = min(1000, max_results)
 
-    print >> sys.stderr, search_results
+    #~ print >> sys.stderr, search_results
     # Iterate through more batches of results by following the cursor
     while True:
         debug_print('*** START LOOP ***')

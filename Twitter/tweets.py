@@ -11,8 +11,8 @@ from twitter.api import TwitterHTTPError
 
 # SNA Modules
 from config import *
-import DB.twitter as dtd
-import DB.common as dd
+import DB.twitter as db
+#import DB.common as dd
 
 logger = logging.getLogger(__name__)
 logger = setup_logging(logger)
@@ -50,20 +50,20 @@ def search(api, q, max_results=1000, slug=None, **kw):
 
      """
 
-    debug_print(('EXEC search method : %s')%(q,))
-    #Get a collection of relevant Tweets matching a specified query
+    debug_print(('EXEC search method : %s')%q)
 
-    mongo_collection = slug if slug else 'search-%s'%(q,)
+    mongo_collection = slug if slug else 'search-%s'%q
 
     try:
+        #Get a collection of relevant Tweets matching a specified query
         search_api_tweets = partial(api.search.tweets, q=q, count=180, **kw)
         search_results = make_robust_request(search_api_tweets)
 
     #Handle rate limit
     except urllib2.HTTPError, e:
-        if e.e.code == 429 : #rate limit reached TODO: handle this error  inside methods
+        if e.e.code == 429 : #rate limit reached TODO: handle this error inside methods
              #find the highest since_id from database to continue if a rate limitation is reached
-            since_id = dd.load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
+            since_id = db.load_from_mongo(DEFAULT_MONGO_DB, q, return_cursor=False, find_since_id=True)
             if since_id:
                 debug_print(" since_id: %i" % since_id)
                 kw = {'since_id': since_id}
@@ -73,12 +73,12 @@ def search(api, q, max_results=1000, slug=None, **kw):
             sys.stderr.flush()
             time.sleep(60*15 + 10)
             debug_print("  Woke up ... End: %s " % str(time.ctime()))
-            search(api, q, **kw)
+            search(api, q, **kw) # PAC 20150408 Is this a recursion?? Isn't resume better?'
      #handle socket error
     except SocketError, se:
         logger.error(se)
         debug_print("  " + se.message)
-        since_id = dd.load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
+        since_id = db.load_from_mongo('twitter', q, return_cursor=False, find_since_id=True)
         debug_print("  SocketError occurred. Start:" + str(time.ctime()) + " . Retrying in 0.05 sec ...zZz...")
         time.sleep(0.05)
         debug_print("  Woke up ... End: " + str(time.ctime()))
@@ -121,7 +121,7 @@ def search(api, q, max_results=1000, slug=None, **kw):
            break
     if statuses:
         #~ debug_print(('  Saving %d statsus')%len(statuses))
-        dtd.save_to_mongo(statuses, DEFAULT_MONGO_DB, mongo_collection)
+        db.save_to_mongo(statuses, DEFAULT_MONGO_DB, mongo_collection)
 
 
 ### LOW LEVEL FUNCTIONS
@@ -204,8 +204,6 @@ def make_robust_request(api_func, max_errors=10, *args, **kw):
 
 
 
-
-
 def call_function_on_interval(api_func, secs_per_interval=60 ,max_intervals=30, **mongo_conn_kw):
     """
     Executes an api function on a given time-interval if no immediate results are needed.
@@ -232,6 +230,7 @@ def call_function_on_interval(api_func, secs_per_interval=60 ,max_intervals=30, 
             time.sleep(secs_per_interval*max_intervals + 10)
             debug_print("  Woke up ... End: %s" % str(time.ctime()))
             sys.stderr.flush()
+
 
 def stream_api(api, query):
 
@@ -272,4 +271,4 @@ def stream_api(api, query):
         if stream:
             for tweet in stream:
                 #print json.dumps(tweet, indent=1)
-                dtd.save_to_mongo(tweet, DEFAULT_MONGO_DB, query)
+                db.save_to_mongo(tweet, DEFAULT_MONGO_DB, query)

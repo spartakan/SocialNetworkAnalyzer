@@ -82,8 +82,8 @@ def main():
                 twList = param2 if param2 else DEFAULT_TWITTER_LIST
                 #making a partial class from twitter_search to later add it as an argument in twitter_call_function_on_interval
                 tweets_from_list_members = partial(tl.save_list_members_tweets, api, owner_screen_name=twUser, slug=twList)
-                #get and save the trending topics on time intervals
                 tt.call_function_on_interval(tweets_from_list_members)
+
 
             elif action in ['6', 'get-list']:  # find trending topics on a time interval
                 twUser = param1 if param1 else DEFAULT_TWITTER_USER
@@ -92,6 +92,15 @@ def main():
 
 
             elif action == 'get-list-references':
+                # Cycle through all list members and for each, find all references
+                twUser = param1 if param1 else DEFAULT_TWITTER_USER
+                twList = param2 if param2 else DEFAULT_TWITTER_LIST
+                tl.save_list_references(api, owner_screen_name=twUser, owner_list=twList)
+                #~ tweets_on_list_members = partial(tl.save_list_references, api, owner_screen_name=twUser, slug=twList)
+                #~ tt.call_function_on_interval(tweets_from_list_members)
+
+
+            elif action == 'glr': # DEBUG
                 # Cycle through all list members and for each, find all references
                 # TODO: Turn into a function (somewhere) and handle API limits (use call_function_on_interval())
                 twUser = param1 if param1 else DEFAULT_TWITTER_USER
@@ -104,10 +113,12 @@ def main():
                     debug_print("Tweets saved into database %s_%s"%(twList,"references"))
                     # db.getCollection("community-councils_references").find({},{_id:0,"user.screen_name":1,"entities.user_mentions.screen_name":1,"text":1})
 
+
             elif action == 'get-list-tweets':  # get statuses of list members
                 twUser = param1 if param1 else DEFAULT_TWITTER_USER
                 twList = param2 if param2 else DEFAULT_TWITTER_LIST
                 tl.save_list_members_tweets(api, owner_screen_name=twUser, slug=twList)
+
 
             elif action == 'search':
                 #~ Syntax guide: https://dev.twitter.com/docs/using-search )  "

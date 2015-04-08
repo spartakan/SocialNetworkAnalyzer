@@ -7,6 +7,7 @@ from config import *
 from DB.twitter import twitter_save_to_mongo, \
                         load_from_mongo,save_to_mongo, twitter_load_from_mongo_sorted
 #~ from Common.DB import load_from_mongo,save_to_mongo
+import Twitter.tweets as tt
 
 from debugging_setup import setup_logging, debug_print
 logger = logging.getLogger(__name__)
@@ -76,7 +77,6 @@ def save_list_members(twitter_api, owner_screen_name="", slug=""):
             response = twitter_api.lists.members(owner_screen_name=owner_screen_name, slug=slug, cursor=cursor)
             debug_print("  next cursor: " + str(response['next_cursor']))
             if response is not None:
-
                 cursor = response['next_cursor']
                 members += response['users']
                 debug_print("  users (last response): " + str(len(response['users'])))
@@ -92,6 +92,26 @@ def save_list_members(twitter_api, owner_screen_name="", slug=""):
     db_coll_name = "%s_%s" % (slug, "members") #create database name for members  format = > slug_members
     save_to_mongo(members, mongo_db=DEFAULT_MONGO_DB, mongo_db_coll=db_coll_name)
     return members
+
+
+def save_list_references(twitter_api, owner_screen_name="", owner_list=""):
+    # Cycle through all list members and for each, find all references
+    members = fetch_list_members(slug=owner_list)
+    collection_name = "%s_%s"%(owner_list,"references")
+    for m in members:
+        q = "@%s"%(m["screen_name"])
+        # Find ID of last tweet referring to this member
+        # db.getCollection("community-councils_references").find({"entities.user_mentions.screen_name":"gilmertoninchcc"}, {_id:0,id:1,"user.screen_name":1,"entities.user_mentions.screen_name":1,"text":1})
+        #load_from_mongo()
+        since_id = load_from_mongo(mongo_db=DEFAULT_MONGO_DB, mongo_db_coll=owner_list, find_since_id=True)
+
+        # Ask twitter for tweets since then & save them - or bail out if rate limit reached
+        debug_print("since_id %s:"%since_id)
+        debug_print("Searching tweets for the query %s in %s:"%(q,collection_name))
+        results = tt.search(twitter_api, q, 50, collection_name)
+        debug_print("Tweets saved into database %s"%collection_name)
+        # db.getCollection("community-councils_references").find({},{_id:0,"user.screen_name":1,"entities.user_mentions.screen_name":1,"text":1})
+
 
 
 def fetch_list_members(slug=""):

@@ -51,7 +51,7 @@ def getCollections(mongo_db, **mongo_conn_kw):
 
 def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None, projection=None, find_since_id=False, **mongo_conn_kw):
     """
-    Loads data from the specific database and the specific collection by the chosen criteria
+    Search a mongo collection: Loads data from the specific database and the specific collection by the chosen criteria
     :param mongo_db
     :param mongo_db_coll
     :param return_cursor
@@ -69,8 +69,10 @@ def load_from_mongo(mongo_db, mongo_db_coll, return_cursor=False, criteria=None,
     db = client[mongo_db]
     coll = db[mongo_db_coll]
     if find_since_id:
-        result = coll.find_one({"$query": {}, "$orderby": {"id": -1}}, {"id": 1})
-       # print result[u'id']
+        q = {} if criteria == None else criteria # PAC 20150408
+        #~ result = coll.find_one({"$query": {}, "$orderby": {"id": -1}}, {"id": 1})
+        result = coll.find_one({"$query": q, "$orderby": {"id": -1}}, {"id": 1})
+        debug_print('Found tweet %s'%result[u'id'])
         if result:
             return result[u'id']
         else:

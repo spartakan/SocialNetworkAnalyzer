@@ -105,7 +105,8 @@ def save_list_references(twitter_api, owner_screen_name="", owner_list=""):
         # db.getCollection("community-councils_references").find({"entities.user_mentions.screen_name":"gilmertoninchcc"}, {_id:0,id:1,"user.screen_name":1,"entities.user_mentions.screen_name":1,"text":1})
         #load_from_mongo()
         since_id = None
-        #since_id = load_from_mongo(mongo_db=DEFAULT_MONGO_DB, mongo_db_coll=owner_list, find_since_id=True) # TODO Add query to search for member_name
+        #since_id = load_from_mongo(mongo_db=DEFAULT_MONGO_DB, mongo_db_coll=owner_list, find_since_id=True)
+        # TODO Add query to search for member_name
 
         # Ask twitter for tweets since then & save them - or bail out if rate limit reached
         debug_print("since_id %s:"%since_id)

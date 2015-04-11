@@ -201,7 +201,7 @@ def get_popular_hashtags(slug):
     :returns: hashtags - dictionary where key is the hashtag and value number of occurrences
     """
     debug_print("EXEC get_popular_hashtags method :")
-    mongo_db = "twitter"
+    mongo_db = DEFAULT_MONGO_DB
     mongo_db_coll = slug
     results = load_from_mongo(mongo_db=mongo_db, mongo_db_coll=mongo_db_coll)
     screen_names, hashtags, urls, media, symbols = get_popular_tweet_entities_list(results,25)

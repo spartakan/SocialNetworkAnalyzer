@@ -77,7 +77,7 @@ def main():
             if False:
                 None
 
-            elif action in ['5', 'follow-list']:  # find trending topics on a time interval
+            elif action in ['5', 'follow-list']:
                 twUser = param1 if param1 else DEFAULT_TWITTER_USER
                 twList = param2 if param2 else DEFAULT_TWITTER_LIST
                 #making a partial class from twitter_search to later add it as an argument in twitter_call_function_on_interval
@@ -146,7 +146,8 @@ def main():
 
             # Untested and flaky features below
             elif action == '0':  # find users who have tweeted a hashtag , for a list of popular hashtags
-                hashtags_dict = get_popular_hashtags(slug="community-councils")
+                twList = param2 if param2 else DEFAULT_TWITTER_LIST
+                hashtags_dict = get_popular_hashtags(slug=twList)
                 hashtags = hashtags_dict.keys() #.sort()
                 debug_print(hashtags_dict)
                 for hashtag in hashtags:
